@@ -22,7 +22,7 @@ def main():
         use_custom_headers=True,
     )
 
-    input_path = "data/inputs/test_pdf.pdf"
+    input_path = "data/inputs/IEI 2023 - Gob. Regional de La Libertad.pdf"
     doc = loader.load(input_path)  # sin tablas (modificar en futuro)
 
     # 2) Limpiar documento

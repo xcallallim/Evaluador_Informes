@@ -8,6 +8,7 @@ from collections import Counter
 from core.logger import log_info, log_warn, log_error
 from core.utils import normalize_whitespace
 from core.config import CUSTOM_HEADERS, CUSTOM_FOOTERS
+from data.models.document import Document
 
 try:
     from rapidfuzz import fuzz
@@ -101,8 +102,8 @@ class Cleaner:
 
     def clean_document(self, document, return_report: bool = False):
         """
-        Limpia un objeto Document (de loader) conservando metadata.
-        Usa metadata["is_ocr"] para mejorar la limpieza.
+        Limpia un objeto Document (de loader) y devuelve un nuevo Document con el texto limpio.
+        Conserva metadata, páginas, tablas e imágenes.
         """
         text = document.content or ""
 
@@ -112,13 +113,24 @@ class Cleaner:
         # Pasar el valor de OCR al método clean mediante flag interno temporal
         self._force_ocr = is_ocr  # guardamos una variable interna solo para esta ejecución
 
-        result = self.clean(text, return_report=return_report)
+        # Ejecutar limpieza
+        cleaned_text, report = self.clean(text, return_report=True)
 
         # limpiar flag interno
         if hasattr(self, "_force_ocr"):
             del self._force_ocr
 
-        return result
+        # ✅ Devolver siempre un Document, no un string
+        cleaned_doc = Document(
+            content=cleaned_text,
+            metadata=document.metadata,
+            pages=document.pages,
+            tables=document.tables,
+            images=document.images
+        )
+
+        return (cleaned_doc, report) if return_report else cleaned_doc
+
 
 
     # =========================================================

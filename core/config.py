@@ -1,5 +1,6 @@
 # core/config.py
-# from core.config import []
+# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+# .\venv\Scripts\activate
 
 import os
 
@@ -20,6 +21,8 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 INPUT_DIR = os.path.join(DATA_DIR, "inputs")      # Documentos a evaluar
 OUTPUT_DIR = os.path.join(DATA_DIR, "outputs")    # Resultados (CSV, JSON)
 CRITERIA_DIR = os.path.join(DATA_DIR, "criteria") # Criterios JSON
+PREPROCESSING_DIR = os.path.join(BASE_DIR, "..", "data", "preprocessing")
+PIPELINE_DIR = os.path.join(BASE_DIR, "..", "data", "pipeline")
 
 MODELS_DIR = os.path.join(BASE_DIR, "models")     # Modelos IA (embeddings, fine-tuning, etc.)
 SERVICES_DIR = os.path.join(BASE_DIR, "services") # Lógica principal
@@ -41,6 +44,7 @@ os.makedirs(INPUT_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(CRITERIA_DIR, exist_ok=True)
 os.makedirs(LOG_DIR, exist_ok=True)
+os.makedirs(PIPELINE_DIR, exist_ok=True)
 
 # Nota:
 # Las carpetas models/ y services/ no se crean aquí porque contienen código,
@@ -54,7 +58,7 @@ CUSTOM_HEADERS = [
     r"Gobierno del Perú",
     r"Oficina de Planeamiento",
     r"www\.gob\.pe",
-    r"Ministerio de .*",                 # Coincide con "Ministerio de Educación", etc.
+    r"Ministerio de .*",                 
     r"República del Perú",
     r"Informe de Evaluación Institucional",
     r"Informe de Evaluación Institucional del año 2023",

@@ -3,7 +3,7 @@ import os
 import sys
 import traceback
 
-from ingestion.loader import load_file
+from data.preprocessing.loader import load_file
 from preprocessing.cleaner import clean_text
 from preprocessing.segmenter import segment_text
 

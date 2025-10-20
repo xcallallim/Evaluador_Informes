@@ -1,52 +1,78 @@
-#py test/test_splitter.py
-import sys, os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from preprocessing.splitter import split_text, save_chunks
+# py tests/test_splitter.py
+# py -m tests.test_splitter
 
-# Carpeta donde se encuentran los textos limpios
-CARPETA_RESULTADOS = r"C:\Ceplan\03. Orden de Servicio\07. Entregable 07\Evaluador_Informes\resultados"
+import importlib
+import os
+import sys
 
-def main():
-    print("=== TEST SPLITTER ===")
-    print(f"📂 Carpeta de búsqueda: {CARPETA_RESULTADOS}")
+import pytest
 
-    # Listar archivos disponibles
-    txt_files = [f for f in os.listdir(CARPETA_RESULTADOS) if f.endswith(".txt")]
-    if not txt_files:
-        print("❌ No se encontraron archivos .txt en la carpeta de resultados.")
-        return
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-    print("\nArchivos disponibles:")
-    for i, file in enumerate(txt_files, start=1):
-        print(f"  {i}. {file}")
+pytest.importorskip("langchain")
 
-    # Selección del archivo
-    opcion = input("\nSeleccione el número del archivo a procesar: ").strip()
-    if not opcion.isdigit() or int(opcion) < 1 or int(opcion) > len(txt_files):
-        print("❌ Opción no válida.")
-        return
+Document = importlib.import_module("data.models.document").Document
+Splitter = importlib.import_module("data.preprocessing.splitter").Splitter
 
-    archivo_seleccionado = txt_files[int(opcion) - 1]
-    ruta_archivo = os.path.join(CARPETA_RESULTADOS, archivo_seleccionado)
-    print(f"\n📄 Procesando archivo: {ruta_archivo}")
 
-    # Leer texto limpio
-    with open(ruta_archivo, "r", encoding="utf-8") as f:
-        texto = f.read()
+@pytest.fixture()
+def sample_sections():
+    return {
+        "introduccion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+        * 20,
+        "desarrollo": "Proin eget tortor risus. Nulla quis lorem ut libero malesuada "
+        "feugiat. "
+        * 10,
+    }
 
-    # Dividir texto
-    chunks = split_text(texto, chunk_size=1200, chunk_overlap=150)
 
-    # Guardar resultados
-    output_dir = os.path.join(CARPETA_RESULTADOS, "chunks")
-    save_chunks(chunks, output_dir, base_name=os.path.splitext(archivo_seleccionado)[0])
+def test_splitter_rejects_invalid_configuration():
+    with pytest.raises(ValueError):
+        Splitter(chunk_size=100, chunk_overlap=100)
 
-    # Resumen rápido
-    print(f"\n✨ Proceso completado. Se generaron {len(chunks)} fragmentos.")
-    print("📘 Vista previa:")
-    for i, doc in enumerate(chunks[:3], start=1):
-        preview = doc.page_content[:180].replace("\n", " ") + "..."
-        print(f"\n🔹 Fragmento {i}:\n{preview}")
+    with pytest.raises(ValueError):
+        Splitter(chunk_size=0, chunk_overlap=0)
 
-if __name__ == "__main__":
-    main()
+    with pytest.raises(ValueError):
+        Splitter(chunk_size=10, chunk_overlap=-1)
+
+
+def test_split_sections_creates_metadata(sample_sections):
+    splitter = Splitter(chunk_size=200, chunk_overlap=50)
+
+    chunks = splitter.split_sections(sample_sections)
+
+    assert len(chunks) > 0
+    assert {chunk.metadata["section"] for chunk in chunks} == set(
+        sample_sections.keys()
+    )
+    assert all(len(chunk.page_content) <= splitter.chunk_size for chunk in chunks)
+
+    for chunk in chunks:
+        assert chunk.metadata["id"].startswith(f"{chunk.metadata['section']}_")
+        assert chunk.metadata["chunk_index"] >= 1
+        assert chunk.metadata["length"] == len(chunk.page_content)
+        assert chunk.page_content.strip()
+
+
+def test_split_document_populates_document_chunks(sample_sections):
+    document = Document(content="", metadata={}, sections=sample_sections)
+    splitter = Splitter(chunk_size=200, chunk_overlap=50)
+
+    result = splitter.split_document(document)
+
+    assert result is document
+    assert document.chunks
+    assert {chunk.metadata["section"] for chunk in document.chunks} == set(
+        sample_sections.keys()
+    )
+
+
+def test_split_document_handles_missing_sections():
+    document = Document(content="", metadata={})
+    splitter = Splitter(chunk_size=100, chunk_overlap=20)
+
+    splitter.split_document(document)
+
+    assert document.chunks == []
+

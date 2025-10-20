@@ -6,6 +6,8 @@ import unicodedata
 import re
 import os
 
+from langchain.text_splitter import CharacterTextSplitter
+
 # ====================================
 # FUNCIONES DE NORMALIZACIÓN
 # ====================================
@@ -123,3 +125,20 @@ def ensure_dir(path: str):
     """
     if not os.path.exists(path):
         os.makedirs(path, exist_ok=True)
+
+# ====================================
+# DIVISION POR CHUNKS
+# ====================================
+
+def split_text(text: str, chunk_size: int = 1500, chunk_overlap: int = 150) -> list:
+    """
+    Divide texto completo en chunks usando LangChain.
+    Esta función puede ser usada desde cualquier módulo (Cleaner, Retriever, etc.)
+    """
+    splitter = CharacterTextSplitter(
+        separator="\n",
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        length_function=len
+    )
+    return splitter.split_text(text)

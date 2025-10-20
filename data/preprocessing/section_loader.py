@@ -46,11 +46,6 @@ class SectionLoader:
     Carga secciones desde JSON según tipo de informe:
     - institucional -> secciones_institucional.json
     - politica      -> secciones_politica.json
-
-    Expone:
-      - get_sections(): List[str]  # claves internas (snake_case)
-      - identify_section(line) -> Optional[Tuple[str, str, float, str]]
-        Devuelve (section_key, match_type, score, detected_text)
     """
 
     def __init__(self, report_type: str = "institucional"):
@@ -206,11 +201,11 @@ class SectionLoader:
         if keyword_boost:
             norm_text = _normalize(text)
             for key, obj in self.schema.items():
-                kws = [ _normalize(k) for k in obj.get("keywords", []) ]  # type: ignore
+                kws = [_normalize(k) for k in obj.get("keywords", [])]
                 if not kws:
                     continue
-                # Heurística: que aparezca al menos 1–2 keywords y que no sea línea larguísima
-                hits = sum(1 for k in kws if k and k in norm_text)
+                # Debe coincidir al menos 1 keyword (o 2 si hay muchas)
+                hits = sum(1 for k in kws if k in norm_text)
                 if hits >= max(1, min(2, len(kws))):
                     return (key, "keywords", 100.0, text)
 

@@ -1,5 +1,5 @@
-# py tests/test_loader.py
-# py -m tests.test_loader
+# py tests/test_loader_txt.py
+# py -m tests.test_loader_txt
 
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

@@ -1,89 +1,31 @@
 # py tests/test_segmenter.py
-# -*- coding: utf-8 -*-
-"""
-Test simple para segment_text():
-- Pide ruta de archivo limpio (.txt)
-- Segmenta según tipo de informe
-- Muestra qué se detectó y qué no
-- Guarda los segmentos encontrados en resultados/segmentados_simple/
-"""
+# py -m tests.test_segmenter
 
-import sys, os, re
+import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from preprocessing.segmentos import segment_text  # <-- Cambia según el nombre del archivo que tengas
+from data.preprocessing.loader import DocumentLoader
+from data.preprocessing.cleaner import Cleaner
+from data.criteria.section_loader import SectionLoader
+from data.preprocessing.segmenter import Segmenter
 
-OUTPUT_DIR = os.path.join("resultados", "segmentados_simple")
+print("\n=== TEST: SEGMENTER ===")
 
-def sanitize_filename(name: str) -> str:
-    return re.sub(r"[^a-zA-Z0-9]+", "_", name)[:60]
+loader = DocumentLoader()
+cleaner = Cleaner()
+segmenter = Segmenter(tipo="institucional")
 
-def run_test(file_path: str, tipo: str):
-    # Leer el texto limpio
-    with open(file_path, "r", encoding="utf-8") as f:
-        text = f.read()
+# Cargar y limpiar
+doc = loader.load("data/inputs/IEI 2023 - Gob. Regional de La Libertad.pdf")
+clean_doc, _ = cleaner.clean_document(doc, return_report=True)
 
-    # Segmentar
-    print("\n🔎 Segmentando...")
-    secciones = segment_text(text, tipo)
+# Segmentar
+seg_doc = segmenter.segment_document(clean_doc)
 
-    if not secciones:
-        print("❌ No se detectaron secciones. Revisa tipo de informe o contenido.")
-        return
+print("\n✅ SECCIONES DETECTADAS:")
+for sid, text in seg_doc.sections.items():
+    resumen = text[:150].replace("\n", " ") + ("..." if len(text) > 150 else "")
+    print(f"- {sid}: {len(text.split())} palabras | {resumen}")
 
-    # Mostrar resultados
-    print("\n📋 Resultado de segmentación:")
-    detectadas = []
-    for nombre, contenido in secciones.items():
-        estado = "✅ Detectado" if contenido.strip() else "⚠️ Vacío"
-        detectadas.append(nombre)
-        print(f" - {nombre}: {estado}")
+print("\n=== FIN TEST SEGMENTER ===")
 
-    # Calcular faltantes comparando con catálogo oficial
-    if tipo == "institucional":
-        catalogo = [
-            "Resumen Ejecutivo",
-            "Prioridades de la política institucional",
-            "Análisis de resultados de los objetivos estratégicos institucionales",
-            "Diagnóstico sobre los OEI priorizados con bajo nivel de cumplimiento",
-            "Análisis de implementación de las acciones estratégicas institucionales",
-            "Análisis de implementación de las AEI de los OEI priorizados",
-            "Análisis de los productos de la AEI",
-            "Análisis de la ejecución operativa en las AEI críticas",
-            "Aplicación de las recomendaciones para mejorar la implementación de las AEI",
-            "Conclusiones",
-            "Recomendaciones",
-            "Anexos"
-        ]
-    else:
-        catalogo = [
-            "Resumen Ejecutivo",
-            "Descripción de la política nacional",
-            "Análisis de los resultados de la política nacional",
-            "Análisis de implementación",
-            "Conclusiones",
-            "Recomendaciones"
-        ]
-
-    faltantes = [c for c in catalogo if c not in secciones]
-    if faltantes:
-        print("\n⚠️ Secciones no detectadas:")
-        for s in faltantes:
-            print(f" ❌ {s}")
-
-    # Guardar secciones detectadas como TXT
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    base = os.path.splitext(os.path.basename(file_path))[0]
-    for nombre, contenido in secciones.items():
-        filename = f"{base}_{sanitize_filename(nombre)}.txt"
-        path = os.path.join(OUTPUT_DIR, filename)
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(contenido)
-        print(f" 💾 Guardado: {filename}")
-
-    print(f"\n✅ Segmentación completada. Archivos en: {OUTPUT_DIR}")
-
-if __name__ == "__main__":
-    ruta = input("📄 Ruta del archivo .txt limpio: ").strip()
-    tipo = input("📑 Tipo de informe (institucional / politica nacional): ").strip().lower()
-    run_test(ruta, tipo)
