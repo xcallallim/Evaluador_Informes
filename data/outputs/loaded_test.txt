@@ -1,0 +1,1784 @@
+=== PAGE 1 ===
+451: GOBIERNO REGIONAL DEL
+DEPARTAMENTO DE LA
+LIBERTAD
+Informe de Evaluación Institucional
+Correspondiente al año 2023
+10 de mayo, 2024
+
+=== PAGE 2 ===
+Informe de Evaluación Institucional del año 2023
+Contenido
+Resumen Ejecutivo ....................................................................................................................... 3
+1. Prioridades de la política institucional ................................................................................... 5
+2. Análisis de resultados de los objetivos estratégicos institucionales (OEI)............................ 9
+2.1. Valoración de los resultados alcanzados en el 2023 .................................................... 9
+2.2. Diagnóstico sobre los OEI priorizados con bajo nivel de cumplimiento ...................... 10
+3. Análisis de implementación de las acciones estratégicas institucionales (AEI) ................. 14
+3.1. Situación de las AEI durante el año 2023 ................................................................... 14
+3.2. Análisis de implementación de las AEI ....................................................................... 22
+3.3. Análisis de los productos de la AEI ............................................................................. 24
+3.4. Análisis de la ejecución operativa en las AEI críticas ................................................. 29
+3.5. Aplicación de las recomendaciones para mejorar la implementación de las AEI ....... 36
+4. Conclusiones ....................................................................................................................... 38
+5. Recomendaciones ............................................................................................................... 40
+6. Anexos ................................................................................................................................. 41
+Subgerencia de Planeamiento - GRLL 2
+
+=== PAGE 3 ===
+Informe de Evaluación Institucional del año 2023
+Resumen Ejecutivo
+El Gobierno Regional La Libertad, está conformado por 37 Unidades Ejecutoras (UE)
+distribuidos de la siguiente manera: 16 Redes de Salud, 17 Unidades de Gestión
+Educativa (UGELES), UE de Transportes, UE Agricultura, Proyecto Especial
+Chavimochic y UE Sede Central.
+Con RER N°388-2023-GRLL-GOB, de fecha 01 junio 2023 se aprueba el “Plan
+Estratégico Institucional (PEI) 2020-2026 ampliado del Gobierno Regional la Libertad”,
+el mismo que contiene 15 Objetivos Estratégicos Institucionales (OEI) los cuales
+establecen los resultados que el Gobierno Regional La Libertad espera lograr en las
+condiciones de vida de la población y fortaleciendo los procesos internos de la entidad.
+Así mismo en dicho documento se establecen 73 Acciones Estratégicas Institucionales
+(AEI) que contribuyen a implementar la estrategia establecida por los OEI, las cuales se
+concretan en productos (bienes o servicios) que la entidad entrega a sus usuarios,
+tomando en cuenta sus competencias y funciones.
+Con RER N° 111-2023-GRLL/GOB, DE FECHA 20 de enero 2023, se aprueba el Plan
+Operativo Institucional (POI) Anual 2023 consistente con el Presupuesto Institucional de
+Apertura (PIA) 2023 del Gobierno Regional La Libertad, el cual ha sido registrado en el
+Aplicativo CEPLAN V1.
+El Gobierno Regional La Libertad al término del ejercicio 2023 en cuanto a la ejecución
+de su Plan Operativo Institucional (programación de actividades operativas e
+inversiones), logró una ejecución física del 86% con una ejecución financiera del 90.1%
+(se ejecutó un monto de 3,092,416,626 de soles del total del presupuesto institucional
+que fue de 3,431,923,313 soles); y en cuanto a inversiones tuvo una asignación
+presupuestal de 583,444,710 soles ejecutando al término del ejercicio 2023 un monto
+de 423,804,784 soles (72.6% de ejecución financiera).
+Síntesis del logro alcanzado en los Objetivos Estratégicos Institucionales
+A nivel de cumplimiento de objetivos (Resultados iniciales) de los 15 Objetivos
+Estratégicos Institucionales (OEI) establecidos en el PEI 2020-2026: 03 OEI lograron un
+nivel de resultado mayor o igual al 95% (Indica cumplimiento de los logros esperados o
+desempeño muy próximo al esperado). 03 OEI lograron un nivel de resultado entre 75%
+y menor a 95%, (Indica desvíos desfavorables moderados entre los valores obtenidos
+respecto a los logros esperados), 06 OEI lograron un nivel resultado menor a 75%
+(Indica cumplimiento bajo o incumplimiento de logros esperados) y los responsables de
+03 OEI no reportaron información.
+A nivel de cumplimiento de indicadores de objetivos; de los 26 indicadores establecidos
+en el Plan Estratégico Institucional - PEI 2020-2026, 08 indicadores lograron un nivel de
+Subgerencia de Planeamiento - GRLL 3
+
+=== PAGE 4 ===
+Informe de Evaluación Institucional del año 2023
+resultado mayor o igual al 95% (Indica cumplimiento de los logros esperados o
+desempeño muy próximo al esperado), 04 indicadores lograron un nivel de resultado
+entre 75% y menor a 95 %, (Indica desvíos desfavorables moderados entre los valores
+obtenidos respecto a los logros esperados), 08 indicadores lograron un nivel de avance
+menor a 75% (Indica cumplimiento bajo o incumplimiento de logros esperados) y los
+responsables de 06 indicadores no reportaron información.
+Síntesis de la situación de las Acciones Estratégicas Institucionales
+En cuanto a la implementación de las 73 Acciones Estratégicas Institucionales
+establecidas en el “Plan Estratégico Institucional(PEI) 2020-2026 ampliado del Gobierno
+Regional la Libertad”, 10 Acciones Estratégicas Institucionales lograron un nivel de
+avance en su implementación entre 75% y menor a 95%, (Indica desvíos desfavorables
+moderados entre los valores obtenidos respecto a los logros esperados) y 36 Acciones
+Estratégicas Institucionales lograron un nivel de avance en su implementación menor a
+75% (Indica cumplimiento bajo o incumplimiento de logros esperados). En dicho reporte,
+destacan por medio de su indicador con un nivel de avance en su implementación mayor
+o igual al 95%, 20 Acciones Estratégicas Institucionales (Indica cumplimiento de los
+logros esperados o desempeño muy próximo al esperado) y los responsables de 07 no
+alcanzaron la información.
+En relación al nivel de cumplimiento de Indicadores de Acciones Estratégicas
+Institucionales; de los 99 indicadores establecidos en el Plan Estratégico Institucional -
+PEI 2020-2026, 33 indicadores de AEI lograron un nivel de implementación mayor o
+igual al 95% (Indica cumplimiento de los logros esperados o desempeño muy próximo
+al esperado), 11 indicadores de AEI lograron un nivel de avance entre 75% y menor a
+95 %, (Indica desvíos desfavorables moderados entre los valores obtenidos respecto a
+los logros esperados), 41 indicadores de AEI lograron un nivel de avance menor a 75%
+(Indica cumplimiento bajo o incumplimiento de logros esperados) y los responsables de
+14 indicadores no reportaron información.
+Síntesis de las medidas preventivas y correctivas para mejorar el logro de resultado en
+los Objetivos Estratégicos Institucionales el siguiente período
+Mejorar o modificar algunos indicadores vigentes a fin que reflejen sus respectivos
+procesos, sin desnaturalizar la coherencia y consistencia respecto a la concepción y
+elaboración del indicador de acuerdo con la ruta estratégica del PEI.
+Revisar y mejorar la programación operativa (Plan Operativo Institucional) con las
+Unidades Orgánicas responsables para una mayor coherencia con los indicadores
+establecidos en el Plan Estratégico Institucional.
+Subgerencia de Planeamiento - GRLL 4
+
+=== PAGE 5 ===
+Informe de Evaluación Institucional del año 2023
+1. Prioridades de la política institucional
+En relación al Marco normativo
+El Plan Estratégico Institucional 2020-2026 ampliado, del Gobierno Regional La
+Libertad, es el documento de gestión estratégica de la Institución, elaborado en
+concordancia con el Plan de Desarrollo Regional Concertado de la Región La
+Libertad y la Guía para el Planeamiento Institucional del Centro Nacional de
+Planeamiento Estratégico – CEPLAN vigente.
+Base Legal Resumen
+Ley N° 28522-Ley del Sistema Creación del Sistema Nacional de Planeamiento Estratégico y el
+Nacional de Planeamiento Centro Nacional de Planeamiento Estratégico - CEPLAN, como
+Estratégico (CEPLAN) órgano rector, orientador y de coordinación de dicho sistema y como
+organismo técnico especializado adscrito a la Presidencia del
+Decreto Legislativo N° 1088 Consejo de Ministros.
+Artículo 71: Planes y presupuestos Institucionales, Plan estratégico
+Institucional y Plan Operativo
+71.1 Las entidades, para la elaboración de sus Planes Operativos
+Institucionales y presupuestos Institucionales, deben tomar en
+cuenta su Plan estratégico de Desarrollo Nacional (PEDN), los
+Planes Estratégicos Sectoriales Multianuales (PESEM), los Planes
+de Desarrollo Regional Concertados (PDRC) y los Planes de
+Desarrollo Local Concertados (PDLC), según sea el caso
+TUO de la Ley N° 28411, Ley
+General del Sistema Nacional
+71.2 El presupuesto Institucional se articula con el Plan Estratégico
+de Presupuesto. Decreto
+de la entidad, desde una perspectiva de mediano y largo plazo, a
+Supremo N° 304-2012-EF Art
+través de los Planes Operativos Institucionales, en aquellos
+71
+aspectos orientados a la asignación de los fondos públicos
+conducentes al cumplimiento de las metas y objetivos de la entidad,
+conforme a su escala de prioridades
+71.3 Los Planes Operativos Institucionales reflejan las Metas
+Presupuestales que se esperan alcanzar para cada año fiscal y
+constituyen instrumentos administrativos que contienen los
+procesos para desarrollar en el corto plazo, precisando las tareas
+necesarias para cumplir las Metas Presupuestarias establecidas
+para dicho período, así como la oportunidad de su ejecución, a nivel
+de cada dependencia orgánica
+Resolución de Presidencia de
+Consejo Directivo N° 0016- Aprobación de la Guía de Planeamiento Institucional
+2019-CEPLAN/PCD
+Subgerencia de Planeamiento - GRLL 5
+
+=== PAGE 6 ===
+Informe de Evaluación Institucional del año 2023
+En relación a la misión y descripción de prioridades de la política
+institucional del pliego
+1. Prioridades de la Política Institucional
+✓ Misión
+Promover el desarrollo integral, competitivo, sostenible, inclusivo e innovador de
+la Región La Libertad, mediante una gestión pública regional moderna,
+transparente, participativa y articuladora, proporcionando bienes y servicios de
+calidad a nuestra población para lograr su prosperidad.
+✓ Descripción de prioridades de la política institucional del pliego.
+Declaración de Política Institucional
+El Gobierno Regional La Libertad tiene como política institucional priorizar la
+atención en salud, y educación, además mejorar la infraestructura pública
+promoviendo una región competitiva e innovadora con diversificación productiva
+y sostenible, cuidando el medio ambiente, ofreciendo a la población servicios
+públicos de calidad.
+Objetivos de Política
+a) Mejorar el acceso, cobertura y calidad de los servicios esenciales de manera
+sostenible e inclusiva a la población liberteña.
+b) Promover el desarrollo y mejora de la competitividad, innovación,
+sostenibilidad, con empleo digno y productivo en los agentes económicos de
+La Libertad.
+c) Mejorar la calidad ambiental, la biodiversidad y la prevención de riesgos de
+desastres de la población liberteña.
+d) Fortalecer la gestión pública regional, implementando la política de
+modernización del estado a través de servidores públicos calificados,
+eficientes, con vocación de servicio y rostro humano, para la efectiva
+descentralización y la mejora de calidad de vida de la población.
+Lineamientos de política
+1. Reducir la prevalencia de desnutrición crónica y anemia infantil en los niños y
+niñas menores de 5 años de la región La Libertad.
+2. Mejorar los servicios de salud con eficiencia, integralidad y calidad para la
+población de la región La Libertad con énfasis en el primer nivel.
+3. Incrementar en la educación pública el acceso, permanencia y calidad en
+igualdad de condiciones y oportunidades de la población en edad escolar.
+Subgerencia de Planeamiento - GRLL 6
+
+=== PAGE 7 ===
+Informe de Evaluación Institucional del año 2023
+4. Incrementar el acceso a la educación pública en igualdad de condiciones de
+la población analfabeta.
+5. Lograr el licenciamiento y acreditación de los institutos superiores
+pedagógicos y tecnológicos.
+6. Promover el acceso a los programas de vivienda para las familias con déficit
+habitacional en la región La Libertad.
+7. Reducir los índices de vulnerabilidad, desigualdad y exclusión social de la
+población liberteña con enfoque de género, interculturalidad y discapacidad.
+8. Reducir los índices de desnutrición crónica infantil, anemia y TBC en la
+población vulnerable de la región La Libertad.
+9. Promover el acceso a los programas sociales de las poblaciones vulnerables
+de la región La Libertad.
+10. Promover el desarrollo del Agro en la Región la Libertad con valor agregado,
+acceso a mercados y énfasis en la zona.
+11. Promover servicios de transporte y la conectividad en telecomunicaciones,
+de manera sostenible y competitiva.
+12. Emprendimiento de los agentes económicos de los diversos sectores
+económicos para desarrollo productivo, productividad, innovación y transferencia
+tecnológica.
+13. Promover el empleo digno y productivo, con énfasis en la población
+vulnerable de La Libertad.
+14. Posicionar la Libertad y sus destinos turísticos, productos artesanales y oferta
+exportable a nivel nacional e internacional.
+15. Promover una infraestructura de calidad como soporte de la competitividad y
+de la prestación de servicio social en beneficio de la población de La Libertad.
+16. Fortalecer el sistema regional de gestión ambiental y conservar los
+ecosistemas proveedores de servicios en la región la libertad
+17. Reducir el impacto ambiental en las actividades minero energético en la
+Región La Libertad.
+18. Entidad moderna con servidores civiles con el perfil adecuado y calificado
+para una eficiente gestión pública.
+19. Garantizar la aplicación de políticas de seguridad ciudadana para la
+protección y bienestar de la población liberteña.
+20. Fortalecer una cultura de integridad y ética pública, en los servidores civiles
+del Gobierno Regional La Libertad.
+Subgerencia de Planeamiento - GRLL 7
+
+=== PAGE 8 ===
+Informe de Evaluación Institucional del año 2023
+✓ Descripción de la priorización realizada en el paso de delimitación del
+alcance de la evaluación
+Los objetivos priorizados para la realización de la Evaluación son los siguientes:
+Tabla 1 Objetivos Estratégicos Institucionales priorizados
+% de avance
+OEI Priorizado
+OEI
+OEI 01: Garantizar servicios de salud integral a la población de La
+79% Si
+Libertad
+OEI 05: Promover la competitividad del agro en la libertad 80% SI
+OEI 11: Mejorar la infraestructura en beneficio de la población de La
+51% Si
+Libertad
+Priorización de OEI por ruta estratégica: OEI 01
+Priorización de OEI con mayor número de AEI con ejecución física menor al 75%: OEI 05
+Priorización de OEI con avance bajo en la evaluación anual pasada: OEI 11
+Subgerencia de Planeamiento - GRLL 8
+
+=== PAGE 9 ===
+Informe de Evaluación Institucional del año 2023
+2. Análisis de resultados de los objetivos estratégicos
+institucionales (OEI)
+2.1. Valoración de los resultados alcanzados en el 2023
+Tabla 2 Objetivos Estratégicos Institucionales con indicadores y valor logrado
+Indicadores de Resultado
+Cod OEI Nombre del indicador Logro Valor
+% de
+esperado Obtenido
+cumplimiento
+2023 2023
+Porcentaje de Desnutrición crónica en
+12.8 15.9 80
+niños menores de 5 años
+Garantizar servicios de salud Porcentaje de anemia en menores de
+34.5 21.1 100
+OEI.01 integral a la población de La 36 meses
+Libertad
+Porcentaje de menores de 36 meses de
+edad con Enfermedades Infecciosas 17 64.4 26.39
+Respiratorias Agudas (IRA)
+Porcentaje de pequeños productores
+que aplican tecnología innovadora para 39 40 100
+la obtención de productos de calidad
+Promover la competitividad del
+OEI.05
+agro en La Libertad Número de hectáreas con plantación
+forestal con técnicas adecuadas y, de
+1,390 54.43 3.92
+aprovechamiento con documentos de
+gestión aprobados
+Mejorar la infraestructura en
+Porcentaje de infraestructura en
+OEI 11 beneficio de la población de La 86 80 93.02
+funcionamiento
+Libertad
+Fuente: Reporte de seguimiento PEI 2023
+Es preciso mencionar que la Gerencia Regional de Salud aplico suplemento de hierro y
+otros micronutrientes a un total de 488 niños superando la meta programada de 471
+niños. Esto fue útil porque al estar los niños mejor alimentados se logró disminuir la
+anemia en el grupo poblacional de niños menores a 36 meses.
+En el caso del OEI 5 el indicador relacionado con el porcentaje de pequeños productores
+que aplican tecnología innovadora para la obtención de productos de calidad, se cumplió
+con la meta establecida y tuvo como principales acciones brindar asistencia técnica a
+pequeños productores agrarios, los cuales son priorizados de acuerdo a la capacidad
+de atención de la entidad, básicamente por la disponibilidad de recursos presupuestales
+y la cantidad de personal técnico que se cuenta en cada una de las doce provincias. La
+asistencia técnica es de singular importancia, por cuanto se asiste a los productores en
+forma directa y práctica (aprender haciendo en sus propias parcelas) o se brinda
+asesoramiento a las organizaciones de productores, la cual se realiza mediante
+Escuelas de Campo (ECAs), que consiste en instalar parcelas de cultivos o módulos de
+Subgerencia de Planeamiento - GRLL 9
+
+=== PAGE 10 ===
+Informe de Evaluación Institucional del año 2023
+crianza de cuyes, donde los técnicos asisten a los productores en cuanto a diversos
+aspectos que se relacionan con el desarrollo de la actividad agraria (agrícola y pecuaria):
+en cultivos, tanto en la fase de siembra, desarrollo del cultivo y cosecha y, en crianzas
+(en cuyes) en las instalaciones y en el proceso de reproducción y crianza.
+En el caso del objetivo de la Gerencia Regional de Infraestructura, se tiene que
+considerar que a pesar que se logró el 93% de la meta a nivel de cumplimiento de
+actividades los niveles son inferiores, esto se debe a que el indicador como está
+planteado solo implica el conteo de obras algunas de las cuales solo faltan algunos
+saldos para liquidarlas y eso también se considera. Sin embargo, a nivel de ejecución
+de inversiones solo llego al 72%.
+2.2. Análisis de los logros alcanzados en cada OEI y el desempeño de sus
+AEI
+Tabla 3 Objetivo Estratégico Institucional 01: Garantizar servicios de salud
+integral a la población de La Libertad
+Programada Ejecutada % de
+Indicador
+2023 2023 avance
+Porcentaje de Desnutrición crónica en niños menores de 5 años 12.8 15.9 100
+Porcentaje de anemia en menores de 36 meses 34.5 21.1 61.16
+Porcentaje de menores de 36 meses de edad con Enfermedades
+17 64.4 100
+Infecciosas Respiratorias Agudas (IRA)
+De los tres indicadores mostrados en la tabla anterior el indicador porcentaje de anemia
+en menores de 36 meses tiene un nivel de avance del 61.6%. Los otros dos indicadores
+de este objetivo tienen u nivel de cumplimiento del 100%.
+Tabla 4 Acciones Estratégicas Institucionales relacionadas con el OEI 01
+Logro Esperado Valor Obtenido %
+Denominación
+2023 2023 de
+Anual Avance
+AEI.01.01 Promoción de la salud eficiente en beneficio de la población de la Región La Libertad.
+Porcentaje de familias con niñas y niños menores de 12 meses que
+60 56.8 94.67
+reciben consejería a través de visitas domiciliarias
+AEI.01.02 Atención integral de niños menores de 5 años de la región
+Porcentaje de niños de 4 y 5 meses con suplementación preventiva 65 83.4 100
+Porcentaje de niños menores de 36 meses con CRED completo 90 54 60
+Porcentaje de niños menores de 36 meses con vacuna completa 95 54.1 56.95
+Subgerencia de Planeamiento - GRLL 10
+
+=== PAGE 11 ===
+Informe de Evaluación Institucional del año 2023
+AEI.01.03 Atención en salud sexual y reproductiva accesible, oportuna y de calidad a las gestantes y mujeres en edad fértil
+de la región
+Número de muertes maternas 96 21 100
+Porcentaje de parto institucional 94 73 77.66
+Porcentaje de embarazo en Adolescente 12 9.9 100
+AEI.01.04 Atención de enfermedades no transmisibles integral y oportuna a la población de la región.
+Porcentaje de personas de 18 años a más con diagnóstico y tratamiento
+14 85.5 100
+de Diabetes e Hipertensión
+Porcentaje de personas tratadas con trastornos mentales y problemas
+psicosociales 70 107 100
+Número de casos de cáncer de cuello uterino 147 328 44.82
+AEI.01.05 Atención de las enfermedades transmisibles integral y oportuna a la población de la Región La Libertad
+Tasa de Incidencia de Tuberculosis Pulmonar Frotis Positivo (x100,000) 40 61.8 64.72
+Porcentaje de personas atendidas y diagnosticadas con enfermedades
+Metaxénicas 92 91 100
+Porcentaje de personas atendidas y diagnosticadas con enfermedades
+Zoonóticas 92 100 92
+AEI.01.06 Atención para la disminución de la mortalidad por emergencia y urgencias médicas oportuna a la población de la
+Región La Libertad
+Porcentaje de pacientes con atención pre hospitalaria realizada 100 100 100
+AEI.01.07 Atención ambulatoria general y hospitalaria oportuna y especializada a la población de la región La Libertad
+Porcentaje de usuarios atendidos en Consultorios Externos 54 66.3 100
+AEI.01.08 Vigilancia y control de riesgos y daños de la salud de forma integral a la población de la región La Libertad
+Porcentaje de Brotes infecciosos controlados 95 66 69.47
+De las ocho Acciones Estratégicas Institucionales el indicador Porcentaje de niños
+menores de 36 meses con vacuna completa de la AEI 02 tiene un porcentaje de avance
+de 56.95%.
+El indicador Número de casos de cáncer de cuello uterino de la AEI 03 tiene un
+porcentaje de avance del 44.82%.
+En el indicador Tasa de Incidencia de Tuberculosis Pulmonar Frotis Positivo (x100,000)
+de la AEI 01.05 tiene un porcentaje de avance 64.72%.
+En el indicador Porcentaje de Brotes infecciosos controlados de la AEI 01.08 tiene un
+porcentaje de avance del 69.47%.
+Subgerencia de Planeamiento - GRLL 11
+
+=== PAGE 12 ===
+Informe de Evaluación Institucional del año 2023
+Tabla 5 Objetivo Estratégico Institucional 05: Promover la competitividad del
+agro en La Libertad
+Programada Ejecutada % de
+Indicador
+2023 2023 avance
+Porcentaje de pequeños productores que aplican tecnología innovadora
+39 40 100
+para la obtención de productos de calidad
+Número de hectáreas con plantación forestal con técnicas adecuadas y, de
+1,390.00 54.43 3.92
+aprovechamiento con documentos de gestión aprobados
+El indicador que tiene un menor nivel de porcentaje de avance es Número de hectáreas
+con plantación forestal con técnicas adecuadas y, de aprovechamiento con documentos
+de gestión aprobados correspondiente al OEI 05 tuvo un porcentaje de avance del
+3.92%
+Tabla 6 Acciones Estratégicas Institucionales relacionadas con el OEI 05
+Logro Esperado Valor Obtenido %
+Denominación
+2023 2023 de
+Anual Avance
+AEI.05.01 Asistencia técnica integral y especializada a los productores agrarios de la Región La Libertad
+Porcentaje de productores agrarios que reciben asistencia técnica 97 103 100
+Número de Has con cultivos libre de patógenos en el ámbito del PECH 450 ND ND
+Porcentaje de organizaciones de productores bajo el enfoque de cadenas
+42 39 92.86
+productivas
+AEI.05.02 Servicio de información agraria adecuada a los pequeños y medianos productores agropecuarios de La Libertad
+Porcentaje de pequeños y medianos productores agropecuarios que utilizan
+18 47 100
+servicios de información agraria
+AEI.05.03 Recurso hídrico optimizado y sostenible para fines agropecuarios en la Región La Libertad
+500 41.8 8.36
+Número de hectáreas incorporadas bajo riego mejorado
+Número de hectáreas acondicionadas con infraestructura natural para la 2,500 5,332.18 100
+siembra de agua
+AEI.05.04 Titulación de predios rústicos y urbanos eficientes en la Región La Libertad
+Número de predios rústicos titulados en La Libertad 5,160 0 0
+A EI.05.05 Recurso hídrico sostenible para la población de las provincias de Trujillo, Virú y Ascope
+Número de M3 de agua trasvasada y distribuida a la población de las 625,700,000 669,109,973 100
+provincias de Trujillo, Virú y Ascope
+AEI.05.06 Transferencia predial rural adecuada de tierras de propiedad del PECH
+Número de Has. de tierras de propiedad del PECH transferidas 8,900 186 2.09
+Subgerencia de Planeamiento - GRLL 12
+
+=== PAGE 13 ===
+Informe de Evaluación Institucional del año 2023
+AEI.05.07 Asistencia técnica en la producción y establecimiento forestal con tecnología adecuada, en áreas
+degradadas de pequeños productores de la Región La Libertad
+Número de hectáreas forestadas y reforestadas técnicamente de pequeños 230 183.89 79.95
+productores
+AEI.05.08 Formalización de productores forestales y de fauna silvestre en La Libertad
+Número de productores forestales y de fauna silvestre formalizados 70 6 8.57
+AEI.05.09 Asistencia técnica adecuada y sostenida a productores forestales y manejadores de fauna silvestre de
+la región La Libertad
+Porcentaje de productores forestales y manejadores de fauna silvestre 97 47.81 49.29
+asistidos técnicamente
+En la tabla precedente en la tabla 6 se muestra el nivel de avance de los indicadores de
+la AEI y los que tiene niveles más bajos son Número de hectáreas incorporadas bajo
+riego mejorado con un avance del 8.36%, se tiene también el indicador Número de Has.
+de tierras de propiedad del PECH transferidas con 2.09% y el número de productores
+forestales y de fauna silvestre formalizados con 8.57%.
+Tabla 7 Objetivo Estratégico Institucional 11 Mejorar la infraestructura en
+beneficio de la población de La Libertad
+Logro Valores
+Denominación Avance Tipo I (%)
+Esperado Obtenidos
+2023 2023 Anual 2023 Anual
+Porcentaje de infraestructura en funcionamiento 86 80 93.02
+En la tabla precedente se muestra el indicador “Porcentaje de infraestructura en
+funcionamiento” correspondiente al OEI 11 y tiene un nivel de avance del 93.02%.
+Tabla 8 Acciones estratégicas Institucionales del OEI 11
+Logro Valor Avance
+Denominación Esperado Obtenido Tipo I
+2023 2023 (%)
+AEI.11.01 Obras culminadas oportunamente para la población de la región La Libertad.
+Número de Obras Culminadas oportunamente 22 21 95.45
+AEI.11.02 Infraestructura hidráulica, hidroenergética y de producción de agua potable sostenible en la región La
+Libertad
+Porcentaje de proyectos ejecutados de infraestructura hidráulica,
+87 0.98 1.13
+hidroenergética y de producción de agua potable
+AEI.11.03 Infraestructura pública con inversión privada de calidad para la población de la región La Libertad
+Número de proyectos ejecutados con participación de la inversión privada 7 8 100
+Subgerencia de Planeamiento - GRLL 13
+
+=== PAGE 14 ===
+Informe de Evaluación Institucional del año 2023
+En la tabla 8 se muestran los indicadores del OEI 11 que son tres y el que tiene un
+menor nivel de avance es Infraestructura hidráulica, hidroenergética y de producción de
+agua potable sostenible en la región La Libertad con 1.13%.
+3. Análisis de implementación de las acciones estratégicas institucionales
+(AEI)
+Esta sección inicia describiendo el nivel de avance en la implementación de todas
+las AEI, para luego profundizar el análisis en las AEI correspondientes a los OEI
+priorizados en el paso de delimitación del alcance de la evaluación u otras que se
+identifican luego de examinar su nivel de avance.
+3.1. Situación de las AEI durante el año 2023
+Logro Avance Tipo I
+Esperado Valor Obtenido (%)
+Código Denominación
+2023 2023
+2023
+Sem. Anual Sem. Anual
+OEI.01 GARANTIZAR SERVICIOS DE SALUD INTEGRAL A LA POBLACIÓN DE LA LIBERTAD 92.23
+PROMOCIÓN DE LA SALUD EFICIENTE EN BENEFICIO DE LA POBLACIÓN DE LA REGIÓN
+AEI.01.01 LA LIBERTAD. 94.67
+Porcentaje de familias con niñas y niños
+menores de 12 meses que reciben
+IND.01.AEI.01.01
+consejería a través de visitas
+domiciliarias 60 36.4 56.8 60.67 94.67
+AEI.01.02 ATENCIÓN INTEGRAL DE NIÑOS MENORES DE 5 AÑOS DE LA REGIÓN 66.78
+Porcentaje de niños de 4 y 5 meses con
+IND.01.AEI.01.02 suplementación preventiva 65 38.84 83.4 59.75 100
+Porcentaje de niños menores de 36
+IND.02.AEI.01.02 meses con CRED completo 90 26.4 54 29.33 60
+Porcentaje de niños menores de 36
+IND.03.AEI.01.02 meses con vacuna completa 95 21.9 54.1 23.05 56.95
+ATENCIÓN EN SALUD SEXUAL Y REPRODUCTIVA ACCESIBLE, OPORTUNA Y DE
+AEI.01.03 CALIDAD A LAS GESTANTES Y MUJERES EN EDAD FÉRTIL DE LA REGIÓN 92.55
+IND.01.AEI.01.03 Número de muertes maternas 96 7 21 100 100
+IND.02.AEI.01.03 Porcentaje de parto institucional 94 35.8 73 38.09 77.66
+IND.03.AEI.01.03 Porcentaje de embarazo en Adolescente 12 9.9 9.9 100 100
+ATENCIÓN DE ENFERMEDADES NO TRANSMISIBLES INTEGRAL Y OPORTUNA A LA
+AEI.01.04 POBLACIÓN DE LA REGIÓN. 86.2
+Porcentaje de personas de 18 años a
+más con diagnóstico y tratamiento de
+IND.01.AEI.01.04 Diabetes e Hipertensión 14 16.4 85.5 100 100
+Porcentaje de personas tratadas con
+trastornos mentales y problemas
+IND.02.AEI.01.04 psicosociales 70 73 107 100 100
+Número de casos de cáncer de cuello
+IND.03.AEI.01.04 uterino 147 ND 328 ND 44.82
+ATENCIÓN DE LAS ENFERMEDADES TRANSMISIBLES INTEGRAL Y OPORTUNA A LA
+AEI.01.05 POBLACIÓN DE LA REGIÓN LA LIBERTAD 89.18
+Tasa de Incidencia de Tuberculosis
+IND.01.AEI.01.05 Pulmonar Frotis Positivo (x100,000) 40 ND 61.8 ND 64.7249
+Porcentaje de personas atendidas y
+diagnosticadas con enfermedades
+IND.02.AEI.01.05 Metaxénicas 92 84.1 91 100 100
+Porcentaje de personas atendidas y
+diagnosticadas con enfermedades
+IND.03.AEI.01.05 Zoonóticas 92 60.8 100 100 92
+Subgerencia de Planeamiento - GRLL 14
+
+=== PAGE 15 ===
+Informe de Evaluación Institucional del año 2023
+ATENCIÓN PARA LA DISMINUCIÓN DE LA MORTALIDAD POR EMERGENCIA Y
+AEI.01.06 URGENCIAS MÉDICAS OPORTUNA A LA POBLACIÓN DE LA REGIÓN LA LIBERTAD 100
+Porcentaje de pacientes con atención pre
+IND.01.AEI.01.06 hospitalaria realizada 100 56.8 100 56.8 100
+ATENCIÓN AMBULATORIA GENERAL Y HOSPITALARIA OPORTUNA Y ESPECIALIZADA A
+AEI.01.07 LA POBLACIÓN DE LA REGIÓN LA LIBERTAD 100
+Porcentaje de usuarios atendidos en
+IND.01.AEI.01.07 Consultorios Externos 54 63.6 66.3 100 100
+VIGILANCIA Y CONTROL DE RIESGOS Y DAÑOS DE LA SALUD DE FORMA INTEGRAL A LA
+AEI.01.08 POBLACIÓN DE LA REGIÓN LA LIBERTAD 69.47
+Porcentaje de Brotes infecciosos
+IND.01.AEI.01.08 controlados 95 ND 66 ND 69.47
+MEJORAR EL SERVICIO EDUCATIVO DE CALIDAD PARA LA POBLACIÓN ESTUDIANTIL DE LA
+OEI.02 LIBERTAD ND
+MATERIALES EDUCATIVOS ENTREGADOS OPORTUNAMENTE A INSTITUCIONES EDUCATIVAS
+AEI.02.01 PÚBLICAS DE EDUCACIÓN BÁSICA REGULAR DE LA REGIÓN LA LIBERTAD ND
+Porcentaje de instituciones educativas
+públicas que recibieron material educativo
+para institución completo, en buen estado y
+IND.01.AEI.02.01 de manera oportuna 96 ND ND ND ND
+ACOMPAÑAMIENTO PEDAGÓGICO DE MANERA OPORTUNA A LOS ESTUDIANTES DE
+AEI.02.02 EDUCACIÓN BÁSICA REGULAR DE INSTITUCIONES EDUCATIVAS PÚBLICAS DE LA REGIÓN 23.33
+Porcentaje de población estudiantil de 3 a 5
+años que reciben acompañamiento
+IND.01.AEI.02.02 pedagógico oportuno en Educación Inicial 97 70 ND 72.16 ND
+Porcentaje de población estudiantil de 6 a 11
+años que reciben acompañamiento
+IND.02.AEI.02.02 pedagógico oportuno en Educación Primaria 100 ND 70 ND 70
+Porcentaje de población estudiantil de 12 a
+16 años que reciben acompañamiento
+pedagógico oportuno en educación
+IND.03.AEI.02.02 secundaria 93 70 ND 75.27 ND
+PREVENCIÓN DE CONSUMO DE DROGAS EN LAS INSTITUCIONES EDUCATIVAS DE LA REGIÓN
+AEI.02.03 LA LIBERTAD 25
+Porcentaje de Instituciones educativas con
+IND.01.AEI.02.03 prevención en consumo de drogas 40 ND 10 ND 25
+ACCESO Y SERVICIO EN EDUCACIÓN BÁSICA REGULAR Y TÉCNICO PRODUCTIVA DE MANERA
+AEI.02.04 OPORTUNA A LAS PERSONAS CON DISCAPACIDAD ND
+Porcentaje de niños y jóvenes con
+discapacidad leve o moderada que acceden
+IND.01.AEI.02.04 a educación básica especial. 40 ND ND ND ND
+FORMACIÓN INTEGRAL EN INSTITUCIONES DE EDUCACIÓN SUPERIOR NO UNIVERSITARIA Y
+AEI.02.05 TÉCNICO PRODUCTIVO DE LA REGIÓN LA LIBERTAD ND
+Porcentaje de estudiantes con nivel de logro
+esperado en la Evaluación de Aprendizajes
+IND.01.AEI.02.05 al egreso. 76 ND ND ND ND
+Porcentaje de Programas de estudios
+Acreditados en Institutos Pedagógicos y
+IND.02.AEI.02.05 Tecnológicos 25 0 ND 0 ND
+Numero de Institutos Pedagógicos y
+IND.03.AEI.02.05 Tecnológicos Licenciados 3 0 ND 0 ND
+Fuente: Aplicativo Ceplan
+Subgerencia de Planeamiento - GRLL 15
+
+=== PAGE 16 ===
+Informe de Evaluación Institucional del año 2023
+MEJORAR EL ACCESO; COBERTURA Y CALIDAD DE LOS SERVICIOS BÁSICOS DE MANERA
+OEI.03 SOSTENIBLE EN LA LIBERTAD 100
+ASISTENCIA TÉCNICA EN AGUA Y SANEAMIENTO INTEGRAL A LOS GOBIERNOS LOCALES
+AEI.03.01 DE LA REGIÓN LA LIBERTAD 100
+Porcentaje de Gobiernos Locales
+asistidos técnicamente en agua y
+IND.01.AEI.03.01 saneamiento 56 61.44 62.65 100 100
+AEI.03.02 PRODUCCIÓN DE AGUA POTABLE DE ALTA CALIDAD PARA LA EPS SEDALIB 96.91
+Número de M3 de agua potable de
+calidad, producida por el PECH a la EPS
+IND.01.AEI.03.02 – SEDALIB 31,500,000.00 15,146,892.00 30,525,157.00 48.09 96.91
+ASISTENCIA TÉCNICA EN PROGRAMAS DE VIVIENDA SOCIAL, ADECUADA, PARA LA
+AEI.03.03 POBLACIÓN DE LA REGIÓN LA LIBERTAD 71.04
+Porcentaje de familias que acceden a
+IND.01.AEI.03.03 programas de vivienda social 71 34 50.44 47.89 71.04
+PROMOVER EL ACCESO Y COBERTURA INTEGRAL DE LOS SERVICIOS SOCIALES A LA
+OEI.04 POBLACIÓN DE LA REGIÓN LA LIBERTAD ND
+IMPLEMENTACIÓN DE LAS INSTANCIAS DE ARTICULACIÓN EN DESARROLLO E INCLUSIÓN
+AEI.04.01 SOCIAL A NIVEL REGIONAL 14.29
+Número de instancias de articulación
+para el desarrollo e inclusión social
+IND.01.AEI.04.01 implementadas 7 1 1 14.29 14.29
+ASISTENCIA TÉCNICA INTEGRAL EN MATERIA DE DESARROLLO E INCLUSIÓN SOCIAL A
+AEI.04.02 GOBIERNOS LOCALES PRIORIZADOS DE LA REGIÓN LA LIBERTAD 35.71
+Porcentaje de gobiernos locales que
+recibieron asistencia técnica a en
+IND.01.AEI.04.02 desarrollo e inclusión social 70 5 25 7.14 35.71
+ATENCIÓN OPORTUNA E INTEGRAL A LA NIÑEZ CON DESPROTECCIÓN FAMILIAR EN LA
+AEI.04.03 ALDEA INFANTIL SANTA ROSA 100
+Porcentaje de niñez con desprotección
+familiar atendidos en la Aldea Infantil
+IND.01.AEI.04.03 Santa Rosa 100 100 100 100 100
+Fuente: Aplicativo Ceplan
+Subgerencia de Planeamiento - GRLL 16
+
+=== PAGE 17 ===
+Informe de Evaluación Institucional del año 2023
+OEI.05 PROMOVER LA COMPETITIVIDAD DEL AGRO EN LA LIBERTAD (Prioridad:5) 35.94
+ASISTENCIA TÉCNICA INTEGRAL Y ESPECIALIZADA A LOS PRODUCTORES AGRARIOS DE LA
+AEI.05.01 REGIÓN LA LIBERTAD 73.22
+Porcentaje de productores agrarios que
+IND.01.AEI.05.01 reciben asistencia técnica 97 100 103 100 100
+Número de Has con cultivos libre de
+IND.02.AEI.05.01 patógenos en el ámbito del PECH 450 110 ND 24.44 ND
+Porcentaje de organizaciones de
+productores bajo el enfoque de cadenas
+IND.03.AEI.05.01 productivas 42 35 39 83.33 92.86
+SERVICIO DE INFORMACIÓN AGRARIA ADECUADA A LOS PEQUEÑOS Y MEDIANOS
+AEI.05.02 PRODUCTORES AGROPECUARIOS DE LA LIBERTAD 100
+Porcentaje de pequeños y medianos
+productores agropecuarios que utilizan
+IND.01.AEI.05.02 servicios de información agraria 18 18 47 100 100
+RECURSO HÍDRICO OPTIMIZADO Y SOSTENIBLE PARA FINES AGROPECUARIOS EN LA REGIÓN
+AEI.05.03 LA LIBERTAD 38.9
+Número de hectáreas incorporadas bajo
+IND.01.AEI.05.03 riego mejorado 500 41.8 41.8 8.36 8.36
+Número de hectáreas acondicionadas con
+infraestructura natural para la siembra de
+IND.02.AEI.05.03 agua 2,500.00 4,248.61 5,332.18 100 100
+AEI.05.04 TITULACIÓN DE PREDIOS RÚSTICOS Y URBANOS EFICIENTES EN LA REGIÓN LA LIBERTAD 0
+Número de predios rústicos titulados en La
+IND.01.AEI.05.04 Libertad 5,160.00 0 0 0 0
+RECURSO HÍDRICO SOSTENIBLE PARA LA POBLACIÓN DE LAS PROVINCIAS DE TRUJILLO,
+AEI.05.05 VIRÚ Y ASCOPE 100
+Número de M3 de agua trasvasada y
+distribuida a la población de las provincias
+IND.01.AEI.05.05 de Trujillo, Virú y Ascope 625,700,000.00 338,875,055.00 669,109,973.00 54.16 100
+AEI.05.06 TRANSFERENCIA PREDIAL RURAL ADECUADA DE TIERRAS DE PROPIEDAD DEL PECH 2.09
+Número de Has. de tierras de propiedad del
+IND.01.AEI.05.06 PECH transferidas 8,900.00 7 186 0.08 2.09
+ASISTENCIA TÉCNICA EN LA PRODUCCIÓN Y ESTABLECIMIENTO FORESTAL CON
+TECNOLOGÍA ADECUADA, EN ÁREAS DEGRADADAS DE PEQUEÑOS PRODUCTORES DE LA
+AEI.05.07 REGIÓN LA LIBERTAD 79.95
+Número de hectáreas forestadas y
+reforestadas técnicamente de pequeños
+IND.01.AEI.05.07 productores 230 5.71 183.89 2.48 79.95
+AEI.05.08 FORMALIZACIÓN DE PRODUCTORES FORESTALES Y DE FAUNA SILVESTRE EN LA LIBERTAD 8.57
+Número de productores forestales y de
+IND.01.AEI.05.08 fauna silvestre formalizados 70 0 6 0 8.57
+ASISTENCIA TÉCNICA ADECUADA Y SOSTENIDA A PRODUCTORES FORESTALES Y
+AEI.05.09 MANEJADORES DE FAUNA SILVESTRE DE LA REGIÓN LA LIBERTAD 49.29
+Porcentaje de productores forestales y
+manejadores de fauna silvestre asistidos
+IND.01.AEI.05.09 técnicamente 97 10 47.81 10.31 49.29
+Fuente: Aplicativo Ceplan
+ASEGURAR EL ACCESO INTEGRAL Y DE CALIDAD A LOS SERVICIOS PÚBLICOS DE
+OEI.06 TRANSPORTE Y TELECOMUNICACIONES EN LA LIBERTAD 98.3
+Subgerencia de Planeamiento - GRLL 17
+
+=== PAGE 18 ===
+Informe de Evaluación Institucional del año 2023
+FISCALIZACIÓN DEL TRANSPORTE TERRESTRE CON INTERVENCIÓN EFECTIVA EN LA REGIÓN
+AEI.06.01 LA LIBERTAD 99.33
+Porcentaje de vehículos de transporte
+terrestre que cumplen el Reglamento
+IND.01.AEI.06.01 Nacional de Transporte 99.8 99.42 99.13 99.62 99.33
+SISTEMA DE TRANSPORTE CON APOYO INTEGRAL EN LA REDUCCIÓN DEL COSTO, TIEMPO E
+AEI.06.02 INSEGURIDAD VIAL EN LA REGIÓN 28.84
+Numero total de empresas autorizadas para
+el servicio de transporte terrestre de
+IND.01.AEI.06.02 personas y mercancías 11,950.00 329 334 2.75 2.79
+IND.02.AEI.06.02 Número de licencias de conducir emitidas 66,400.00 23,237.00 36,436.00 35 54.87
+CONECTIVIDAD DE ESTACIONES DE RADIO Y TELEVISIÓN EN ZONAS RURALES DE LA REGIÓN
+AEI.06.03 LA LIBERTAD 87.69
+Porcentaje de estaciones de radio y
+IND.01.AEI.06.03 televisión rural con conectividad 95.5 81.3 83.74 85.13 87.69
+SENSIBILIZACIÓN EN TELECOMUNICACIONES CON ÉNFASIS EN LAS RADIACIONES NO
+IONIZANTES (RNI) A OPERADORES Y USUARIOS DE SERVICIOS PÚBLICOS DE
+AEI.06.04 TELECOMUNICACIONES. 65.41
+Número de personas sensibilizadas en
+IND.01.AEI.06.04 radiaciones no Ionizantes (RNI) 1,223,000.00 250,000.00 800,000.00 20.44 65.41
+CONTROL DE LA SEÑAL RADIOELÉCTRICA INTEGRAL A ESTACIONES RADIALES DE LA REGIÓN
+AEI.06.05 LA LIBERTAD 73.33
+Número de controles de la señal
+IND.01.AEI.06.05 radioeléctrica a estaciones radiales 180 67 132 37.22 73.33
+AEI.06.06 PROMOCIÓN DE LA SEGURIDAD VIAL ADECUADA A LA POBLACIÓN DE LA REGIÓN LA LIBERTAD 95.34
+Porcentaje de personas sensibilizadas en
+IND.01.AEI.06.06 materia de seguridad vial 4.72 1.31 4.5 27.75 95.34
+FORTALECER LA PRODUCTIVIDAD E INNOVACIÓN DE LOS AGENTES ECONÓMICOS EN LA
+OEI.07 LIBERTAD ND
+AEI.07.01 FISCALIZACIÓN DE AGENTES ECONÓMICOS QUE OPERAN EN LA REGIÓN LA LIBERTAD ND
+Porcentaje de fiscalización de los agentes
+IND.01.AEI.07.01 económicos que operan en la Libertad 45 4 ND 8.89 ND
+FORTALECIMIENTO DEL ECOSISTEMA DE INNOVACIÓN, DESARROLLO E INVESTIGACIÓN EN LA
+AEI.07.02 REGIÓN LA LIBERTAD ND
+Porcentaje de personas fortalecidas en
+IND.01.AEI.07.02 innovación 50 5 ND 10 ND
+ASISTENCIA TÉCNICA INTEGRAL Y ESPECIALIZADA A LOS AGENTES ECONÓMICOS EN LA
+AEI.07.03 REGIÓN LA LIBERTAD ND
+Porcentaje de asistencia técnica integral y
+IND.01.AEI.07.03 especializada a los agentes económicos 65 12 ND 18.46 ND
+Fuente: Aplicativo Ceplan
+Subgerencia de Planeamiento - GRLL 18
+
+=== PAGE 19 ===
+Informe de Evaluación Institucional del año 2023
+OEI.08 PROMOVER EL EMPLEO DIGNO Y PRODUCTIVO EN LA LIBERTAD 85.16
+ASISTENCIA TÉCNICA EN NORMATIVIDAD LABORAL A EMPLEADORES Y TRABAJADORES DE
+AEI.08.01 LA REGIÓN LA LIBERTAD 100
+Número de personas orientadas y con
+IND.01.AEI.08.01 asistencia técnica en materia laboral 290 7,398.00 14,796.00 100 100
+FISCALIZACIÓN EN NORMATIVIDAD LABORAL A EMPLEADORES Y TRABAJADORES DE LA
+AEI.08.02 REGIÓN LA LIBERTAD 0
+Número promedio de actuaciones
+IND.01.AEI.08.02 inspectivas de fiscalización por inspector 210 ND 0 ND 0
+ASISTENCIA TÉCNICA EN FORMALIZACIÓN LABORAL CON ARTICULACIÓN MULTISECTORIAL
+AEI.08.03 A LA POBLACIÓN EN LA REGIÓN LA LIBERTAD. 52
+Número de personas asistidas en
+IND.01.AEI.08.03 formalización laboral 2,500.00 ND 1,300.00 ND 52
+ASISTENCIA TÉCNICA EN BÚSQUEDA DE EMPLEO OPORTUNA A LA POBLACIÓN DE LA
+AEI.08.04 REGIÓN LA LIBERTAD 63.1
+Número de personas asistidas en
+IND.01.AEI.08.04 búsqueda del empleo 8,400.00 1,520.00 5,300.00 18.1 63.1
+PROMOVER LOS DESTINOS TURÍSTICOS Y LA PRODUCCIÓN REGIONAL AL MERCADO
+OEI.09 INTERNO Y EXTERNO 60
+PROMOCIÓN DE PRODUCTOS EXPORTABLES, INSERTADOS EN LA CADENA EXPORTADORA,
+AEI.09.01 DE LA REGIÓN LA LIBERTAD 100
+Porcentaje de perfiles de producto o
+IND.01.AEI.09.01 estudios de mercado desarrollados. 40 0 40 0 100
+Porcentaje de organizaciones articuladas
+IND.02.AEI.09.01 a la cadena productiva agroexportadora 35 12 35 34.29 100
+PROMOCIÓN DE LA OFERTA TURÍSTICA COMPETITIVA Y SOSTENIBLE EN LA REGIÓN LA
+AEI.09.02 LIBERTAD 52.68
+Porcentaje de empresas de servicios
+IND.01.AEI.09.02 49 16 21 32.65 42.86
+turísticos clasificados y/o categorizados
+Porcentaje de recursos turísticos
+IND.02.AEI.09.02 inventariados con servicios turísticos 8 1 5 12.5 62.5
+adecuados
+PROMOCIÓN DE LÍNEAS DE PRODUCTOS ARTESANALES COMPETITIVOS EN LA REGIÓN LA
+AEI.09.03 LIBERTAD 40
+Porcentaje de artesanos incorporados en
+IND.03.AEI.09.03 el Registro Nacional de Artesanos (RNA) 5 1 2 20 40
+PROMOVER ACTIVIDADES ECONÓMICAS EN MINERÍA, ENERGÍA E HIDROCARBUROS
+OEI.10 SOSTENIBLES EN LA REGIÓN LA LIBERTAD (Prioridad:12) 21.74
+FORMALIZACIÓN ADECUADA DE LOS PRODUCTORES MINEROS DE LA REGIÓN LA
+AEI.10.01 LIBERTAD. 30
+Número de productores mineros
+IND.01.AEI.10.01 formalizados 50 9 15 18 30
+CERTIFICACIÓN AMBIENTAL OPORTUNA A LOS PROYECTOS ENERGÉTICOS DE LA REGIÓN
+AEI.10.02 LA LIBERTAD. 41.67
+Número de certificaciones ambientales
+IND.01.AEI.10.02 emitidas, para proyectos energéticos 24 0 10 0 41.67
+CERTIFICACIÓN AMBIENTAL OPORTUNA, A LAS INVERSIONES EN HIDROCARBUROS, EN LA
+AEI.10.03 REGIÓN LA LIBERTAD 34.48
+Número de certificaciones ambientales
+emitidas, para inversiones en
+IND.01.AEI.10.03 hidrocarburos 29 0 10 0 34.48
+AEI.10.04 SUMINISTRO DE ENERGÍA ELÉCTRICA RENOVABLE EN LA PROVINCIA DE VIRÚ 72.2
+Número de Mwh de energía eléctrica
+renovable generada y suministrada por el
+IND.01.AEI.10.04 PECH 54,000.00 18,188.00 38,987.00 33.68 72.2
+Fuente: Aplicativo Ceplan
+OEI.11 MEJORAR LA INFRAESTRUCTURA EN BENEFICIO DE LA POBLACIÓN DE LA LIBERTAD 93.02
+Subgerencia de Planeamiento - GRLL 19
+
+=== PAGE 20 ===
+Informe de Evaluación Institucional del año 2023
+AEI.11.01 OBRAS CULMINADAS OPORTUNAMENTE PARA LA POBLACIÓN DE LA REGIÓN LA LIBERTAD. 95.45
+IND.01.AEI.11.01 Número de Obras Culminadas oportunamente 22 9 21 40.91 95.45
+INFRAESTRUCTURA HIDRÁULICA, HIDROENERGÉTICA Y DE PRODUCCIÓN DE AGUA POTABLE
+AEI.11.02 SOSTENIBLE EN LA REGIÓN LA LIBERTAD 1.13
+Porcentaje de proyectos ejecutados de
+infraestructura hidráulica, hidroenergética y de
+IND.01.AEI.11.02 producción de agua potable 87 0.33 0.98 0.38 1.13
+INFRAESTRUCTURA PÚBLICA CON INVERSIÓN PRIVADA DE CALIDAD PARA LA POBLACIÓN DE
+AEI.11.03 LA REGIÓN LA LIBERTAD 100
+Número de proyectos ejecutados con
+IND.01.AEI.11.03 participación de la inversión privada 7 0 8 0 100
+PROMOVER LA CONSERVACION Y EL APROVECHAMIENTO SOSTENIBLE DE LOS RECURSOS
+OEI.12 NATURALES EN LA LIBERTAD 96.05
+ASISTENCIA TÉCNICA PARA LA CONSERVACIÓN Y USO SOSTENIBLE DE LA BIODIVERSIDAD EN
+AEI.12.01 LA REGIÓN LA LIBERTAD 100
+Número de asistencias técnicas para
+conservación y uso sostenible de la
+IND.01.AEI.12.01 biodiversidad 8 6 10 75 100
+AEI.12.02 ESTUDIOS DE IMPACTO AMBIENTAL, EN EDIFICACIONES Y SANEAMIENTO 100
+Número de estudios de impacto ambiental en
+IND.01.AEI.12.02 edificaciones y saneamiento 5 3 6 60 100
+AEI.12.03 GESTIÓN DE RECURSOS HÍDRICOS INTEGRADA EN LAS CUENCAS DE LA REGIÓN LA LIBERTAD 34.72
+Porcentaje de Cuencas que cuenten con
+IND.01.AEI.12.03 Gestión Integrada de Recursos Hídricos 72 25 25 34.72 34.72
+AEI.12.04 ORDENAMIENTO TERRITORIAL AMBIENTAL ADECUADO EN LA REGIÓN LA LIBERTAD 20
+Numero de estudios para el ordenamiento
+IND.01.AEI.12.04 territorial ambiental aprobados 5 0 1 0 20
+PROMOCIÓN DE LA EDUCACIÓN AMBIENTAL EN INSTITUCIONES EDUCATIVAS Y
+AEI.12.05 ORGANIZACIONES DE LA REGIÓN LA LIBERTAD 74.29
+Número de instituciones educativas y
+organizaciones con promoción de la
+IND.01.AEI.12.05 educación ambiental 35 11 26 31.43 74.29
+SISTEMA REGIONAL DE GESTIÓN AMBIENTAL FORTALECIDO E IMPLEMENTADO EN LA REGIÓN
+AEI.12.06 LA LIBERTAD 55.13
+Porcentaje de las intervenciones ejecutadas
+IND.01.AEI.12.06 por la Comisión Ambiental Regional - CAR 78 25 43 32.05 55.13
+VIGILANCIA Y CONTROL DEL USO DE LOS RECURSOS NATURALES OPORTUNO EN LA REGIÓN
+AEI.12.07 LA LIBERTAD 75
+Número de intervenciones de vigilancia y
+IND.01.AEI.12.07 control del uso de recursos naturales 12 5 9 41.67 75
+MANEJO INTEGRADO Y SOSTENIBLE DE LOS RECURSOS AGUA Y SUELO EN LA REGIÓN LA
+AEI.12.08 LIBERTAD 100
+Número de Ha agrícolas con distribución de
+agua optimizada y con suelos degradados
+IND.01.AEI.12.08 recuperados en el ámbito del PECH 153 8,699.00 16,954.00 100 100
+ASISTENCIA TÉCNICA PARA LA REFORESTACIÓN Y FORESTACIÓN INTEGRAL EN LA REGIÓN LA
+AEI.12.09 LIBERTAD 14.47
+Número de Hectáreas de superficie forestada
+en la cuenca proveedora de agua al sistema
+IND.01.AEI.12.09 hidráulico Chavimochic 475 122 ND 25.68 ND
+Número de Asistencias Técnicas en
+reforestación y forestación para asegurar la
+IND.02.AEI.12.09 provisión de servicios ecosistémicos 53 12 23 22.64 43.4
+ORGANIZACIÓN Y SANEAMIENTO DE LOS ÁMBITOS POLÍTICO ADMINISTRATIVO ADECUADO EN
+AEI.12.10 EL DEPARTAMENTO DE LA LIBERTAD 69.4
+Porcentaje de límites político administrativo
+IND.01.AEI.12.10 saneados en el Departamento de La Libertad 54 54.44 56.73 100 100
+N° de Centros Poblados categorizados y/o
+IND.02.AEI.12.10 recategorizados 428 8 35 1.87 8.18
+Fuente: Aplicativo Ceplan
+Subgerencia de Planeamiento - GRLL 20
+
+=== PAGE 21 ===
+Informe de Evaluación Institucional del año 2023
+OEI.13 PROMOVER LA GESTIÓN DE RIESGO DE DESASTRES EN LA LIBERTAD 71
+DIFUSIÓN Y ASISTENCIA TÉCNICA EN GESTIÓN DEL RIESGOS DE DESASTRES INTEGRAL, EN LA REGIÓN
+AEI.13.01 LA LIBERTAD 100
+Porcentaje de centros de operaciones de
+emergencia de Gobiernos Provinciales en
+IND.01.AEI.13.01 funcionamiento 94 100 100 100 100
+Porcentaje de planes de contingencia de los
+IND.02.AEI.13.01 Gobiernos Provinciales elaborados 65 40 80 61.54 100
+Porcentaje de Gobiernos Provinciales que
+IND.03.AEI.13.01 implementan el programa presupuestal 068 88 50 100 56.82 100
+FORTALECIMIENTO DE CAPACIDADES EN PRÁCTICAS SEGURAS PARA LA RESILIENCIA OPORTUNA A LA
+AEI.13.02 POBLACIÓN DE LA REGIÓN LA LIBERTAD 34.09
+Porcentaje de líderes comunitarios capacitados
+IND.01.AEI.13.02 en prácticas seguras para la resiliencia 88 15 30 17.05 34.09
+PREPARACIÓN Y RESPUESTA FRENTE A EMERGENCIAS Y DESASTRES OPORTUNA EN LA REGIÓN LA
+AEI.13.03 LIBERTAD 100
+Proporción de intervenciones que contribuyen
+IND.01.AEI.13.03 con la capacidad instalada 100 50 100 50 100
+PROTECCIÓN DE LA SALUD INDIVIDUAL Y COLECTIVA CON VIGILANCIA ADECUADA DE LOS RIESGOS Y
+AEI.13.04 DAÑOS PARA LA POBLACIÓN VULNERABLE DE LA REGIÓN LA LIBERTAD 100
+Porcentaje de EESS evaluados con índice de
+IND.01.AEI.13.04 seguridad hospitalaria - ISH 88 100 100 100 100
+CAPACIDADES EN GESTIÓN DE RIESGOS DE DESASTRES FORTALECIDAS Y OPORTUNAS EN LAS II.EE
+AEI.13.05 PÚBLICAS DE LA REGIÓN LA LIBERTAD ND
+Número de personal directivo y docente,
+capacitado en gestión de riesgos de las IIEE
+IND.01.AEI.13.05 públicas 1,600.00 200 ND 12.5 ND
+OEI.14 FORTALECER LA GESTIÓN INSTITUCIONAL 20
+IMPLEMENTACIÓN DEL PROCESO DE ATENCIÓN DE INFORMACIÓN OPORTUNA Y ACTUALIZADA EN EL
+AEI.14.01 GOBIERNO REGIONAL LA LIBERTAD 71.43
+Porcentaje de la población adulta que se
+encuentra informada sobre el accionar del
+IND.01.AEI.14.01 Gobierno Regional 70 60 50 85.71 71.43
+AEI.14.02 INSTRUMENTOS DE GESTIÓN ACTUALIZADOS EN BENEFICIO DE LA ADMINISTRACIÓN REGIONAL 83.78
+Número de documentos de gestión de
+planeamiento formulados, actualizados y
+IND.01.AEI.14.02 evaluados 4 3 4 75 100
+Porcentaje de Instrumentos de Gestión
+Organizacional actualizados e implementados
+IND.02.AEI.14.02 en el Gobierno Regional La Libertad 100 55 65 55 65
+IND.03.AEI.14.02 Numero de modificaciones presupuestales 40 17 45 100 88.89
+AEI.14.03 GESTIÓN ADMINISTRATIVA EFICIENTE DEL GOBIERNO REGIONAL LA LIBERTAD 89.83
+IND.01.AEI.14.03 Porcentaje de ejecución presupuestal 95 49 90 51.58 94.74
+Porcentaje de procesos judiciales favorables a
+IND.02.AEI.14.03 la región La Libertad 25 6 20 24 80
+AEI.14.04 CAPACIDADES FORTALECIDAS A LOS SERVIDORES CIVILES DEL GOBIERNO REGIONAL LA LIBERTAD 100
+Número de servidores administrativos
+IND.01.AEI.14.04 capacitados 950 708 1,347.00 74.53 100
+AEI.14.05 TRANSFORMACIÓN DIGITAL INTEGRAL EN EL GOBIERNO REGIONAL LA LIBERTAD 80
+Porcentaje de Implementación de Actividades
+y/o Proyectos del Plan de Gobierno Digital del
+IND.01.AEI.14.05 GRLL 50 25 40 50 80
+COOPERACIÓN TÉCNICA INTERNACIONAL CON GESTIÓN INTEGRAL EN EL GOBIERNO REGIONAL LA
+AEI.14.06 LIBERTAD 50
+Número de convenios suscritos con las fuentes
+IND.01.AEI.14.06 cooperantes 4 0 2 0 50
+FORTALECER OPORTUNAMENTE A LAS INSTITUCIONES COMPROMETIDAS CON LA SEGURIDAD
+OEI.15 CIUDADANA EN LA REGIÓN LA LIBERTAD 61.43
+ASISTENCIA TÉCNICA A GOBIERNOS LOCALES Y ORGANIZACIONES SOCIALES EN SEGURIDAD
+AEI.15.01 CIUDADANA EN LOS DISTRITOS DE LA REGIÓN LA LIBERTAD 28.92
+Número de asistencias técnicas a gobiernos
+locales y organizaciones sociales en seguridad
+IND.01.AEI.15.01 ciudadana 83 10 24 12.05 28.92
+Fuente: Aplicativo Ceplan
+Subgerencia de Planeamiento - GRLL 21
+
+=== PAGE 22 ===
+Informe de Evaluación Institucional del año 2023
+Considerando los indicadores de las Acciones Estratégicas Institucionales el nivel de
+implementación o avance el nivel de implementación o avance fue el siguiente:
+Ejecución de indicadores de AEI
+Rango de Ejecución Numero de Indicadores % Participación
+[0%-75%> 41 48.24%
+[75%-95%> 11 12.94%
+≥95% 33 38.82%
+Total 85 100.00%
+Fuente Aplicativo Ceplan
+De otro lado, de los noventa y nueve (99) indicadores de las setenta y tres (73) acciones
+estratégicas, 14 no reportaron información, treinta y tres (33) muestran cumplimiento de
+los logros esperados o desempeño muy próximo al esperado (>=95%), once (11) que
+indica desvíos desfavorables moderados entre los valores obtenidos respecto a los
+logros esperados ([75%-95%>), cuarenta y un indicadores (41) indica cumplimiento bajo
+o incumplimiento de logros esperados ([0%-75%>).
+3.2. Análisis de implementación de las AEI en OEI priorizados
+% de
+Código Denominación
+avance
+OEI.01 GARANTIZAR SERVICIOS DE SALUD INTEGRAL A LA POBLACIÓN DE LA LIBERTAD 92.23
+AEI.01.01 Promoción de la salud eficiente en beneficio de la población de la Región La Libertad.
+94.67
+AEI.01.02 Atención integral de niños menores de 5 años de la región
+66.78
+Atención en salud sexual y reproductiva accesible, oportuna y de calidad a las gestantes y
+AEI.01.03
+mujeres en edad fértil de la región 92.55
+AEI.01.04 Atención de enfermedades no transmisibles integral y oportuna a la población de la región.
+86.2
+Atención de las enfermedades transmisibles integral y oportuna a la población de la Región
+AEI.01.05
+La Libertad
+89.18
+Atención para la disminución de la mortalidad por emergencia y urgencias médicas oportuna
+AEI.01.06
+a la población de la Región La Libertad
+100
+Atención ambulatoria general y hospitalaria oportuna y especializada a la población de la
+AEI.01.07
+Región La Libertad
+100
+Vigilancia y control de riesgos y daños de la salud de forma integral a la población de la
+AEI.01.08
+Región La Libertad 69.47
+Fuente: Aplicativo Ceplan
+Subgerencia de Planeamiento - GRLL 22
+
+=== PAGE 23 ===
+Informe de Evaluación Institucional del año 2023
+Código Denominación % de
+avance
+OEI.05 PROMOVER LA COMPETITIVIDAD DEL AGRO EN LA LIBERTAD 35.94
+Asistencia técnica integral y especializada a los productores agrarios de la Región La
+AEI.05.01 Libertad 73.22
+Servicio de información agraria adecuada a los pequeños y medianos productores
+AEI.05.02 agropecuarios de La Libertad 100
+AEI.05.03 Recurso hídrico optimizado y sostenible para fines agropecuarios en la Región La Libertad 38.9
+AEI.05.04 Titulación de predios rústicos y urbanos eficientes en la Región La Libertad 0
+AEI.05.05 Recurso hídrico sostenible para la población de las provincias de Trujillo, Virú y Ascope 100
+AEI.05.06 Transferencia predial rural adecuada de tierras de propiedad del PECH 2.09
+Asistencia técnica en la producción y establecimiento forestal con tecnología adecuada, en
+AEI.05.07 áreas degradadas de pequeños productores de la región La Libertad 79.95
+AEI.05.08 formalización de productores forestales y de fauna silvestre en La Libertad 8.57
+Asistencia técnica adecuada y sostenida a productores forestales y manejadores de fauna
+AEI.05.09 49.29
+silvestre de la región La Libertad
+Fuente: Aplicativo Ceplan
+Código Denominación % de
+avance
+MEJORAR LA INFRAESTRUCTURA EN BENEFICIO DE LA POBLACIÓN DE LA
+OEI.11 LIBERTAD 93.02
+AEI.11.01 Obras culminadas oportunamente para la población de la Región La Libertad. 95.45
+Infraestructura hidráulica, hidroenergética y de producción de agua potable sostenible en la
+AEI.11.02 1.13
+Región La Libertad
+Infraestructura pública con inversión privada de calidad para la población de la Región La
+AEI.11.03 100
+Libertad
+Fuente: Aplicativo Ceplan
+Numero de %
+Rango de Ejecución
+AEI participación
+[0%-75%> 9 45.00%
+[75%-95%> 4 20.00%
+≥95% 7 35.00%
+Total 20 100.00%
+De las veinte (20) Acciones Estratégicas priorizadas siete (07) acciones estratégicas,
+muestran cumplimiento de los logros esperados o desempeño muy próximo al esperado
+(>=95%), cuatro (04) indica desvíos desfavorables moderados entre los valores
+obtenidos respecto a los logros esperados ([75%-95%>) y nueve (09) muestran
+cumplimiento bajo o incumplimiento de logros esperados ([0%-75%>).
+Subgerencia de Planeamiento - GRLL 23
+
+=== PAGE 24 ===
+Informe de Evaluación Institucional del año 2023
+35.00%
+45.00%
+20.00%
+[0%-75%> [75%-95%> ≥95%
+Elaboración Propia
+3.3. Análisis de los productos de la AEI
+Los productos relacionados con la Acción Estratégica Institucional 001 del Objetivo 1
+son los siguientes:
+• Familia con prácticas saludables para la prevención de enfermedades
+metaxénicas y zoonóticas
+• Viviendas protegidas de los principales condicionantes del riesgo en las áreas
+de alto y muy alto riesgo de enfermedades metaxénicas y zoonosis
+• Familias saludables con conocimiento de la prevención del cáncer de cuello
+uterino, mama, estomago, próstata, pulmón colon, recto, hígado, leucemia,
+linfoma, piel y otros
+• Familias saludables con conocimientos para el cuidado infantil, lactancia
+materna exclusiva y la adecuada alimentación y protección del menor de 36
+meses
+• Familias con conocimientos de prácticas saludables para prevenir los
+trastornos mentales y problemas psicosociales
+• Familias saludables informadas respecto de su salud sexual y reproductiva
+• Personas con discapacidad reciben servicios de rehabilitación basada en la
+comunidad
+• Familia en zonas de riesgo informada que realizan prácticas higiénicas
+sanitarias para prevenir las enfermedades no transmisibles (mental, bucal,
+ocular, metales pesados, hipertensión arterial y diabetes mellitus)
+Subgerencia de Planeamiento - GRLL 24
+
+=== PAGE 25 ===
+Informe de Evaluación Institucional del año 2023
+Los productos relacionados con la Acción Estratégica Institucional 002 del Objetivo 1
+son los siguientes
+• Niños con vacuna completa
+• Niños con CRED completo según edad
+• Atención enfermedades diarreicas agudas e infecciones respiratorias agudas
+con complicaciones
+• Servicios de cuidado diurno acceden a control de calidad nutricional de los
+alimentos
+• Niños y niñas con atención de la anemia por deficiencia de hierro
+• Atención de otras enfermedades prevalentes
+• Atención de niños y niñas con parasitosis intestinal
+• Servicios de cuidado diurno acceden a control de calidad nutricional de los
+alimentos
+Los productos relacionados con la Acción Estratégica Institucional 003 del Objetivo 1
+son los siguientes
+• Población accede a servicios de consejería en salud sexual y reproductiva
+• Población accede a métodos de planificación familiar
+• Atención de la gestante con complicaciones
+• Adolescentes acceden a servicios de salud para prevención del embarazo
+• Atención prenatal reenfocada
+• Población accede a métodos de planificación familiar
+• Adolescentes con atención preventiva de anemia y otras deficiencias
+nutricionales
+• Atención del parto complicado no quirúrgico
+• Atención del parto normal
+• Atención del puerperio
+• Atención del puerperio con complicaciones
+• Acceso al sistema de referencia institucional
+• Atención del recién nacido normal
+Los productos relacionados con la Acción Estratégica Institucional 04 del Objetivo 1 son
+los siguientes
+• Atención estomatológica preventiva
+• Atención estomatológica recuperativa
+• Tamizaje y diagnóstico de pacientes con errores refractivos
+Subgerencia de Planeamiento - GRLL 25
+
+=== PAGE 26 ===
+Informe de Evaluación Institucional del año 2023
+• Tamizaje y tratamiento de pacientes afectados por metales pesados
+• Atención estomatológica especializada
+• Tratamiento y control de personas con diabetes
+• Tamizaje y diagnóstico de pacientes con errores refractivos
+• Tratamiento y control de personas con hipertensión arterial
+• Valoración clínica y tamizaje laboratorial de enfermedades crónicas no
+transmisibles
+• Atención estomatológica recuperativa
+• Tratamiento y control de personas con diabetes
+Los productos relacionados con la Acción Estratégica Institucional 05 del Objetivo 1 son
+los siguientes
+• Diagnóstico y tratamiento de enfermedades metaxénicas
+• Pobladores de áreas con riesgo de transmisión informada conoce los
+mecanismos de transmisión de enfermedades metaxénicas y zoonóticas
+• Diagnóstico y tratamiento de enfermedades metaxénicas
+• Vacunación de animales domésticos
+• Diagnóstico y tratamiento de enfermedades metaxénicas
+• Diagnóstico y tratamiento de casos de enfermedades zoonóticas
+Los productos relacionados con la Acción Estratégica Institucional 06 del Objetivo 1 son
+los siguientes
+• Atención medica telefónica de la emergencia y urgencia en centro regulador
+• Despacho de la unidad móvil y coordinación de la referencia
+• Atención prehospitalaria móvil de la emergencia y urgencia individual y masiva
+• Transporte asistido de la emergencia y urgencia individual
+• Adquisición de ambulancia rural, ambulancia rural y ambulancia urbana; en
+veintiséis establecimientos de salud I.4, establecimientos de salud
+• Adquisición de ambulancia urbana, ambulancia urbana y ambulancia rural; en
+ocho establecimientos de salud III.1, establecimientos de salud II
+Los productos relacionados con la Acción Estratégica Institucional 07 del Objetivo 1 son
+los siguientes
+• Construcción de laboratorio; adquisición de esterilizador con generador eléctrico
+de vapor, cabina PCR y cabina de bioseguridad blindada
+• Adquisición de tomógrafo computarizado multicorte; construcción de ambiente
+complementario; en el(la) EESS regional docente de Trujillo
+Subgerencia de Planeamiento - GRLL 26
+
+=== PAGE 27 ===
+Informe de Evaluación Institucional del año 2023
+• Adquisición de congeladora, congeladora, congeladora y congeladora; además
+de otros activos en dieciocho establecimientos de salud II.1
+• Adquisición de refrigeradora, congeladora, congeladora y refrigeradora; además
+de otros activos en veintisiete establecimientos de salud I.4,
+• Remodelación de laboratorio; adquisición de analizador bioquímico
+automatizado, analizador de gases y electrolitos y centrifuga para tubos; además
+de otros activos en el(la) EESS de apoyo leoncio prado - Huamachuco distrito
+de Huamachuco, Provincia Sánchez Carrión, Departamento La Libertad
+• Remodelación de lavandería; adquisición de lavadora secadora automática,
+planchadora de sabanas y lavadora secadora automática
+En el caso del Objetivo 05 los productos de la Acción estratégico 05.01 son los
+siguientes
+El producto que entrega la entidad es un servicio que consiste en brindar asistencia
+técnica a pequeños productores agrarios, los cuales son priorizados de acuerdo a la
+capacidad de atención de la entidad, básicamente por la disponibilidad de recursos
+presupuestales y la cantidad de personal técnico que se cuenta en cada una de las doce
+provincias. La asistencia técnica es de singular importancia, por cuanto se asiste a los
+productores en forma directa y práctica (aprender haciendo en sus propias parcelas) o
+se brinda asesoramiento a las organizaciones de productores.
+En el caso de la Acción estratégico 05.02 el producto es la intervención institucional con
+esta AEI, viene a ser un servicio que consiste en brindar información a los productores
+agrarios (principalmente a pequeños y medianos productores) acerca de diversos
+aspectos que se relacionan con el desarrollo de la actividad agraria, tanto en la fase de
+siembra de cultivos, fase de desarrollo del cultivo o crianza, fase de cosecha y la fase
+de colocación del producto en el mercado.
+En la AEI 05.03 el producto es “Número de hectáreas incorporadas bajo riego mejorado”,
+también es un bien que se entrega a pequeños productores de la sierra, el cual consiste
+en entregar un módulo básico de riego mejorado ya sea para cultivos agrícolas o para
+pastos cultivados, y son instalados en donde se ha construido reservorios con
+inversiones en los años anteriores.
+El segundo producto es “hectáreas acondicionadas con infraestructura natural para la
+siembra de agua” el bien que se entrega es hectáreas forestadas con especies de pino
+(en zona de jalca), lo cual constituye una infraestructura natural para la siembra de agua,
+siendo los beneficiarios pequeños productores de provincias de la sierra. Es importante
+Subgerencia de Planeamiento - GRLL 27
+
+=== PAGE 28 ===
+Informe de Evaluación Institucional del año 2023
+señalar que este producto es un complemento al componente de inversión “construcción
+de qochas”, la cual constituye una infraestructura para captar y sembrar (recarga de
+acuíferos) agua de lluvia.
+En la AEI 05.05 el producto es recurso hídrico sostenible para la población de las
+provincias de Trujillo, Virú y Ascope. Este producto, lo brinda de manera exclusiva el
+Proyecto Especial Chavimochic, toda vez que el transvase de las aguas del rio Santa,
+la conducción, distribución y suministro de agua cruda para fines de riego, poblacionales
+y energéticos, los realiza el PECH mediante su Infraestructura Hidráulica mayor
+coberturando a las demandas hídricas de los valles e intervalles de Chao, Viru y Moche.
+En la AEI 05.06 el producto es transferencia predial rural adecuada de tierras de
+propiedad del PECH y es ofrecido también por la Gerencia de Adjudicación de Terrenos
+y el PECH lo realiza solo en los valles e intervales de chao, Viru, moche y Chicama.
+En el caso de la AEI 07 el producto es un servicio que consiste en generar el interés en
+los productores en cuanto a forestación, específicamente, brindándoles conocimientos
+prácticos en cuanto a la elección del terreno, la tecnología de plantación según la
+especie forestal y de establecimiento en campo definitivo, lo cual se complementa con
+el seguimiento y reforzamiento según la necesidad que se presente en cada área. Para
+ello, se produce los plantones en viveros institucionales y una vez que han alcanzado el
+tamaño adecuado son entregados a los productores priorizados quienes se encargan
+de realizar el hoyado y la plantación respectiva, y estas áreas se constituyen en macizos
+forestales. La población objetivo son pequeños productores que pertenecen a 4
+asociaciones, una comunidad, un grupo a nivel de sector y 4 productores individuales.
+En la AEI 05.8 el producto es servicio que se brinda a los productores y se materializa
+mediante el otorgamiento de un documento “contrato” que se circunscribe en el marco
+de la Ley N° 29763, Ley Forestal y de Fauna Silvestre. Es importante precisar, que el
+resultado que se obtenga está condicionado a la demanda de los productores, quienes
+radican en las zonas rurales y en algunos tienen poca valoración de la importancia de
+la formalización.
+En la AEI 05.9 el producto consiste en el servicio de asistencia técnica que se brinda a
+pequeños productores forestales, los cuales son priorizados de acuerdo al presupuesto
+y el personal técnico con la que cuenta la entidad, es decir, no participan otras UE.
+En el caso del Objetivo 11 la AEI 11.01 concretiza a través del siguiente producto Obras
+Culminadas Oportunamente para la Población de la Región la Libertad. Para la
+producción del producto en mención participan la Sub Gerencia de Obras y Supervisión,
+la Sub Gerencia de Liquidaciones y la Sub Gerencia de Caminos. Se programaron en
+el ejercicio 2023 un total de 22 obras y se lograron 21 obras culminadas.
+Subgerencia de Planeamiento - GRLL 28
+
+=== PAGE 29 ===
+Informe de Evaluación Institucional del año 2023
+Para el caso de la AEI 11.03 el producto identificado es la ejecución de los proyectos de
+inversión siendo los más relevantes los que se ejecutan por las modalidades de Obras
+por Impuestos y de Proyectos en Activos. Los proyectos alcanzaron un adecuado nivel
+de ejecución física del 76.89% anual y una ejecución financiera de S/ 6,197,031.53.
+Los sectores económicos donde se produjo el impacto con la ejecución de los proyectos
+de inversión, fueron agricultura, agroindustria, turismo y salud. Siendo los beneficiarios
+la población del área de influencia de los proyectos a través de la generación de mano
+de obra directa e indirecta y la creación de emprendimientos de la micro y pequeña
+empresa.
+3.4. Análisis de la ejecución operativa en las AEI críticas
+Las AEI criticas según los resultados obtenidos del seguimiento son las siguientes:
+% de
+Código Denominación
+avance
+AEI.01.02 Atención integral de niños menores de 5 años de la región 66.78
+Vigilancia y control de riesgos y daños de la salud de forma integral a la población de la
+AEI.01.08 69.47
+Región La Libertad
+% de
+Código Denominación
+avance
+Asistencia técnica integral y especializada a los productores agrarios de la Región La
+AEI.05.01 73.22
+Libertad
+AEI.05.03 Recurso hídrico optimizado y sostenible para fines agropecuarios en la Región La Libertad 38.9
+AEI.05.04 Titulación de predios rústicos y urbanos eficientes en la Región La Libertad 0
+AEI.05.06 Transferencia predial rural adecuada de tierras de propiedad del PECH 2.09
+AEI.05.08 Formalización de productores forestales y de fauna silvestre en La Libertad 8.57
+Asistencia técnica adecuada y sostenida a productores forestales y manejadores de fauna
+AEI.05.09 49.29
+silvestre de la región La Libertad
+% de
+Código Denominación
+avance
+Infraestructura hidráulica, hidroenergética y de producción de agua potable sostenible en la
+AEI.11.02 1.13
+Región La Libertad
+Subgerencia de Planeamiento - GRLL 29
+
+=== PAGE 30 ===
+Informe de Evaluación Institucional del año 2023
+✓ Análisis de ejecución operativas en las AEI críticas
+En la AEI.01.02 Atención integral de niños menores de 5 años de la región, la ejecución
+de actividades operativas críticas (ejecución menor al 75%) se puede apreciar en el
+siguiente cuadro
+% de
+Actividad Operativa ejecución
+física
+VACUNACION NIÑO < 1 AÑO 64.47%
+NEUMONIA Y ENFERMEDAD MUY GRAVE EN NIÑOS DE 2 MESES A 4
+AÑOS 25.00%
+ATENCION EDA CON ALGUN GRADO DE DESHIDRATACION 0.00%
+ATENCION EDA CON DESHIDRATACION GRAVE SIN Y CON SHOCK 0.00%
+NEUMONIA SIN COMPLICACIONES Y OTROS 40.00%
+EDA DISENTERICA 0.00%
+EDA PERSISTENTE 72.15%
+INFECCIONES RESPIRATORIAS AGUDAS CON COMPLICACIONES 12.50%
+NEUMONIA GRAVE O ENFERMEDAD MUY GRAVE EN NIÑOS MENORES
+DE 2 MESES 0.00%
+SOB/ASMA 40.00%
+PARASITOSIS INTESTINAL 19.34%
+SUPERVISION DEL PROGRAMA ARTICULADO NUTRICIONAL 25.00%
+EVALUACION DEL PROGRAMA ARTICULADO NUTRICIONAL 50.00%
+VACUNACION NIÑO = 1 AÑOS 60.74%
+VACUNACION NIÑO = 4 AÑOS 64.39%
+VACUNACION NIÑO RECIEN NACIDO 67.14%
+VACUNACION NIÑO = 2 AÑOS 45.86%
+NIÑOS MENORES DE 36 MESES CON CONTROLES CRED COMPLETO
+55.94%
+PARA SU EDAD
+Información corresponde a UE GR de Salud
+Se observa que cuatro actividades operativas programadas no se ejecutaron lo cual no
+permitió la implementación adecuada de la Acción Estratégica a través del logro
+esperado de sus indicadores.
+En la AEI.01.08 Vigilancia y control de riesgos y daños de la salud de forma integral a
+la población de la Región La Libertad, la ejecución de actividades operativas críticas
+(ejecución menor al 75%) se puede apreciar en el siguiente cuadro
+Subgerencia de Planeamiento - GRLL 30
+
+=== PAGE 31 ===
+Informe de Evaluación Institucional del año 2023
+% de
+Actividad Operativa ejecución
+física
+FISCALIZACIÓN A ENTIDADES PÚBLICAS Y PRIVADAS EN GESTIÓN DE CALIDAD
+37.50%
+DEL AGUA PARA CONSUMO HUMANO
+FISCALIZACIÓN DE PISCINAS PÚBLICAS Y PRIVADAS DE USO COLECTIVO. 74.00%
+INSPECCIÓN DE LA PROMOCIÓN Y PUBLICIDAD DE MEDICAMENTOS A LOS
+67.50%
+TITULARES DE REGISTRO SANITARIO.
+SUPERVISIÓN DE LAS FASES DE LA CADENA DE SUMINISTRO DE
+70.00%
+MEDICAMENTOS ESTUPEFACIENTES PSICOTROPICOS Y PRECURSORES
+INSPECCION DE VERIFICACION DE REGISTRO Y SUMINISTRO DE
+INFORMACION AL SISTEMA NACIONAL DE INFORMACION DE PRECIOS POR 51.25%
+ESTABLECIMIENTOS FARMACEUTICOS
+FISCALIZACIÓN A EESS Y SMA SOBRE LA GESTIÓN Y MANEJO DE RESIDUOS
+72.86%
+SÓLIDOS.
+Información corresponde a UE GR de Salud
+Se observa que dos de las actividades operativas mas importantes para el logro
+esperado de los indicadores de esta acción estratégica alcanzaron al termino del año
+baja ejecución física: Fiscalización a entidades públicas y privadas en gestión de calidad
+del agua para consumo humano (37.5%) y inspección de verificación de registro y
+suministro de información al sistema nacional de información de precios por
+establecimientos farmacéuticos (51.25%)
+AEI.05.01 Asistencia técnica integral y especializada a los productores agrarios de la
+Región La Libertad:
+En esta AEI el producto que entrega la entidad es un servicio que consiste en brindar
+asistencia técnica a pequeños productores agrarios, los cuales son priorizados de
+acuerdo a la capacidad de atención de la entidad, básicamente por la disponibilidad de
+recursos presupuestales y la cantidad de personal técnico que se cuenta en cada una
+de las doce provincias. La asistencia técnica es de singular importancia, por cuanto se
+asiste a los productores en forma directa y práctica (aprender haciendo en sus propias
+parcelas) o se brinda asesoramiento a las organizaciones de productores. En el primer
+aspecto, relacionado a tecnología “Ind. 01 AEI 05.01”, la cual se realiza mediante
+Escuelas de Campo (ECAs), que consiste en instalar parcelas de cultivos o módulos de
+crianza de cuyes, donde los técnicos asisten a los productores en cuanto a diversos
+aspectos que se relacionan con el desarrollo de la actividad agraria (agrícola y pecuaria):
+en cultivos, tanto en la fase de siembra, desarrollo del cultivo y cosecha y, en crianzas
+(en cuyes) en las instalaciones y en el proceso de reproducción y crianza. En el segundo
+“Ind. 03 AEI 05.02”, a las organizaciones de productores priorizadas, se les brinda un
+Subgerencia de Planeamiento - GRLL 31
+
+=== PAGE 32 ===
+Informe de Evaluación Institucional del año 2023
+asesoramiento periódico en lo relacionado a los diversos mecanismos de articulación
+en forma asociada al mercado, como: producir un producto de acuerdo a la calidad y
+cantidad que demanda el mercado, el comprador y desde luego el consumidor;
+concretar acuerdos o compromisos con los agentes de la cadena productiva que puede
+ser para la compra de insumos, contratación de servicios, obtener créditos o, la venta
+del producto.
+La producción del producto es una labor exclusiva de la Gerencia Regional de
+Agricultura, la misma que está a cargo de profesionales y técnicos que forman parte de
+las Agencias Agrarias; quienes establecen los criterios de priorización y la población
+objetivo; de una parte, el tipo de cultivo o crianza, la localización de la parcela o el
+módulo de crianza y el número de sesiones que se realizarán en el periodo del año
+fiscal; y de otra parte, la constitución de la organización y su funcionamiento y, los
+aspectos en qué consistirá el asesoramiento técnico.
+Para concretar la obtención del producto, en el POI 2023 de las más relevantes se tiene
+programado dos AO: “Prestación de asistencia técnica y capacitación para la adopción
+de tecnologías a pequeños productores” y “Articulación comercial al mercado a
+organizaciones de pequeños productores agropecuarios”. En la primera AO La
+ejecución física anual es 100 %, lo cual indica que se ha cumplido con desarrollar las
+sesiones de asistencia técnica tanto en cultivos como en crianzas con todos los grupos
+de productores priorizados, y en la segunda AO también la ejecución física es 100 %,
+es decir, se ha brindado el asesoramiento técnico en aspectos organizaciones a todas
+las organizaciones programadas en el semestre. De acuerdo a ello, se ha logrado la
+cobertura a la población objetivo y desde luego es un aspecto relevante en la calidad
+del producto de la AEI.
+En cuanto a los niveles de implementación de la AEI, de acuerdo a los resultados se
+evidencia que la asistencia técnica y capacitación se ha concretado mediante el
+desarrollo de las sesiones programadas y, el asesoramiento a las organizaciones
+también se ha cumplido sin descuidar que su materialización se logra mediante acciones
+comprendidas en un proceso dinámico y continuo.
+En la AEI.05.03 Recurso hídrico optimizado y sostenible para fines agropecuarios
+en la Región La Libertad:
+En el primer producto se tiene una inversión “Mejoramiento del servicio de agua a nivel
+parcelario con un sistema de riego tecnificado en el ámbito de 5 distritos de la provincia
+de Otuzco - departamento de La Libertad CUI 2535487” (iniciado en 2022), habiéndose
+instalado en un área de 41.8 ha el cual beneficia a 35 productores (de los distritos de
+Subgerencia de Planeamiento - GRLL 32
+
+=== PAGE 33 ===
+Informe de Evaluación Institucional del año 2023
+Salpo y Usquil), siendo el avance en la AO el 100% de lo programado en el año; sin
+embargo con respecto al logro esperado es 8.36, debido a que el año 2023 se ha tomado
+la decisión de asignar menor presupuesto. En el primer producto si bien la cobertura es
+menor a la proyectada, debido a la menor cantidad de presupuesto asignada a la
+inversión; lo cual, a su vez implica, un menor nivel de contribución en la implementación
+de la AEI. Sin embargo, al tratarse de la introducción de un sistema de riego mejorado,
+la calidad de producto es alta, en tanto va incidir en forma significativa en la
+productividad y producción agropecuaria de los productores beneficiarios. En el
+segundo producto, las inversiones son proyectos que consisten en la construcción de
+qochas y en forestación, siendo la forestación la que se relaciona con el indicador
+“número de hectáreas acondicionadas con infraestructura natural para la siembra de
+agua”. Las inversiones son las siguientes: CUI N° 2487950 “Recuperación de los
+servicios ecosistémicos de regulación hídrica y control de erosión de suelos en las
+microcuencas del río Tablachaca en el ámbito de 4 distritos de la provincia de Santiago
+de Chuco - departamento de La Libertad”. Se ha reforestado 2,109.18 ha. de las 3,000
+ha programadas, siendo el avance físico 70.31 %. Beneficiarios 1,500 comuneros (al
+final del proyecto).
+CUI N° 2512007 “Recuperación de los servicios ecosistémicos de regulación hídrica y
+control de erosión de suelos de las microcuencas de los ríos Huamanzaña y Virú en el
+ámbito de las provincias de Virú, Santiago de Chuco y Julcán del departamento de La
+Libertad”. Se ha reforestado 1,628 ha de las 1,426 ha programadas, lo cual representa
+un avance de 114.2 %. Beneficiarios 4,264 productores (al final del proyecto). CUI N°
+2467826 “Recuperación de los servicios ecosistémicos de regulación hídrica y control
+de erosión de suelos en las microcuencas del río Chicama en el ámbito de sus 4
+provincias (Santiago de Chuco, Otuzco, Gran Chimú y Ascope) del departamento de La
+Libertad”. Se ha reforestado 495 ha de las 970 ha programadas. Beneficiarios 2,500
+productores (al final del proyecto).
+CUI N° 2513381 “Recuperación de los servicios ecosistémicos de regulación hídrica y
+control de erosión de suelos en la cuenca del río moche en el ámbito de sus 4 provincias
+(Otuzco, Santiago de Chuco, Trujillo y Julcán) del departamento de La Libertad”. Se ha
+reforestado 1,100 ha de las 1,100 ha programadas lo que representa un avance de 100
+%. Beneficiarios 2,400 productores (al final del proyecto).
+El nivel de ejecución física alcanzado es aceptable, en tanto se ha realizado la
+plantación de la totalidad de plantones de pino producidos en vivero y que han
+alcanzado el tamaño ideal para instalarse en campo definitivo. Lo ejecutado en el año
+Subgerencia de Planeamiento - GRLL 33
+
+=== PAGE 34 ===
+Informe de Evaluación Institucional del año 2023
+representa un avance de 82.1 % de la meta total a alcanzar con las cuatro inversiones,
+haciendo notar que la irregularidad de las precipitaciones ha incidido en la planificación
+y realización de la plantación. Además, en vivero se cuenta con plantones que se
+sembrarán en campo definitivo en el año 2024.
+El avance en la producción de producto son 5,332.18 ha de forestación con pino, la cual
+en la medida que paulatinamente se incremente su crecimiento (altura) y desarrollo
+(masa foliar) se constituirá en un área con infraestructura natural para la siembra de
+agua proveniente de las precipitaciones.
+En la AEI 05.6 Transferencia predial rural adecuada de tierras de propiedad del PECH:
+Las Actividades Operativas identificadas más relevantes para concretizar la AEI donde
+se aprecia un 100% de nivel de cumplimiento respecto lo programado, lo cual evidencia
+una programación inadecuada del indicador de esta Acción Estratégica, por cuanto a
+este nivel se obtuvo el 2.09% de implementación.
+En la AEI 05.8 Formalización de productores forestales y de fauna silvestre en La
+Libertad:
+En esta AEI el producto registrado en el PEI es un servicio que se brinda a los
+productores y se materializa mediante el otorgamiento de un documento “contrato” que
+se circunscribe en el marco de la Ley N° 29763, Ley Forestal y de Fauna Silvestre. Es
+importante precisar, que el resultado que se obtenga está condicionado a la demanda
+de los productores, quienes radican en las zonas rurales y en algunos tienen poca
+valoración de la importancia de la formalización. En la producción del producto
+solamente participa la Gerencia Regional de Agricultura. Las AO para concretizar la AEI
+la más relevantes son “Expedición y otorgamiento de autorizaciones de productos
+diferentes a la madera” y “Expedición y otorgamiento de permiso de aprovechamiento
+forestal en plantaciones del estado”. El proceso de ejecución de las AO la solicitud de
+los usuarios (productores), ante lo cual la entidad analiza y emite el contrato o la
+autorización correspondiente. En cuanto al nivel de ejecución física alcanzado en la
+primera el avance físico es 85.75% (con relación a lo programado en el año) y en la
+Subgerencia de Planeamiento - GRLL 34
+
+=== PAGE 35 ===
+Informe de Evaluación Institucional del año 2023
+segunda no se tiene avance físico por cuanto no se ha tenido solicitudes de los
+productores. El nivel de contribución requerido a la implementación de la AEI, no es el
+esperado, siendo la causa principal el hecho de estar condicionado a la demanda de los
+productores
+En la AEI 05.9: Asistencia técnica adecuada y sostenida a productores forestales y
+manejadores de fauna silvestre de la región La Libertad
+El producto en esta AEI consiste en el servicio de asistencia técnica que se brinda a
+pequeños productores forestales, los cuales son priorizados de acuerdo al presupuesto
+y el personal técnico con la que cuenta la entidad, es decir, no participan otras UE. Para
+su implementación, la AO más relevante es “Promoción del manejo de productos
+forestales maderables y no maderables a través de parcelas demostrativas”, mediante
+la cual se brinda la asistencia técnica en parcelas de propiedad de los productores. Las
+parcelas pueden consistir en la plantación desde el proceso de elección de terreno, los
+criterios técnicos para el hoyado y la distancia, entre otros) y el manejo para su
+establecimiento definitivo (las técnicas de mantenimiento) o, también se elige parcelas
+instaladas, en las cuales se va demostrando en forma práctica la tecnología a aplicar en
+las labores técnicas: según la edad, etapa de producción o lo relacionado a podas de
+limpieza y formación. Con la AO, en el año se ha brindado asistencia técnica a 149
+productores, el que representa el 59.60 % de lo programado, los cuales han mostrado
+interés en participar en las diferentes sesiones luego de la etapa previa de motivación y
+convocatoria. Específicamente, en manejo de productos forestales maderables
+(eucalipto, pino) y no maderables: en establecimiento y en producción, asesoramiento
+en cultivo-manejo-cosecha de tara, aprovechamiento de diversos productos forestales.
+La cobertura y el logro de la UE con relación al producto es menor a lo esperado, debido
+al grado de participación de los productores priorizados en la ejecución de la actividad
+que demanda la asistencia continua a todas las sesiones que se desarrollan en las
+parcelas demostrativas; por lo que esto incide en el nivel de contribución requerido para
+la implementación de la AEI.
+En la AEI.11.02 Infraestructura hidráulica, hidroenergética y de producción de agua
+potable sostenible en la Región La Libertad:
+En relación con las actividades operativas que están incluidas en esta AEI se puede
+apreciar importantes avances en la ejecución física de los productos, que son proyectos
+de inversión ejecutados en el 2023, según se indica a continuación:
+Subgerencia de Planeamiento - GRLL 35
+
+=== PAGE 36 ===
+Informe de Evaluación Institucional del año 2023
+Se evidencia una programación inadecuada del indicador de esta Acción Estratégica,
+por cuanto a este nivel se obtuvo el 1.13% de implementación.
+3.5. Aplicación de las recomendaciones para mejorar la implementación
+de las AEI
+Recomendación 1: Efectuar mayor seguimiento y control durante la etapa de
+elaboración de los expedientes técnicos (participación de profesionales especializados,
+visitas técnicas constantes al lugar de ejecución del proyecto, entre otros). Esta
+recomendación se implementó a través de la Gerencia Regional de Infraestructura
+(según su matriz de compromisos) realizando sus profesionales especializados visitas
+técnicas periódicas opinadas e inopinadas, repercutiendo en una mejora de la calidad
+de los expedientes técnicos.
+Recomendación 2: Realizar el seguimiento y control constante y oportuno durante la
+etapa de ejecución física y financiera de los proyectos de inversión con participación
+activa de las unidades orgánicas involucradas para mitigar los posibles riesgos. Esta
+recomendación corresponde su implementación a la Gerencia Regional de
+Infraestructura (según su matriz de compromisos) quienes no realizaron la acción clave
+“Implementación de Directiva o Lineamiento que establezca el seguimiento constante
+en relación a la presencia de un profesional especializado de la Subgerencia de Obras
+para el monitoreo constante de manera presencial durante la etapa de ejecución física
+de un proyecto”; informando haber realizado al respecto visitas técnicas periódicas
+opinadas e inopinadas.
+Recomendación 3: Mejorar la gestión de procedimientos y plazos durante la etapa de
+liquidación técnica – financiera de los proyectos de inversión y el proceso de
+transferencia de obra entre la entidad emisora y la receptora. Esta recomendación
+corresponde su implementación a la Gerencia Regional de Infraestructura (según su
+matriz de compromisos) quienes no realizaron la acción clave “Implementación de
+Directivas que definan plazo y procedimientos válidos durante la etapa de liquidación
+Subgerencia de Planeamiento - GRLL 36
+
+=== PAGE 37 ===
+Informe de Evaluación Institucional del año 2023
+técnico financiera de los proyectos de inversión”; informando que no se cumplió porque
+la Subgerencia de Liquidaciones tiene como norma principal la Ley de Contrataciones
+del Estado.
+Recomendación 4: Mejorar los procedimientos técnicos y administrativos en relación a
+la gestión financiera de los recursos asignados para mantenimientos rutinarios y
+periódicos en coordinación con la Gerencia Regional de Contrataciones, Gerencia
+Regional de Presupuesto y otras involucradas. Esta recomendación se implementó a
+través de la Gerencia Regional de Infraestructura (según su matriz de compromisos)
+realizando un trabajo coordinado junto con la Gerencia Regional de Contrataciones y
+Gerencia Regional de Presupuesto para realizar el seguimiento oportuno en búsqueda
+de soluciones optimas y anticipadas. Esto mediate reuniones de trabajo semanales para
+fijar acuerdos plazos y compromisos.
+Recomendación 5: Los operadores de los centros de costos de cada unidad ejecutora
+deben efectuar el registro mensual en el aplicativo CEPLAN de la información del
+avance físico y financiero de las actividades operativas e inversiones, en el plazo
+máximo establecido por la Guía para el Seguimiento y Evaluación de Políticas
+Nacionales y Planes del SINAPLAN (el plazo para el registro mensual es hasta el
+vigésimo día del mes siguiente por ejemplo, si se está registrando la ejecución del mes
+de setiembre, se deberá realizar como máximo hasta el 20 de octubre). Se implemento
+a través de la Gerencia Regional de Planeamiento y Acondicionamiento Territorial
+emitiendo el documento correspondiente a las Unidades Orgánicas y Ejecutoras para el
+cumplimiento del plazo establecido en cuanto al registro mensual del avance físico y
+financiero de las actividades operativas e inversiones en el aplicativo Ceplan. Lo cual
+trajo consigo un mejor cumplimiento de los registros en mención.
+Recomendación 6: Convocar a reuniones de trabajo a los responsables de las Acciones
+Estratégicas Institucionales que presentan 0% de avance en su implementación y a los
+que no han reportado la información correspondiente para analizar su problemática y
+efectuar las correcciones pertinentes. Al respecto la Gerencia Regional de Planeamiento
+a través de un documento convocó a una reunión de trabajo a los responsables de estas
+AEI con el fin de abordar el problema y que se tomen las acciones correspondientes.
+Subgerencia de Planeamiento - GRLL 37
+
+=== PAGE 38 ===
+Informe de Evaluación Institucional del año 2023
+4. Conclusiones
+4.1 El Gobierno Regional La Libertad, al término del año 2023, según Reporte de
+Seguimiento Anual 2023 del PEI - Tabla Resumen: Semaforización por nivel de
+avance - Aplicativo CEPLAN V1 a nivel de cumplimiento de objetivos (Resultados
+iniciales) de los 15 Objetivos Estratégicos Institucionales (OEI) establecidos en el
+PEI 2020-2026: 03 OEI lograron un nivel de resultado mayor o igual al 95% (Indica
+cumplimiento de los logros esperados o desempeño muy próximo al esperado).
+03 OEI lograron un nivel de resultado entre 75% y menor a 95%, (Indica desvíos
+desfavorables moderados entre los valores obtenidos respecto a los logros
+esperados), 06 OEI lograron un nivel resultado menor a 75% (Indica cumplimiento
+bajo o incumplimiento de logros esperados) y los responsables de 03 OEI no
+reportaron información.
+4.2 El Gobierno Regional La Libertad, al término del año 2023, según Reporte de
+Seguimiento Anual 2023 del PEI - Tabla Resumen: Semaforización por nivel de
+avance - Aplicativo CEPLAN V1 a nivel de cumplimiento de indicadores de
+objetivos; de los 26 indicadores establecidos en el Plan Estratégico Institucional -
+PEI 2020-2026, 08 indicadores lograron un nivel de resultado mayor o igual al 95%
+(Indica cumplimiento de los logros esperados o desempeño muy próximo al
+esperado), 04 indicadores lograron un nivel de resultado entre 75% y menor a 95
+%, (Indica desvíos desfavorables moderados entre los valores obtenidos respecto
+a los logros esperados), 08 indicadores lograron un nivel de avance menor a 75%
+(Indica cumplimiento bajo o incumplimiento de logros esperados) y los
+responsables de 06 indicadores no reportaron información.
+4.3 El Gobierno Regional La Libertad, al término del año 2023, según Reporte de
+Seguimiento Anual 2023 del PEI - Tabla Resumen: Semaforización por nivel de
+avance - Aplicativo CEPLAN V1 se tiene en cuanto a la implementación de las 73
+Acciones Estratégicas Institucionales establecidas en el “Plan Estratégico
+Institucional(PEI) 2020-2026 ampliado del Gobierno Regional la Libertad”, 10
+Acciones Estratégicas Institucionales lograron un nivel de avance en su
+implementación entre 75% y menor a 95%, (Indica desvíos desfavorables
+moderados entre los valores obtenidos respecto a los logros esperados) y 36
+Acciones Estratégicas Institucionales lograron un nivel de avance en su
+implementación menor a 75% (Indica cumplimiento bajo o incumplimiento de
+logros esperados). En dicho reporte, destacan por medio de su indicador con un
+nivel de avance en su implementación mayor o igual al 95%, 20 Acciones
+Estratégicas Institucionales (Indica cumplimiento de los logros esperados o
+Subgerencia de Planeamiento - GRLL 38
+
+=== PAGE 39 ===
+Informe de Evaluación Institucional del año 2023
+desempeño muy próximo al esperado) y los responsables de 07 no alcanzaron la
+información.
+4.4 El Gobierno Regional La Libertad, al término del año 2023, según Reporte de
+Seguimiento Anual 2023 del PEI - Tabla Resumen: Semaforización por nivel de
+avance - Aplicativo CEPLAN V1 a nivel de cumplimiento de Indicadores de
+Acciones Estratégicas Institucionales; de los 99 indicadores establecidos en el
+Plan Estratégico Institucional - PEI 2020-2026, 33 indicadores de AEI lograron un
+nivel de implementación mayor o igual al 95% (Indica cumplimiento de los logros
+esperados o desempeño muy próximo al esperado), 11 indicadores de AEI
+lograron un nivel de avance entre 75% y menor a 95 %, (Indica desvíos
+desfavorables moderados entre los valores obtenidos respecto a los logros
+esperados), 41 indicadores de AEI lograron un nivel de avance menor a 75%
+(Indica cumplimiento bajo o incumplimiento de logros esperados) y los
+responsables de 14 indicadores no reportaron información.
+4.5 El Gobierno Regional La Libertad al término del ejercicio 2023 en cuanto a la
+ejecución de su Plan Operativo Institucional (programación de actividades
+operativas e inversiones), logró una ejecución física del 86%, con una ejecución
+financiera del 90.1% (se ejecutó un monto de 3,092,416,626 de soles del total del
+presupuesto institucional que fue de 3,431,923,313 soles).
+4.6 El Gobierno Regional La Libertad en cuanto a inversiones tuvo una asignación
+presupuestal de 583,444,710 soles ejecutando al término del ejercicio 2023 un
+monto de 423,804,784 soles (72.6% de ejecución financiera), según cuadro
+siguiente:
+Unidad Ejecutora PIM (S/) Ejecución (S/) % Ejec
+Sede Central 372,423,862 248,534,980 66.73%
+Proyecto Especial
+97,120,642 75,027,480 77.25%
+Chavimochic
+GR Agricultura 52,106,991 48,345,359 92.78%
+GR Salud 56,736,979 47,073,086 82.97%
+IREN 5,056,236 4,823,879 95.40%
+Total 583,444,710 423,804,784 72.64%
+Subgerencia de Planeamiento - GRLL 39
+
+=== PAGE 40 ===
+Informe de Evaluación Institucional del año 2023
+5. Recomendaciones
+5.1 Mejorar el proceso de planificación de obras para asegurar la adecuada
+asignación de recursos y generar una matriz de riesgos de manera que pueda
+mitigar antes del impacto de la ruta crítica.
+5.2 Mejorar los procesos de liquidación técnico financiera de los proyectos para
+agilizar el flujo financiero y garantizar el cierre oportuno de inversiones.
+5.3 Mejorar los procesos de control y seguimiento financiero para garantizar una
+supervisión adecuada del uso de los recursos asignados a los mantenimientos
+ejecutados por la Subgerencia de Caminos.
+5.4 Rediseñar los indicadores: “Porcentaje de proyectos ejecutados de
+infraestructura hidráulica, hidroenergética y de producción de agua potable" de la
+AEI 11.02 Infraestructura hidráulica, hidroenergética y de producción de agua
+potable sostenible en la Región La Libertad y “Número de Has. de tierras de
+propiedad del PECH transferidas” de la AEI 05.6 Transferencia predial rural
+adecuada de tierras de propiedad del PECH, para una coherencia con su
+programación operativa.
+5.4 Convocar a reuniones de trabajo a los responsables de las Acciones
+Estratégicas Institucionales que presentan 0% de avance en su implementación y
+a los que no han reportado la información correspondiente al avance de los
+Objetivos Estratégicos Institucionales y de las Acciones Estratégicas
+Institucionales para analizar su problemática y efectuar las correcciones
+pertinentes.
+Subgerencia de Planeamiento - GRLL 40
+
+=== PAGE 41 ===
+Informe de Evaluación Institucional del año 2023
+6. Anexos
+✔ Matriz de compromisos
+MATRIZ DE COMPROMISOS - PLAN OPERATIVO INSTITUCIONAL 2024
+GERENCIA REGIONAL DE INFRAESTRUCTURA – ING. JORGE LUIS BRINGAS MALDONADO
+COMPROMISOS:
+UNIDAD DE
+ESTADO DE
+N ASPECTO MEJORA RECOMENDACIÓN ACCIÓN CLAVE MEDIO DE VERIFICACIÓN ORGANIZACIÓN PLAZO
+CUMPLIMIENTO
+RESPONSABLE COMENTARIO
+Mejorar el proceso de
+planificación de obras para Revisar y ajustar los
+Comparación entre los Una planificación optimizada
+asegurar la adecuada asignación cronogramas de obras Subgerencia de
+Optimización de la cronogramas revisados y contribuirá a establecer plazos más
+1 de recursos y generar una matriz considerando capacidades de Obras y 6 meses Por implementar
+Planificación de Obras. los plazos de entrega realistas y alcanzables para la
+de riesgos de manera que pueda ejecución, recursos disponibles Supervisión.
+inicialmente establecidos. culminación de las obras.
+mitigar antes del impacto de la y posibles contratiempos.
+ruta crítica.
+Una coordinación más efectiva entre
+Fortalecimiento de la Mejorar la coordinación entre la
+Establecer reuniones periódicas Documentación de las las áreas permitirá identificar y
+Coordinación entre las gerencia de infraestructura y
+de coordinación con las áreas reuniones de coordinación Gerencia Regional resolver posibles obstáculos de
+2 áreas orgánicas de la otras áreas relevantes para 6 meses Por implementar
+involucradas en el proceso de y seguimiento de los de Infraestructura. manera más ágil, contribuyendo a
+Gerencia Regional de agilizar trámites y resolver
+ejecución de obras. acuerdos tomados. evitar retrasos en la culminación de
+Infraestructura. posibles trabas burocráticas.
+las obras.
+El uso de indicadores de desempeño
+Definir y establecer indicadores Identificar los indicadores clave Seguimiento regular de los proporcionará una herramienta
+Establecimiento de de desempeño que permitan de desempeño relacionados con indicadores de desempeño efectiva para evaluar la eficacia de
+Gerencia Regional
+3 Indicadores de evaluar el progreso de las obras y plazos de entrega, calidad de establecidos, comparando 3 meses Por implementar los procesos de gestión y tomar
+de Infraestructura.
+Desempeño. la eficacia de los procesos de obras y eficiencia en el uso de los resultados con los acciones correctivas cuando sea
+gestión. recursos. objetivos definidos. necesario.
+Revisar y optimizar los Seguimiento del tiempo Una gestión eficiente de los procesos
+Mejorar los procesos de
+Implementación de procedimientos de liquidación, requerido para la de liquidación permitirá agilizar el
+liquidación técnico-financiera de
+Mejoras en los asegurando la correcta liquidación de proyectos y Subgerencia de flujo financiero de los proyectos, lo
+4 los proyectos para agilizar el flujo 3 meses Por implementar
+Procesos de conformidad con el contratista y revisión de la efectividad Liquidaciones. que contribuirá a su culminación
+financiero y garantizar el cierre
+Liquidación. la verificación de la de los procesos oportuna y al cumplimiento del
+oportuno de inversiones.
+documentación requerida. implementados. indicador establecido.
+Subgerencia de Planeamiento - GRLL 41
+
+=== PAGE 42 ===
+Informe de Evaluación Institucional del año 2023
+Revisión del informe final
+Establecer un equipo
+Orientar la Realizar un diagnóstico del diagnóstico de brechas La identificación y priorización
+multidisciplinario que incluya a
+programación exhaustivo de las brechas de de infraestructura y del adecuada de las brechas de
+expertos en infraestructura
+multianual de infraestructura existentes en la plan de inversiones Gerencia Regional infraestructura permitirá dirigir
+5
+inversi ones al cierre de región, identificando las áreas
+para analizar el diagnóstico y
+multianual que refleje la de Infraestructura.
+6 meses Por implementar
+eficazmente los recursos hacia
+priorizar las inversiones en
+brechas prioritarias de más críticas que requieren asignación de recursos proyectos que contribuyan al cierre
+proyectos que aborden las
+inf raestructura. atención inmediata. hacia las áreas de dichas brechas.
+brechas identificadas.
+prioritarias.
+Desarrollar protocolos La implementación de protocolos
+Revisión y aprobación por
+claros y estandarizados claros y estandarizados
+Realizar un análisis detallado de Formar un equipo de trabajo parte de la gerencia de
+para la transferencia proporcionará una guía precisa para
+los procesos de transferencia interdisciplinario compuesto liquidaciones de los
+física y financiera de los Sub Gerencia de todas las partes involucradas en el
+6 utilizados anteriormente para por representantes de protocolos desarrollados, 6 meses Por implementar
+proyectos de inversión Liquidaciones proceso de transferencia, lo que
+identificar brechas y áreas de diferentes áreas involucradas asegurando que cumplan
+a las entidades reducirá la posibilidad de errores y
+mejora en el proceso de transferencia con los requisitos y
+responsables de su uso, malentendidos, y garantizará una
+normativas establecidas.
+operación y transición eficiente.
+mantenimiento.
+Una supervisión más efectiva de los
+Evaluación regular del
+Optimizar los Procesos Mejorar los procesos de control y recursos financieros permitirá
+cumplimiento de los
+de Control y seguimiento financiero para Establecer indicadores detectar y corregir posibles
+indicadores financieros
+Seguimiento de la garantizar una supervisión financieros clave y desarrollar desviaciones o brechas en las
+establecidos y análisis de Sub Gerencia de
+7 Subgerencia de adecuada del uso de los recursos herramientas de monitoreo 4 meses Por implementar gestiones y así poder evitar
+los informes de caminos
+Caminos en relación a asignados a los mantenimientos para evaluar el desempeño problemas financieros de manera
+seguimiento para
+la gestión financiera de ejecutados por la subgerencia de mantenimientos viales claves oportuna, garantizando la eficiencia
+identificar áreas de
+recursos asignados. caminos en la ejecución de mantenimientos
+mejora.
+viales.
+El control efectivo de los gastos
+durante la ejecución de proyectos es
+Monitorear regularmente fundamental para garantizar la
+Establecer un proceso de
+Control de los gastos los informes financieros y continuidad de los recursos
+Establecer políticas claras de revisión y aprobación de gastos
+que incurren durante la comparar los gastos reales financieros y el éxito a largo plazo de
+control de gastos que definan los que incluya la validación por Subgerencia de
+ejecucion a fin de con el presupuesto las iniciativas. Implementar políticas
+8 límites y procedimientos para la parte de múltiples niveles de Obras y 3 meses Por implementar
+asegurar los recursos planificado para identificar sólidas y procedimientos
+aprobación de gastos durante la autoridad para garantizar la Supervisión.
+financieros para su desviaciones y tomar transparentes ayudará a promover
+ejecución de proyectos. transparencia y la adecuada
+continuidad. medidas correctivas de la responsabilidad financiera y a
+asignación de recursos.
+manera oportuna. optimizar el uso de recursos,
+maximizando así el impacto de los
+proyectos.
+Subgerencia de Planeamiento - GRLL 42
+
+=== PAGE 43 ===
+Informe de Evaluación Institucional del año 2023
+✔ Reporte de seguimiento del PEI o enlace de publicación en PTE.
+Enlace de publicación del Reporte de Seguimiento del PEI del año 2023 en el Portal
+de Transparencia Estándar del Gobierno Regional La Libertad.
+https://www.regionlalibertad.gob.pe/transparencia/transparencia-grll/transparencia-
+institucional/planeamiento-y-organizacion/evaluacion-y-recomendaciones/informes-de-
+seguimiento-y-evaluacion-de-los-planes/evaluacion-y-seguimiento-al-pei/19743-
+reporte-de-seguimiento-del-pei-ano-2023-gobierno-regional-la-libertad/file
+✔ Reporte de seguimiento del POI o enlace de publicación en PTE
+Enlace de publicación del Reporte de Seguimiento del POI del año 2023 en el Portal
+de Transparencia Estándar del Gobierno Regional La Libertad.
+https://www.regionlalibertad.gob.pe/transparencia/transparencia-grll/transparencia-
+institucional/planeamiento-y-organizacion/evaluacion-y-recomendaciones/informes-de-
+seguimiento-y-evaluacion-de-los-planes/evaluacion-y-seguimiento-al-poi/19742-
+reporte-de-seguimiento-anual-2023-del-plan-operativo-institucional/file
+Subgerencia de Planeamiento - GRLL 43

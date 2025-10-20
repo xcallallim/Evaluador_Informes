@@ -1,0 +1,38 @@
+{
+  "resumen_ejecutivo": {
+    "title": "Resumen Ejecutivo",
+    "aliases": ["Resumen", "Resumen general"],
+    "keywords": ["síntesis", "introducción"]
+  },
+  "descripcion_politica": {
+    "title": "Descripción de la política nacional",
+    "aliases": ["Descripción de la política", "Contexto de la política"],
+    "keywords": ["problemática", "marco conceptual"]
+  },
+  "analisis_resultados": {
+    "title": "Análisis de los resultados de la política nacional",
+    "aliases": ["Resultados de la política", "Evaluación de resultados"],
+    "keywords": ["brecha", "objetivo prioritario", "seguimiento"]
+  },
+  "analisis_implementacion": {
+    "title": "Análisis de la implementación",
+    "aliases": ["Evaluación de implementación", "Implementación de servicios"],
+    "keywords": ["cobertura", "calidad", "ejecución de recursos"]
+  },
+  "conclusiones": {
+    "title": "Conclusiones",
+    "aliases": ["Conclusión"],
+    "keywords": ["cierre del informe", "síntesis final"]
+  },
+  "recomendaciones": {
+    "title": "Recomendaciones",
+    "aliases": ["Sugerencias", "Acciones recomendadas"],
+    "keywords": ["mejora", "acciones futuras"]
+  },
+  "anexos": {
+    "title": "Anexos",
+    "aliases": ["Anexo"],
+    "keywords": ["anexos", "documentos adjuntos"]
+  }
+}
+

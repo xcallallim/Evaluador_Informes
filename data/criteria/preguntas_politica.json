@@ -1,0 +1,40 @@
+{
+  "Resumen Ejecutivo": [
+    "¿Se describe de manera breve el cumplimiento de los objetivos prioritarios, situación de cumplimiento de los servicios, y situación del problema público respecto al futuro deseado?",
+    "¿Se describe de manera breve las medidas recomendadas a adoptar en el corto plazo (dos siguientes años) para mejorar el cumplimiento de la política nacional?"
+  ],
+  "Descripción de la política nacional": [
+    "Se describe de manera clara: 1. El problema público, 2. La situación futura deseada, 3. La población objetivo que atiende la política nacional, 4. La articulación de los objetivos de la Política con los objetivos de otros instrumentos (Políticas Nacionales, Política de Estado, PGG, PEDN u ODS).",
+    "¿Se ha realizado una delimitación del alcance de la evaluación considerando las alertas identificadas en los reportes de seguimiento a nivel de OP y servicios de la política nacional?"
+  ],
+  "Análisis de los resultados de la política nacional": [
+    "¿Se realiza una valoración integral del cumplimiento de la política nacional, en base al avance de los objetivos prioritarios?",
+    "¿Se realiza un análisis de los OP considerando lo que se busca lograr o alcanzar?",
+    "¿Se realiza un análisis de otros resultados que se busca alcanzar en la política nacional?",
+    "¿Se analiza factores que influyeron en los resultados?"
+  ],
+  "Análisis de la implementación": [
+    "¿Se realiza un análisis detallado del avance de la implementación de los servicios, evaluando su cobertura y calidad?",
+    "¿Se analiza la asignación de recursos (financieros, humanos, logísticos) y sus niveles de ejecución (nacional, regional, local) para la implementación eficaz de la política?",
+    "¿Se evalúan las principales actividades operativas que sustentan la prestación del servicio, incluyendo los procesos clave y su eficiencia?",
+    "¿Se evalúan los mecanismos de coordinación entre actores  y los factores que influyen en el proceso de entrega y desempeño de los servicios?",
+    "¿Se analizan los lineamientos que aún no cuentan con servicios?",
+    "¿Se evalúan las recomendaciones de la evaluación anterior y su grado de implementación en la mejora de los servicios?"
+  ],
+  "Conclusiones": [
+    "¿Sintetiza de manera clara los principales hallazgos, ofrece una valoración general del desempeño de la política y está sustentada en el análisis de los resultados e implementación?"
+  ],
+  "Recomendaciones": [
+    "¿Las recomendaciones están bien fundamentadas en los hallazgos y conclusiones del informe?",
+    "¿Las recomendaciones son útiles para mejorar los aspectos críticos de la política evaluada?"
+  ],
+  "Matriz de compromisos": [
+    "¿Los compromisos son coherentes con las recomendaciones del informe de evaluación?",
+    "¿Se han asignado responsables y plazos y medios de verficicación claros para cada acción clave?"
+  ],
+  "Otros": [
+    "¿El informe de evaluación se ha aprobado y publicado en el plazo correspondiente?",
+    "¿Se utiliza información complementaria (cuantitativa o cualitativa) que se necesite para dar respuesta a las interrogantes de evaluación?",
+    "¿Se ha utilizado alguna técnica de recolección para la información complementaria (encuestas, entrevistas, grupos focales, talleres, estudios de caso, panel de expertos, revisión bibliográfica, etc.)?"
+  ]
+}

@@ -1,0 +1,21 @@
+AEI.03.05 Programa “Universidad saludable” implementado en la comunidad universitaria.
+OEI.04 Modernizar la Gestión Institucional.
+Acción estratégica Institucional del OEI.04
+AEI.04.01 Simplificación administrativa para la mejora continua de los procesos de la Universidad.
+AEI.04.02 Infraestructura y equipamiento de calidad alineados a la misión de la Universidad.
+AEI.04.03 Arquitectura digital de capacidades estratégicas implementada para la generación de valor social.
+AEI.04.04 Gobierno digital implementado para el lineamiento de las estrategias institucionales y TIC.
+OEI.05 Implementar la gestión integral de Riesgo de Desastres y Cambio Climático.
+Acción estratégica Institucional del OEI.05
+Programas elaborados en la Gestión de Riesgo de Desastres y Cambio Climático en la Universidad e
+AEI.05.01
+Instituciones.
+Fortalecimiento de capacidades en Gestión de Riesgo de Desastres y Cambio Climático para la
+AEI.05.02
+comunidad universitaria y actores clave.
+Instrumentos y guías en la Gestión de Riesgo de Desastres y Cambio Climático adecuados para la
+AEI.05.03
+comunidad universitaria e instituciones.
+4
+| Acciones Estratégicas Institucionales (AEI) | | | |
+| Código | | | Descripción |

@@ -1,0 +1,63 @@
+{
+  "resumen_ejecutivo": {
+    "title": "Resumen Ejecutivo",
+    "aliases": ["Resumen", "Resumen del Informe"],
+    "keywords": ["síntesis", "resumen general"]
+  },
+  "prioridades_politica_institucional": {
+    "title": "Prioridades de la política institucional",
+    "aliases": ["Prioridades institucionales", "Política institucional", "Prioridades de gestión"],
+    "keywords": ["misión", "visión", "prioridades de la entidad"]
+  },
+  "analisis_oei": {
+    "title": "Análisis de resultados de los objetivos estratégicos institucionales (OEI)",
+    "aliases": ["Análisis OEI", "Resultados OEI", "Resultados de objetivos estratégicos"],
+    "keywords": ["objetivo estratégico", "avance OEI", "desempeño institucional"]
+  },
+  "diagnostico_oei_priorizados": {
+    "title": "Diagnóstico sobre los OEI priorizados con bajo nivel de cumplimiento",
+    "aliases": ["Diagnóstico OEI priorizados", "Diagnóstico OEI", "OEI priorizados"],
+    "keywords": ["diagnóstico institucional", "priorización"]
+  },
+  "analisis_implementacion_aei": {
+    "title": "Análisis de implementación de las acciones estratégicas institucionales (AEI)",
+    "aliases": ["Implementación de AEI", "Acciones estratégicas institucionales", "Análisis AEI"],
+    "keywords": ["acciones estratégicas"]
+  },
+  "analisis_aei_oei": {
+    "title": "Análisis de implementación de las AEI de los OEI priorizados",
+    "aliases": ["AEI OEI", "Implementación AEI OEI", "Acciones OEI priorizadas"],
+    "keywords": ["seguimiento AEI", "avance OEI"]
+  },
+  "analisis_productos_aei": {
+    "title": "Análisis de los productos de la AEI",
+    "aliases": ["Productos AEI", "Resultados AEI"],
+    "keywords": ["indicadores de producto", "productos institucionales"]
+  },
+  "analisis_ejecucion_operativa": {
+    "title": "Análisis de la ejecución operativa en las AEI críticas",
+    "aliases": ["Ejecución operativa AEI", "AEI críticas"],
+    "keywords": ["gestión operativa", "análisis operativo"]
+  },
+  "aplicacion_recomendaciones": {
+    "title": "Aplicación de las recomendaciones para mejorar la implementación de las AEI",
+    "aliases": ["Recomendaciones AEI", "Cumplimiento de recomendaciones"],
+    "keywords": ["mejora continua", "acciones de mejora"]
+  },
+  "conclusiones": {
+    "title": "Conclusiones",
+    "aliases": ["Conclusión"],
+    "keywords": ["cierre del informe", "síntesis final"]
+  },
+  "recomendaciones": {
+    "title": "Recomendaciones",
+    "aliases": ["Acciones recomendadas", "Sugerencias"],
+    "keywords": ["acciones futuras", "sugerencias de mejora"]
+  },
+  "anexos": {
+    "title": "Anexos",
+    "aliases": ["Anexo"],
+    "keywords": ["anexos", "documentos adjuntos"]
+  }
+}
+

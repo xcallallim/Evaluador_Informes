@@ -1,0 +1,131 @@
+{
+  "Resumen Ejecutivo": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se sintetiza el avance en la implementación de las AEI, conclusiones y recomendaciones obtenidos en la evaluación?"
+    ],
+    "Claridad y coherencia": [
+      "¿La síntesis del avance de implementación de las AEI, conclusiones y recomendaciones es claro (se entiende al leerla)?",
+      "¿La síntesis del avance de implementación de las AEI, conclusiones y recomendaciones muestra coherencia en su presentación?"
+    ]
+  },
+  "Prioridades de la política institucional": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en la que se describe la misión de la entidad y las principales prioridades de su política institucional?",
+      "¿El IEI 2023 contiene una sección en la que se presenta la priorización realizada en el paso de delimitación del alcance de la evaluación?"
+    ],
+    "Claridad y coherencia": [
+      "¿La descripción de la misión de la entidad y las prioridades de la política institucional es clara y coherente?",
+      "¿La priorización en la delimitación del alcance de la evaluación es clara y coherente?"
+    ]
+  },
+  "Análisis de resultados de los objetivos estratégicos institucionales (OEI)": {
+    "Estructura": [
+      "¿El IEI 2023 contiene los principales resultados de cada uno de sus OEI?"
+    ],
+    "Claridad y coherencia": [
+      "¿El análisis de resultados de los OEI es claro (se entiende al leerla)?",
+      "¿El análisis de resultados de los OEI es coherente con la misión y prioridad institucional de la entidad?"
+    ],
+    "Pertinencia": [
+      "¿El análisis de los resultados de cada objetivo estratégico es pertinente para alcanzar los resultados misionales de la entidad (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?"
+    ]
+  },
+  "Diagnóstico sobre los OEI priorizados con bajo nivel de cumplimiento": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en la que se analiza los OEI priorizados por su nivel crítico de resultados, en relación con sus AEI?"
+    ],
+    "Claridad y coherencia": [
+      "¿El análisis de resultados de los OEI priorizados es claro (se entiende al leerla)?",
+      "¿El análisis de resultados de los OEI priorizados por su nivel crítico es coherente en relación con sus AEI?"
+    ],
+    "Pertinencia": [
+      "¿El análisis de los OEI priorizados es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?"
+    ]
+},
+  "Análisis de implementación de las acciones estratégicas institucionales (AEI)": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en la que se analiza el nivel de avance en la implementación de todas las AEI?"
+    ],
+    "Claridad y coherencia": [
+      "¿El análisis de la implementación de todas las AEI es claro (se entiende al leerla)? ",
+      "¿El análisis de resultados de las AEI es coherente en relación con sus indicadores y AO e inversiones?"
+    ],
+    "Pertinencia": [
+      "¿El análisis de la implementación de todas las AEI es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?"
+    ]
+},
+  "Análisis de implementación de las AEI de los OEI priorizados": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se aborda el análisis de la implementación de las AEI de los OEI priorizados?"
+    ],
+    "Claridad y coherencia": [
+      "¿El análisis de la implementación de las AEI de los OEI priorizados es claro (se entiende al leerla)?",
+      "¿El análisis de implementación de las AEI de los OEI priorizados es coherente (hay un hilo conductor entre las AEI y los OEI)?"
+    ],
+    "Pertinencia": [
+      "¿El análisis de la implementación de las AEI de los OEI priorizados es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?"
+    ]
+},
+  "Análisis de los productos de la AEI": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se aborda el análisis de los productos a través de los cuales se concretan las AEI críticas?"
+    ],
+    "Claridad y coherencia": [
+      "¿El análisis de implementación de los productos a través de los cuáles se concretan las AEI críticas es claro (se entiende al leerla)? ",
+      "¿El análisis de implementación de los productos a través de los cuáles se concretan las AEI críticas es coherente (hay una correcta vinculación entre los productos y las AEI)?"
+    ],
+    "Pertinencia": [
+      "¿El análisis de implementación de los productos a través de los cuáles se concretan las AEI críticas es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?"
+    ]
+},
+  "Análisis de la ejecución operativa en las AEI críticas": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se aborda el análisis de las AO e inversiones de las AEI críticas?"
+    ],
+    "Claridad y coherencia": [
+      "¿El análisis de implementación de las actividades operativas de las AEI críticas es claro (se entiende al leerla)?",
+      "¿El análisis de implementación de las AO e inversiones de las AEI críticas es coherente (hay un hilo conductor entre las AO y AEI)?"
+    ],
+    "Pertinencia": [
+      "¿El análisis de implementación de las AEI críticas es pertinente con el avance de sus AO e inversiones (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?"
+    ]
+},
+  "Aplicación de las recomendaciones para mejorar la implementación de las AEI": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se describe la aplicación de las recomendaciones obtenidas de la última evaluación semestral?"
+    ],
+    "Claridad y coherencia": [
+      "¿La descripción de la forma en la que se han aplicado las recomendaciones de la última evaluación semestral es clara (se entiende al leerla)?",
+      "¿La descripción de la forma en la que se han aplicado las recomendaciones de la última evaluación semestral es coherente (hay relación entre las recomendaciones aplicadas y los resultados obtenidos)?"
+    ]
+},
+  "Conclusiones": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se aborda, a través de juicios de valor, el logro alcanzado en los OEI y sus aprendizajes?"
+    ],
+    "Claridad y coherencia": [
+      "¿El desarrollo de las conclusiones respecto de los logros en los OEI y sus aprendizajes es claro (se entiende al leerla)?",
+      "¿El desarrollo de las conclusiones respecto de los logros en los OEI y sus aprendizajes es coherente (hay relación entre lo desarrollado en el informe y las conclusiones a las que se llega)?"
+    ],
+    "Pertinencia": [
+      "¿El desarrollo de las conclusiones respecto de los logros en los OEI y sus aprendizajes es pertinente (sintetiza los principales hallazgos del informe de evaluación)?"
+    ]
+},
+  "Recomendaciones": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se abordan medidas preventivas y correctivas para garantizar el logro de los resultados de los OEI en el siguiente periodo de implementación del PEI?"
+    ],
+    "Claridad y coherencia": [
+      "¿El desarrollo de las medidas preventivas y correctivas para garantizar el logro de los resultados de los OEI es claro (se entiende al leerla)?",
+      "¿El desarrollo de las medidas preventivas y correctivas para garantizar el logro de los resultados de los OEI es coherente (hay relación entre los hallazgos y las recomendaciones establecidas)?"
+    ],
+    "Pertinencia": [
+      "¿El desarrollo de las recomendaciones es pertinente considerando elementos como: aspectos de mejora, unidades orgánicas responsables y plazos?"
+    ]
+},
+  "Anexos": {
+    "Estructura": [
+      "¿El IEI 2023 contiene una sección en donde se presentan la matriz de compromisos, el reporte de seguimiento del PEI/POI?"
+    ]
+}
+}

@@ -1,0 +1,2 @@
+Este es un archivo de prueba del loader.
+Debe cargar el texto correctamente y devolver metadatos.
