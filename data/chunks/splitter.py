@@ -1,9 +1,9 @@
 # data/chunks/splitter.py
 
-from typing import Any, Dict, List, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from core.logger import log_info, log_warn
+from langchain.schema import Document as LCDocument
 from langchain.text_splitter import CharacterTextSplitter
-from utils.chunking import save_chunks, split_text
 
 __all__ = ["Splitter"]
 
@@ -31,40 +31,48 @@ class Splitter:
             length_function=len,
         )
 
-    def split_sections(self, sections: Dict[str, str]) -> List[Dict[str, Any]]:
-        """Divide cada sección y devuelve diccionarios ``{text, metadata}``."""
+    def _split_content_map(
+        self,
+        content_map: Dict[str, str],
+        *,
+        origin: str,
+        base_metadata: Optional[Dict[str, Any]] = None,
+    ) -> List[LCDocument]:
+        """Divide cada entrada de ``content_map`` en fragmentos LangChain."""
 
-        log_info("✂️ Iniciando división de secciones en chunks con LangChain...")
-        all_chunks: List[Dict[str, Any]] = []
+        log_info(
+            f"✂️ Iniciando división de {origin}s en chunks con LangChain..."
+        )
+        all_chunks: List[LCDocument] = []
+        shared_metadata = dict(base_metadata or {})
 
-        for section_id, text in sections.items():
+        for content_id, text in content_map.items():
             if not text or not text.strip():
                 continue
 
             documents = self.splitter.create_documents(
                 texts=[text],
-                metadatas=[{"section": section_id}],
+                metadatas=[{"source_id": content_id, "source_type": origin}],
             )
+            section_total = len(documents)
             log_info(
-                f"Sección '{section_id}' → {len(documents)} chunks creados."
+                f"{origin.title()} '{content_id}' → {section_total} chunks creados."
             )
 
             for idx, chunk in enumerate(documents, start=1):
-                metadata = dict(chunk.metadata) if chunk.metadata else {}
+                metadata: Dict[str, Any] = {}
+                metadata.update(shared_metadata)
+                metadata.update(chunk.metadata or {})
                 metadata.update(
                     {
-                        "id": f"{section_id}_{idx}",
-                        "section": section_id,
+                        "id": f"{content_id}_{idx}",
                         "chunk_index": idx,
+                        "chunks_in_source": section_total,
                         "length": len(chunk.page_content),
                     }
                 )
-                all_chunks.append(
-                    {
-                        "text": chunk.page_content,
-                        "metadata": metadata,
-                    }
-                )
+                chunk.metadata = metadata
+                all_chunks.append(chunk)
 
         log_info(f"✅ División completada. Total chunks: {len(all_chunks)}.")
         return all_chunks
@@ -73,10 +81,20 @@ class Splitter:
         """Genera ``document.chunks`` a partir de ``document.sections``."""
 
         sections = getattr(document, "sections", None) or {}
-        chunks: List[Dict[str, Any]] = []
+        chunks: List[LCDocument] = []
+        document_metadata = getattr(document, "metadata", {}) or {}
+        base_chunk_metadata: Dict[str, Any] = {
+            "document_metadata": dict(document_metadata),
+        }
+        if document_metadata.get("id"):
+            base_chunk_metadata["document_id"] = document_metadata["id"]
 
         if sections:
-            chunks = self.split_sections(sections)
+            chunks = self._split_content_map(
+                sections,
+                origin="section",
+                base_metadata=base_chunk_metadata,
+            )
         else:
             log_warn(
                 "⚠️ Documento no contiene secciones. Intentando generar chunks con fallback."
@@ -93,7 +111,11 @@ class Splitter:
                 log_warn(
                     "⚠️ No se generaron chunks por secciones. Usando páginas como fallback."
                 )
-                chunks = self.split_sections(page_sections)
+                chunks = self._split_content_map(
+                    page_sections,
+                    origin="page",
+                    base_metadata=base_chunk_metadata,
+                )
 
         if not chunks:
             content = getattr(document, "content", "")
@@ -101,7 +123,11 @@ class Splitter:
                 log_warn(
                     "⚠️ No se generaron chunks por secciones ni páginas. Dividiendo el contenido completo."
                 )
-                chunks = self.split_sections({"document": content})
+                chunks = self._split_content_map(
+                    {"document": content},
+                    origin="document",
+                    base_metadata=base_chunk_metadata,
+                )
 
         if not chunks:
             log_warn("⚠️ No fue posible generar chunks para el documento.")

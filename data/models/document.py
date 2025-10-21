@@ -1,11 +1,15 @@
 # data/models/document.py
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover - solo para tipado
+    from langchain.schema import Document as LCDocument
 
 class Document:
     """
     Representa un documento cargado desde PDF, Word o texto plano.
-    Contiene texto completo, páginas y tablas.
+    Contiene texto completo, páginas y tablas, además de una lista de chunks
+    compatibles con LangChain lista para generar embeddings.
     """
     def __init__(
         self,
@@ -22,7 +26,7 @@ class Document:
         self.tables = tables or []              # Tablas detectadas
         self.images = images or []              # Imágenes extraídas
         self.sections = sections or {}          # Secciones detectadas {id: texto}
-        self.chunks: List[Dict[str, Any]] = []  # Resultado del Splitter
+        self.chunks: List["LCDocument"] = []   # Resultado del Splitter en LCDocument
 
     def __repr__(self):
         return (
@@ -33,4 +37,9 @@ class Document:
             f"chunks={len(self.chunks)}"
             ")"
         )
+    
+    def as_langchain_documents(self) -> List["LCDocument"]:
+        """Devuelve los chunks como ``langchain.schema.Document`` listos para embeddings."""
+
+        return list(self.chunks)
 
