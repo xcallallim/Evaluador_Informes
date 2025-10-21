@@ -1,28 +1,86 @@
 # data/chunks/splitter.py
 
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+import importlib
+import importlib.util
+import warnings
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type
 from core.logger import log_info, log_warn
 
-# ✅ Compatibilidad con distintas versiones de LangChain
-try:
-    from langchain_core.documents import Document as LCDocument  # langchain 0.2.x
-except ImportError:
-    try:
-        from langchain.schema import Document as LCDocument  # langchain 0.1.x
-    except ImportError:
-        LCDocument = None  # LangChain no instalado todavía
+if TYPE_CHECKING:
+    from langchain_core.documents import Document as LCDocumentType
+else:
+    LCDocumentType = Any  # type: ignore[assignment]
 
-# ✅ Splitter compatible con versiones nuevas y antiguas
-try:
-    from langchain.text_splitter import CharacterTextSplitter
-except ImportError:
+
+def _load_lc_document() -> Tuple[Optional[Type[Any]], Optional[str]]:
+    """Resuelve la clase Document de LangChain sin romper herramientas estáticas."""
+
+    candidates = (
+        "langchain_core.documents",
+        "langchain.schema",
+    )
+    for module_name in candidates:
+        if importlib.util.find_spec(module_name) is None:
+            continue
+
+        module = importlib.import_module(module_name)
+        document_cls = getattr(module, "Document", None)
+        if document_cls is not None:
+            return document_cls, module_name
+
+    return None, None
+
+
+def _suppress_schema_warnings() -> None:
+    """Silencia los avisos deprecados cuando se usa langchain.schema."""
+
     try:
-        from langchain.text_splitter import RecursiveCharacterTextSplitter
-    except ImportError:
-        raise ImportError(
-            "❌ No se encontró RecursiveCharacterTextSplitter. "
-            "Instala LangChain con: pip install langchain-text-splitters"
+        deprecation_module = importlib.import_module(
+            "langchain_core._api.deprecation"
         )
+        LangChainDeprecationWarning = getattr(  # type: ignore[assignment]
+            deprecation_module,
+            "LangChainDeprecationWarning",
+        )
+    except (ModuleNotFoundError, AttributeError, ImportError):
+        LangChainDeprecationWarning = DeprecationWarning  # type: ignore[assignment]
+
+    warnings.filterwarnings(
+        "ignore",
+        category=LangChainDeprecationWarning,
+        module=r"langchain\.schema",
+    )
+
+
+def _load_text_splitter() -> Type[Any]:
+    """Obtiene una implementación de splitter compatible con distintas versiones."""
+
+    splitter_candidates = (
+        ("langchain_text_splitters", "CharacterTextSplitter"),
+        ("langchain.text_splitter", "CharacterTextSplitter"),
+        ("langchain.text_splitter", "RecursiveCharacterTextSplitter"),
+    )
+
+    for module_name, attribute in splitter_candidates:
+        if importlib.util.find_spec(module_name) is None:
+            continue
+
+        module = importlib.import_module(module_name)
+        splitter_cls = getattr(module, attribute, None)
+        if splitter_cls is not None:
+            return splitter_cls
+
+    raise ImportError(
+        "❌ No se encontró un text splitter compatible. "
+        "Instala LangChain con: pip install langchain-text-splitters"
+    )
+
+
+_LCDocumentClass, _LC_IMPORT_SOURCE = _load_lc_document()
+if _LC_IMPORT_SOURCE == "langchain.schema":
+    _suppress_schema_warnings()
+
+CharacterTextSplitter = _load_text_splitter()
 
 
 __all__ = ["Splitter"]
@@ -31,10 +89,27 @@ if TYPE_CHECKING:
     from data.models.document import Document as InternalDocument
 
 
+_HAS_LOGGED_SCHEMA_WARNING = False
+
+
 class Splitter:
     """Divide cada sección de un documento en fragmentos con solapamiento."""
 
     def __init__(self, chunk_size: int = 1500, chunk_overlap: int = 150):
+        if _LCDocumentClass is None:
+            raise ImportError(
+                "Splitter requiere LangChain instalado."
+                " Instala 'langchain-core>=0.1.0' o 'langchain>=0.1.0'."
+            )
+
+        global _HAS_LOGGED_SCHEMA_WARNING
+        if _LC_IMPORT_SOURCE == "langchain.schema" and not _HAS_LOGGED_SCHEMA_WARNING:
+            log_warn(
+                "⚠️ LangChain en modo compatibilidad (langchain.schema). "
+                "Actualiza a langchain-core>=0.1.0 para evitar avisos deprecados."
+            )
+            _HAS_LOGGED_SCHEMA_WARNING = True
+
         if chunk_size <= 0:
             raise ValueError("chunk_size debe ser mayor a cero")
         if chunk_overlap < 0:
@@ -57,16 +132,16 @@ class Splitter:
         *,
         origin: str,
         base_metadata: Optional[Dict[str, Any]] = None,
-    ) -> List[LCDocument]:
+    ) -> List["LCDocumentType"]:
         """Divide cada entrada de ``content_map`` en fragmentos LangChain."""
-        text = text.replace("\n\n", "\n").strip()
         log_info(
             f"✂️ Iniciando división de {origin}s en chunks con LangChain..."
         )
-        all_chunks: List[LCDocument] = []
+        all_chunks: List["LCDocumentType"] = []
         shared_metadata = dict(base_metadata or {})
 
         for content_id, text in content_map.items():
+            text = text.replace("\n\n", "\n").strip()
             if not text or not text.strip():
                 continue
 
@@ -101,7 +176,7 @@ class Splitter:
         """Genera ``document.chunks`` a partir de ``document.sections``."""
 
         sections = getattr(document, "sections", None) or {}
-        chunks: List[LCDocument] = []
+        chunks: List["LCDocumentType"] = []
         document_metadata = getattr(document, "metadata", {}) or {}
         base_chunk_metadata: Dict[str, Any] = {
             "document_metadata": dict(document_metadata),
