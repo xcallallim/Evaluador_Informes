@@ -140,9 +140,13 @@ class Splitter:
         all_chunks: List["LCDocumentType"] = []
         shared_metadata = dict(base_metadata or {})
 
-        for content_id, text in content_map.items():
+        for content_id, raw_value in content_map.items():
+            if raw_value is None:
+                continue
+
+            text = raw_value if isinstance(raw_value, str) else str(raw_value)
             text = text.replace("\n\n", "\n").strip()
-            if not text or not text.strip():
+            if not text:
                 continue
 
             documents = self.splitter.create_documents(
@@ -197,11 +201,17 @@ class Splitter:
 
         if not chunks:
             pages = getattr(document, "pages", None) or []
-            page_sections = {
-                f"page_{idx}": page
-                for idx, page in enumerate(pages, start=1)
-                if isinstance(page, str) and page.strip()
-            }
+            page_sections: Dict[str, str] = {}
+            for idx, page in enumerate(pages, start=1):
+                if page is None:
+                    continue
+
+                page_text = page if isinstance(page, str) else str(page)
+                page_text = page_text.strip()
+                if not page_text:
+                    continue
+
+                page_sections[f"page_{idx}"] = page_text
             if page_sections:
                 log_warn(
                     "⚠️ No se generaron chunks por secciones. Usando páginas como fallback."
@@ -214,12 +224,18 @@ class Splitter:
 
         if not chunks:
             content = getattr(document, "content", "")
-            if isinstance(content, str) and content.strip():
+            if content is not None:
+                content_text = content if isinstance(content, str) else str(content)
+                content_text = content_text.strip()
+            else:
+                content_text = ""
+
+            if content_text:
                 log_warn(
                     "⚠️ No se generaron chunks por secciones ni páginas. Dividiendo el contenido completo."
                 )
                 chunks = self._split_content_map(
-                    {"document": content},
+                    {"document": content_text},
                     origin="document",
                     base_metadata=base_chunk_metadata,
                 )
