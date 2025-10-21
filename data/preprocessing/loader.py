@@ -8,7 +8,7 @@
 # - Metadatos consistentes y listos para el pipeline
 # ------------------------------------------------------------
 
-import os, re
+import os, re, shutil
 from typing import List, Tuple, Optional, Dict, Any
 
 from core.logger import log_info, log_warn, log_error
@@ -29,6 +29,8 @@ class DocumentLoader:
         self.supported_extensions = [".pdf", ".docx", ".txt"]
         # Configurar Tesseract si está disponible
         self._configure_tesseract()
+        # Resolver ruta de Ghostscript si el entorno no permite instalación global.
+        self.ghostscript_cmd = self._resolve_ghostscript()
 
     # ------------------------------------------------------------
     # Configuración OCR
@@ -44,6 +46,30 @@ class DocumentLoader:
                 log_warn("Ruta de Tesseract no encontrada o inválida. OCR deshabilitado.")
         except ImportError:
             log_warn("pytesseract no está instalado. OCR deshabilitado.")
+    
+    def _resolve_ghostscript(self) -> Optional[str]:
+        """Localiza Ghostscript permitiendo binarios descargados sin privilegios sudo."""
+        candidates = [
+            os.environ.get("GHOSTSCRIPT_PATH"),
+            os.environ.get("GS_BIN"),
+            GHOSTSCRIPT_PATH,
+        ]
+
+        for executable in ("gs", "gswin64c", "gswin32c"):
+            path = shutil.which(executable)
+            if path:
+                candidates.append(path)
+
+        for candidate in candidates:
+            if candidate and os.path.exists(candidate):
+                log_info(f"Ghostscript detectado en: {candidate}")
+                return candidate
+
+        log_warn(
+            "Ghostscript no está disponible. Camelot seguirá intentando, "
+            "pero la extracción de tablas puede fallar sin este binario."
+        )
+        return None
 
     # ------------------------------------------------------------
     # API principal
@@ -355,8 +381,8 @@ class DocumentLoader:
         try:
             log_info("Extrayendo tablas (Camelot - lattice)...")
             kwargs = {"flavor": "lattice", "pages": "all"}
-            if GHOSTSCRIPT_PATH and os.path.exists(GHOSTSCRIPT_PATH):
-                kwargs["gs"] = GHOSTSCRIPT_PATH
+            if self.ghostscript_cmd:
+                kwargs["gs"] = self.ghostscript_cmd
 
             tables = camelot.read_pdf(filepath, **kwargs)
             valid_count = self._save_camelot_tables(tables, base_dir, tables_meta)
@@ -369,8 +395,8 @@ class DocumentLoader:
             try:
                 log_info("Reintentando tablas (Camelot - stream)...")
                 kwargs = {"flavor": "stream", "pages": "all"}
-                if GHOSTSCRIPT_PATH and os.path.exists(GHOSTSCRIPT_PATH):
-                    kwargs["gs"] = GHOSTSCRIPT_PATH
+                if self.ghostscript_cmd:
+                    kwargs["gs"] = self.ghostscript_cmd
 
                 tables = camelot.read_pdf(filepath, **kwargs)
                 valid_count = self._save_camelot_tables(tables, base_dir, tables_meta)

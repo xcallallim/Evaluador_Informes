@@ -5,7 +5,7 @@ import requests
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
 from langchain_core.language_models.llms import LLM
 from langchain_core.outputs import GenerationChunk
-from pydantic import Field
+from langchain_core.pydantic_v1 import Field
 
 SMART_ENDPOINT = "https://chat-api.you.com/smart"
 RESEARCH_ENDPOINT = "https://chat-api.you.com/research"

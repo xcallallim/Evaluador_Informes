@@ -8,10 +8,16 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Ruta de Tesseract OCR (Windows)
-TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+TESSERACT_PATH = os.environ.get(
+    "TESSERACT_PATH",
+    r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+)
 
 # Ruta de Ghostscript para integrar Camelot y detectar tablas
-GHOSTSCRIPT_PATH = r"C:\Program Files\gs\gs10.06.0\bin\gswin64c.exe"
+GHOSTSCRIPT_PATH = os.environ.get(
+    "GHOSTSCRIPT_PATH",
+    r"C:\\Program Files\\gs\\gs10.06.0\\bin\\gswin64c.exe",
+)
 
 
 # =========================

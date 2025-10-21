@@ -1,12 +1,21 @@
-"""Funciones auxiliares para persistir chunks generados con LangChain."""
-
+"""Funciones auxiliares para persistir chunks generados con LangChain.
+Opcional, por lo que se mantiene fuera de utils.py"""
 
 from __future__ import annotations
 
 import os
 from typing import List
 
-from langchain.schema import Document as LCDocument
+try:  # pragma: no cover - compatibilidad en tiempo de ejecución
+    from langchain_core.documents import Document as LCDocument
+except ImportError:  # pragma: no cover
+    try:
+        from langchain.schema import Document as LCDocument  # type: ignore[no-redef]
+    except ImportError as exc:  # pragma: no cover
+        raise ImportError(
+            "Las utilidades de chunking requieren LangChain instalado. "
+            "Ejecuta 'pip install langchain-core>=0.2.10'."
+        ) from exc
 
 __all__ = ["save_chunks"]
 

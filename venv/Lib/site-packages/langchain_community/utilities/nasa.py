@@ -3,7 +3,7 @@
 import json
 
 import requests
-from pydantic import BaseModel
+from langchain_core.pydantic_v1 import BaseModel
 
 IMAGE_AND_VIDEO_LIBRARY_URL = "https://images-api.nasa.gov"
 

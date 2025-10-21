@@ -4,7 +4,7 @@ import logging
 from typing import Any, Dict, Iterator, List, Optional
 
 from langchain_core.documents import Document
-from pydantic import BaseModel, model_validator
+from langchain_core.pydantic_v1 import BaseModel, root_validator
 
 logger = logging.getLogger(__name__)
 
@@ -27,9 +27,8 @@ class WikipediaAPIWrapper(BaseModel):
     load_all_available_meta: bool = False
     doc_content_chars_max: int = 4000
 
-    @model_validator(mode="before")
-    @classmethod
-    def validate_environment(cls, values: Dict) -> Any:
+    @root_validator(pre=True)
+    def validate_environment(cls, values: Dict) -> Dict:
         """Validate that the python package exists in environment."""
         try:
             import wikipedia
