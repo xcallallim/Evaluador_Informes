@@ -1,48 +1,15 @@
 # data/chunks/splitter.py
 
-import os
-import math
-import json
-from typing import Dict, List, TYPE_CHECKING
+from typing import Any, Dict, List, TYPE_CHECKING
 from core.logger import log_info, log_warn
-from langchain.schema import Document as LCDocument
 from langchain.text_splitter import CharacterTextSplitter
+from utils.chunking import save_chunks, split_text
+
+__all__ = ["Splitter"]
 
 if TYPE_CHECKING:
     from data.models.document import Document as InternalDocument
 
-
-def split_text(
-    cleaned_text: str, chunk_size: int = 1000, chunk_overlap: int = 150
-) -> List[LCDocument]:
-    """Divide texto plano en fragmentos utilizando ``CharacterTextSplitter``."""
-    if not cleaned_text.strip():
-        print("⚠️ No hay texto para dividir.")
-        return []
-
-    splitter = CharacterTextSplitter(
-        separator="\n",
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        length_function=len,
-    )
-
-    chunks = splitter.create_documents([cleaned_text])
-
-    print(f"✅ Texto dividido en {len(chunks)} fragmentos.")
-    return chunks
-
-def save_chunks(
-    chunks: List[LCDocument], output_folder: str, base_name: str = "chunks"
-) -> None:
-    """Guarda cada fragmento en un archivo ``.txt`` numerado secuencialmente."""
-    os.makedirs(output_folder, exist_ok=True)
-    for i, doc in enumerate(chunks, start=1):
-        file_path = os.path.join(output_folder, f"{base_name}_{i:03}.txt")
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(doc.page_content.strip())
-
-    print(f"💾 Se guardaron {len(chunks)} fragmentos en '{output_folder}'.")
 
 class Splitter:
     """Divide cada sección de un documento en fragmentos con solapamiento."""
@@ -64,11 +31,11 @@ class Splitter:
             length_function=len,
         )
 
-    def split_sections(self, sections: Dict[str, str]) -> List[LCDocument]:
-        """Divide cada sección en ``LCDocument`` con metadatos enriquecidos."""
+    def split_sections(self, sections: Dict[str, str]) -> List[Dict[str, Any]]:
+        """Divide cada sección y devuelve diccionarios ``{text, metadata}``."""
 
         log_info("✂️ Iniciando división de secciones en chunks con LangChain...")
-        all_chunks: List[LCDocument] = []
+        all_chunks: List[Dict[str, Any]] = []
 
         for section_id, text in sections.items():
             if not text or not text.strip():
@@ -83,7 +50,8 @@ class Splitter:
             )
 
             for idx, chunk in enumerate(documents, start=1):
-                chunk.metadata.update(
+                metadata = dict(chunk.metadata) if chunk.metadata else {}
+                metadata.update(
                     {
                         "id": f"{section_id}_{idx}",
                         "section": section_id,
@@ -91,7 +59,12 @@ class Splitter:
                         "length": len(chunk.page_content),
                     }
                 )
-                all_chunks.append(chunk)
+                all_chunks.append(
+                    {
+                        "text": chunk.page_content,
+                        "metadata": metadata,
+                    }
+                )
 
         log_info(f"✅ División completada. Total chunks: {len(all_chunks)}.")
         return all_chunks
@@ -99,11 +72,39 @@ class Splitter:
     def split_document(self, document: "InternalDocument") -> "InternalDocument":
         """Genera ``document.chunks`` a partir de ``document.sections``."""
 
-        sections = getattr(document, "sections", None)
-        if not sections:
-            log_warn("⚠️ Documento no contiene secciones. No se puede dividir.")
-            document.chunks = []
-            return document
+        sections = getattr(document, "sections", None) or {}
+        chunks: List[Dict[str, Any]] = []
 
-        document.chunks = self.split_sections(sections)
+        if sections:
+            chunks = self.split_sections(sections)
+        else:
+            log_warn(
+                "⚠️ Documento no contiene secciones. Intentando generar chunks con fallback."
+            )
+
+        if not chunks:
+            pages = getattr(document, "pages", None) or []
+            page_sections = {
+                f"page_{idx}": page
+                for idx, page in enumerate(pages, start=1)
+                if isinstance(page, str) and page.strip()
+            }
+            if page_sections:
+                log_warn(
+                    "⚠️ No se generaron chunks por secciones. Usando páginas como fallback."
+                )
+                chunks = self.split_sections(page_sections)
+
+        if not chunks:
+            content = getattr(document, "content", "")
+            if isinstance(content, str) and content.strip():
+                log_warn(
+                    "⚠️ No se generaron chunks por secciones ni páginas. Dividiendo el contenido completo."
+                )
+                chunks = self.split_sections({"document": content})
+
+        if not chunks:
+            log_warn("⚠️ No fue posible generar chunks para el documento.")
+
+        document.chunks = chunks
         return document

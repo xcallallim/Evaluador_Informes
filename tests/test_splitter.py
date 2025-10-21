@@ -75,4 +75,3 @@ def test_split_document_handles_missing_sections():
     splitter.split_document(document)
 
     assert document.chunks == []
-

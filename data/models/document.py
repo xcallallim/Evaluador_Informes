@@ -1,14 +1,11 @@
 # data/models/document.py
 
-from typing import Optional, List, Dict, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from langchain.schema import Document as LCDocument
+from typing import Optional, List, Dict, Any
 
 class Document:
     """
     Representa un documento cargado desde PDF, Word o texto plano.
-    Contiene texto completo, páginas, tablas, imágenes y ahora chunks.
+    Contiene texto completo, páginas y tablas.
     """
     def __init__(
         self,
@@ -17,16 +14,16 @@ class Document:
         pages: list = None,
         tables: list = None,
         images: list = None,
-        sections: Optional[Dict[str, str]] = None,       
-        chunks: list = None          
+        sections: Optional[Dict[str, str]] = None
     ):
-        self.content = content
-        self.metadata = metadata
-        self.pages = pages or []
-        self.tables = tables or []
-        self.images = images or []
-        self.sections = sections or {}         # Secciones detectadas {id: texto}
-        self.chunks: List["LCDocument"] = []   # Resultado del Splitter
+        self.content = content                  # Texto completo
+        self.metadata = metadata                # Info del archivo
+        self.pages = pages or []                # Texto por páginas
+        self.tables = tables or []              # Tablas detectadas
+        self.images = images or []              # Imágenes extraídas
+        self.sections = sections or {}          # Secciones detectadas {id: texto}
+        self.chunks: List[Dict[str, Any]] = []  # Resultado del Splitter
+
     def __repr__(self):
         return (
             "Document("
