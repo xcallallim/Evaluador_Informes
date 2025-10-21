@@ -3,12 +3,26 @@
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from core.logger import log_info, log_warn
 
+# ✅ Compatibilidad con distintas versiones de LangChain
 try:
-    from langchain_core.documents import Document as LCDocument
-except ModuleNotFoundError:
-    LCDocument = None
+    from langchain_core.documents import Document as LCDocument  # langchain 0.2.x
+except ImportError:
+    try:
+        from langchain.schema import Document as LCDocument  # langchain 0.1.x
+    except ImportError:
+        LCDocument = None  # LangChain no instalado todavía
 
-from langchain_text_splitters import CharacterTextSplitter
+# ✅ Splitter compatible con versiones nuevas y antiguas
+try:
+    from langchain.text_splitter import CharacterTextSplitter
+except ImportError:
+    try:
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
+    except ImportError:
+        raise ImportError(
+            "❌ No se encontró RecursiveCharacterTextSplitter. "
+            "Instala LangChain con: pip install langchain-text-splitters"
+        )
 
 
 __all__ = ["Splitter"]
@@ -45,7 +59,7 @@ class Splitter:
         base_metadata: Optional[Dict[str, Any]] = None,
     ) -> List[LCDocument]:
         """Divide cada entrada de ``content_map`` en fragmentos LangChain."""
-
+        text = text.replace("\n\n", "\n").strip()
         log_info(
             f"✂️ Iniciando división de {origin}s en chunks con LangChain..."
         )

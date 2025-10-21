@@ -6,7 +6,10 @@ import unicodedata
 import re
 import os
 
-from langchain_text_splitters import CharacterTextSplitter
+try:
+    from langchain_text_splitters import CharacterTextSplitter  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover
+    CharacterTextSplitter = None
 
 # ====================================
 # FUNCIONES DE NORMALIZACIÓN

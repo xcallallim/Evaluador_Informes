@@ -531,3 +531,7 @@ class Cleaner:
         return self._norm_line(s)
 
 
+# Proximas mejoras: 
+# - Reemplazar saltos múltiples → uno solo
+# - Quitar espacios repetidos
+# - Quitar líneas vacías innecesarias
