@@ -15,8 +15,9 @@ rapidfuzz==3.5.2
 scikit-learn==1.3.0
 nltk==3.8.1
 tqdm==4.66.1
-langchain==0.1.0
-langchain==0.1.0
+
+langchain>=0.2.10
+langchain-community
 
 ## Testing
 pytest==7.4.3

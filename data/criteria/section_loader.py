@@ -1,4 +1,4 @@
-# data/preprocessing/section_loader.py
+# data/criteria/section_loader.py
  
 import os
 import json

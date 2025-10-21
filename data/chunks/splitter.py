@@ -2,8 +2,14 @@
 
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from core.logger import log_info, log_warn
-from langchain.schema import Document as LCDocument
-from langchain.text_splitter import CharacterTextSplitter
+
+try:
+    from langchain_core.documents import Document as LCDocument
+except ModuleNotFoundError:
+    LCDocument = None
+
+from langchain_text_splitters import CharacterTextSplitter
+
 
 __all__ = ["Splitter"]
 

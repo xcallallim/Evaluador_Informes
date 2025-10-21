@@ -6,7 +6,7 @@ import unicodedata
 import re
 import os
 
-from langchain.text_splitter import CharacterTextSplitter
+from langchain_text_splitters import CharacterTextSplitter
 
 # ====================================
 # FUNCIONES DE NORMALIZACIÓN

@@ -1,8 +1,8 @@
 # data/models/document.py
 
-from typing import Optional, List, Dict, TYPE_CHECKING
+from typing import List, Dict, Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:  # pragma: no cover - solo para tipado
+if TYPE_CHECKING:
     from langchain.schema import Document as LCDocument
 
 class Document:

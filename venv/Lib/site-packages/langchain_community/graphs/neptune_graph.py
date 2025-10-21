@@ -2,6 +2,8 @@ import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from langchain_core._api.deprecation import deprecated
+
 
 class NeptuneQueryException(Exception):
     """Exception for the Neptune queries."""
@@ -22,7 +24,7 @@ class NeptuneQueryException(Exception):
 
 
 class BaseNeptuneGraph(ABC):
-    """Abstract base class for Neptune"""
+    """Abstract base class for Neptune."""
 
     @property
     def get_schema(self) -> str:
@@ -139,10 +141,15 @@ class BaseNeptuneGraph(ABC):
         """
 
 
+@deprecated(
+    since="0.3.15",
+    removal="1.0",
+    alternative_import="langchain_aws.NeptuneAnalyticsGraph",
+)
 class NeptuneAnalyticsGraph(BaseNeptuneGraph):
     """Neptune Analytics wrapper for graph operations.
 
-    Args:
+    Parameters:
         client: optional boto3 Neptune client
         credentials_profile_name: optional AWS profile name
         region_name: optional AWS region, e.g., us-west-2
@@ -269,17 +276,21 @@ class NeptuneAnalyticsGraph(BaseNeptuneGraph):
             return summary
 
 
+@deprecated(
+    since="0.3.15",
+    removal="1.0",
+    alternative_import="langchain_aws.NeptuneGraph",
+)
 class NeptuneGraph(BaseNeptuneGraph):
     """Neptune wrapper for graph operations.
 
-    Args:
+    Parameters:
         host: endpoint for the database instance
         port: port number for the database instance, default is 8182
         use_https: whether to use secure connection, default is True
         client: optional boto3 Neptune client
         credentials_profile_name: optional AWS profile name
         region_name: optional AWS region, e.g., us-west-2
-        service: optional service name, default is neptunedata
         sign: optional, whether to sign the request payload, default is True
 
     Example:
