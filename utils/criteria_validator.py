@@ -40,17 +40,38 @@ def validate_file(path: Path) -> ValidationResult:
     return result
 
 
+def _stdout_supports(symbol: str) -> bool:
+    """Return True when the active stdout encoding can render ``symbol``."""
+
+    encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+    try:
+        symbol.encode(encoding)
+    except UnicodeEncodeError:
+        return False
+    return True
+
+
+def _symbol(symbol: str, fallback: str) -> str:
+    """Return ``symbol`` if stdout accepts it, otherwise ``fallback``."""
+
+    return symbol if _stdout_supports(symbol) else fallback
+
+
 def _format_output(path: Path, result: ValidationResult) -> List[str]:
     lines = [f"Archivo: {path}"]
+    check = _symbol("✔", "[OK]")
+    error = _symbol("✖", "[ERROR]")
+    warning = _symbol("⚠", "[WARN]")
+
     if result.ok():
-        lines.append("  ✔ Validación sin errores.")
+        lines.append(f"  {check} Validación sin errores.")
     else:
-        lines.append("  ✖ Se encontraron errores en la validación:")
+        lines.append(f"  {error} Se encontraron errores en la validación:")
         for error in result.errors:
             lines.append(f"    - {error}")
 
     if result.warnings:
-        lines.append("  ⚠ Advertencias:")
+        lines.append(f"  {warning} Advertencias:")
         for warning in result.warnings:
             lines.append(f"    - {warning}")
     return lines

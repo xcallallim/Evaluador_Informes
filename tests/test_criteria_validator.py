@@ -15,6 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.append(str(REPO_ROOT))
 
+import utils.criteria_validator as criteria_cli
 from utils.criteria_validator import validate_file
 from utils.validators import VALIDATORS
 
@@ -76,6 +77,21 @@ def test_cli_execution(criteria_dir: Path) -> None:
     )
 
     assert process.returncode == 0, process.stdout + process.stderr
+
+
+def test_cli_output_falls_back_to_ascii(monkeypatch) -> None:
+    """Unicode symbols should degrade to ASCII when stdout cannot encode them."""
+
+    result = criteria_cli.ValidationResult()
+    result.errors.append("Error de prueba")
+    result.warnings.append("Advertencia de prueba")
+
+    monkeypatch.setattr(criteria_cli, "_stdout_supports", lambda symbol: False)
+
+    lines = criteria_cli._format_output(Path("archivo.json"), result)
+
+    assert "[ERROR]" in lines[1]
+    assert "[WARN]" in lines[-2]
 
 
 def test_cli_accepts_repo_relative_paths_from_external_cwd(tmp_path: Path) -> None:

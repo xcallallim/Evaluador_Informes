@@ -101,14 +101,14 @@ class DocumentLoader:
         tables_meta: Dict[str, Any] = {}
 
         if ext == ".txt":
-            content = self._load_txt(filepath)
-            pages = None
+            content, pages, txt_tables = self._load_txt(filepath)
+            if extract_tables and txt_tables:
+                tables_meta["txt"] = txt_tables
 
         elif ext == ".docx":
-            content, docx_tables = self._load_docx(filepath)
-            pages = None
-            if extract_tables:
-                tables_meta["docx"] = docx_tables or []
+            content, pages, docx_tables = self._load_docx(filepath)
+            if extract_tables and docx_tables:
+                tables_meta["docx"] = docx_tables
 
         elif ext == ".pdf":
             content, pages = self._load_pdf(filepath)
@@ -220,17 +220,38 @@ class DocumentLoader:
             paragraphs = [p.text.strip() for p in doc.paragraphs if p.text.strip()]
             raw_text = "\n".join(paragraphs)
 
-            # Detectar saltos de página si hay "PAGE BREAK" en el documento
-            # Word agrega saltos como "---------------------- page break ----------------------"
+            # Detectar saltos de página utilizando marcadores explícitos de Word
             pages = []
-            current_page = []
-            for paragraph in doc.paragraphs:
-                if paragraph.text.strip():
-                    current_page.append(paragraph.text.strip())
-                if paragraph._p.get_next_sibling() is None and current_page:
-                    pages.append("\n".join(current_page))
-                    current_page = []
+            current_page: List[str] = []
 
+            def _flush_page() -> None:
+                if current_page:
+                    pages.append("\n".join(current_page))
+                    current_page.clear()
+            
+            for paragraph in doc.paragraphs:
+                text = paragraph.text.strip()
+                if text:
+                    current_page.append(text)
+
+                element = getattr(paragraph, "_p", None)
+                if element is None:
+                    continue
+
+                nsmap = getattr(element, "nsmap", {}) or {}
+                w_namespace = nsmap.get("w")
+                if not w_namespace:
+                    continue
+
+                # Buscar cualquier salto de página declarado en el XML del párrafo
+                for br in element.findall(f".//{{{w_namespace}}}br"):
+                    br_type = br.get(f"{{{w_namespace}}}type")
+                    if br_type == "page":
+                        _flush_page()
+                        break
+
+            _flush_page()
+            
             # Fallback: si no detectó páginas correctamente
             if not pages:
                 pages = self._split_text_into_pages(raw_text, max_chars=4000)
