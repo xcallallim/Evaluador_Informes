@@ -168,6 +168,7 @@ class Splitter:
                         "chunk_index": idx,
                         "chunks_in_source": section_total,
                         "length": len(chunk.page_content),
+                        "chunk_overlap": self.chunk_overlap,
                     }
                 )
                 chunk.metadata = metadata
