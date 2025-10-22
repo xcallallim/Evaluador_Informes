@@ -8,6 +8,38 @@
 # - Metadatos consistentes y listos para el pipeline
 # ------------------------------------------------------------
 
+import os, re, shutil, fitz, uuid
+from typing import List, Tuple, Optional, Dict, Any
+
+from core.logger import log_info, log_warn, log_error
+from core.config import TESSERACT_PATH
+from core.utils import clean_spaces, ensure_dir
+from data.models.document import Document
+
+# No hacemos "from core.config import *" para mantener claridad.
+try:
+    from core.config import GHOSTSCRIPT_PATH
+except Exception:
+    GHOSTSCRIPT_PATH = None
+
+
+MEANINGFUL_TEXT_PATTERN = re.compile(r"[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]")
+
+
+class DocumentLoader:
+    def __init__(self):
+        # Extensiones soportadas
+        self.supported_extensions = [".pdf", ".docx", ".txt"]
+        # data/preprocessing/loader.py
+# ------------------------------------------------------------
+# DocumentLoader: Carga TXT, DOCX, PDF (digital + OCR)
+# - DOCX: extrae texto y tablas
+# - PDF digital: extrae texto con pdfplumber
+# - PDF escaneado: extrae texto con OCR (Tesseract + OpenCV)
+# - PDF tablas: extrae tablas con Camelot (opcional) y exporta a CSV
+# - Metadatos consistentes y listos para el pipeline
+# ------------------------------------------------------------
+
 import os, re, shutil
 from typing import List, Tuple, Optional, Dict, Any
 
@@ -23,10 +55,19 @@ except Exception:
     GHOSTSCRIPT_PATH = None
 
 
+MEANINGFUL_TEXT_PATTERN = re.compile(r"[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]")
+
+
 class DocumentLoader:
     def __init__(self):
         # Extensiones soportadas
         self.supported_extensions = [".pdf", ".docx", ".txt"]
+        # Flag interno para saber si la última carga PDF usó OCR.
+        self._last_pdf_was_ocr: bool = False
+        # Texto crudo más reciente extraído de un PDF (digital u OCR).
+        self._last_pdf_raw_text: str = ""
+        # Lista de issues detectadas durante la carga actual.
+        self._issues: List[str] = []
         # Configurar Tesseract si está disponible
         self._configure_tesseract()
         # Resolver ruta de Ghostscript si el entorno no permite instalación global.
@@ -70,6 +111,12 @@ class DocumentLoader:
             "pero la extracción de tablas puede fallar sin este binario."
         )
         return None
+    
+    def _register_issue(self, message: str) -> None:
+        """Acumula advertencias de la carga actual sin duplicados."""
+
+        if message and message not in self._issues:
+            self._issues.append(message)
 
     # ------------------------------------------------------------
     # API principal
@@ -84,6 +131,11 @@ class DocumentLoader:
             extract_tables: si True, intenta extraer tablas (DOCX y PDF con Camelot).
                             Esta opción es ideal para habilitar/deshabilitar desde una UI.
         """
+        # Reiniciar flag OCR para cada carga
+        self._last_pdf_was_ocr = False
+        self._last_pdf_raw_text = ""
+        self._issues = []
+        
         if not os.path.isfile(filepath):
             log_error(f"Archivo no encontrado: {filepath}")
             raise FileNotFoundError(f"No existe el archivo: {filepath}")
@@ -135,19 +187,39 @@ class DocumentLoader:
             "source": filepath,
             "pages": pages,             # lista de textos por página (PDF) o None
             "tables": tables_meta or {},# {"docx": [...], "pdf": [{"page": int, "path": str}, ...]}
-            "processed_with": "DocumentLoader"
+            "processed_with": "DocumentLoader",
         }
+
+        if ext == ".pdf":
+            metadata["is_ocr"] = self._last_pdf_was_ocr
+            metadata["extraction_method"] = "ocr" if self._last_pdf_was_ocr else "embedded_text"
+            metadata["raw_text"] = self._last_pdf_raw_text
+        elif ext == ".docx":
+            metadata["is_ocr"] = False
+            metadata["extraction_method"] = "docx"
+        else:
+            metadata["is_ocr"] = False
+            metadata["extraction_method"] = "text"
 
         # Añadir imágenes al metadata
         if extract_images:
             metadata["images"] = pdf_images_meta if 'pdf_images_meta' in locals() else []
 
+        if self._issues:
+            metadata["issues"] = list(self._issues)
+
         # --- LOG RESUMEN DE CARGA ---
         log_info("📊 Resumen de carga del documento:")
-        log_info(f"   • Páginas detectadas: {len(pages) if pages else 'N/A'}")
+        pages_count = len(pages) if isinstance(pages, list) else 0
+        log_info(f"   • Páginas detectadas: {pages_count}")
         log_info(f"   • Tablas extraídas: {len(tables_meta.get('pdf', [])) + len(tables_meta.get('docx', []))}")
         log_info(f"   • Imágenes extraídas: {len(metadata.get('images', [])) if extract_images else 0}")
-        log_info("✅ Documento cargado correctamente ✅")
+        if self._issues:
+            log_warn("⚠ Documento cargado con advertencias. Revisar detalles:")
+            for issue in self._issues:
+                log_warn(f"   • {issue}")
+        else:
+            log_info("✅ Documento cargado correctamente ✅")
 
         # Devolvemos Document con texto completo + metadata rica
         return Document(
@@ -302,12 +374,23 @@ class DocumentLoader:
         log_info("📄 Analizando PDF...")
 
         # 1) Intentar primero con PyMuPDF: es rápido y fiable para detectar capa de texto.
-        pymupdf_text = self._try_load_pdf_with_pymupdf(filepath)
-        if pymupdf_text:
-            return pymupdf_text
+        pymupdf_detection = self._try_load_pdf_with_pymupdf(filepath)
+        pymupdf_detected: Optional[bool] = None
+        pymupdf_pages: List[str] = []
+
+        if pymupdf_detection:
+            pymupdf_detected, pymupdf_pages = pymupdf_detection
+
+        if pymupdf_detected is False:
+            log_warn("⚠ PDF escaneado detectado (PyMuPDF). Ejecutando OCR...")
+            self._last_pdf_was_ocr = True
+            ocr_full_text, pages_text = self._load_pdf_ocr(filepath)
+            self._last_pdf_raw_text = ocr_full_text
+            return "", pages_text
 
         pages_text: List[str] = []
         is_digital = False
+        pdfplumber_failed = False
 
         # 2) Intentar PDF digital con pdfplumber
         try:
@@ -318,72 +401,98 @@ class DocumentLoader:
                 "Se procederá al OCR si no se detecta texto con otros métodos."
             )
         else:
-            try:
-                with pdfplumber.open(filepath) as pdf:
-                    for page in pdf.pages:
-                        text = page.extract_text() or ""
-                        words = []
-                        try:
-                            words = page.extract_words() or []
-                        except Exception:
-                            # Algunos backends pueden fallar al extraer palabras; continuar silenciosamente.
+            if pymupdf_detected is not False:
+                try:
+                    with pdfplumber.open(filepath) as pdf:
+                        for page in pdf.pages:
+                            text = page.extract_text() or ""
                             words = []
+                            try:
+                                words = page.extract_words() or []
+                            except Exception:
+                                # Algunos backends pueden fallar al extraer palabras; continuar silenciosamente.
+                                words = []
 
-                        if text.strip() or words:
-                            is_digital = True
-
-                        if not text.strip() and words:
-                            # Fallback para PDFs digitales donde extract_text falla pero sí hay palabras.
-                            text = " ".join(word.get("text", "") for word in words).strip()
-
-                        if not text.strip() and not words:
-                            # Algunos motores devuelven caracteres individuales accesibles via page.chars
-                            # aunque extract_text y extract_words queden vacíos. Reconstruimos líneas simples.
-                            chars = getattr(page, "chars", []) or []
-                            if chars:
+                            if text.strip() or words:
                                 is_digital = True
 
-                                # Ordenar por coordenadas para agrupar líneas aproximadas.
-                                sorted_chars = sorted(
-                                    chars,
-                                    key=lambda c: (round(c.get("top", 0.0), 1), c.get("x0", 0.0)),
-                                )
+                            if not text.strip() and words:
+                                # Fallback para PDFs digitales donde extract_text falla pero sí hay palabras.
+                                text = " ".join(word.get("text", "") for word in words).strip()
 
-                                from itertools import groupby
+                            if not text.strip() and not words:
+                                # Algunos motores devuelven caracteres individuales accesibles via page.chars
+                                # aunque extract_text y extract_words queden vacíos. Reconstruimos líneas simples.
+                                chars = getattr(page, "chars", []) or []
+                                if chars:
+                                    is_digital = True
 
-                                lines = []
-                                for _, group in groupby(
-                                    sorted_chars, key=lambda c: round(c.get("top", 0.0), 1)
-                                ):
-                                    line_text = "".join(char.get("text", "") for char in group)
-                                    if line_text.strip():
-                                        lines.append(line_text)
+                                    # Ordenar por coordenadas para agrupar líneas aproximadas.
+                                    sorted_chars = sorted(
+                                        chars,
+                                        key=lambda c: (round(c.get("top", 0.0), 1), c.get("x0", 0.0)),
+                                    )
 
-                                if lines:
-                                    text = "\n".join(lines)
+                                    from itertools import groupby
 
-                        # Respetar saltos tal cual vienen (limpieza ocurrirá en Cleaner)
-                        pages_text.append(text)
-            except Exception as e:
-                log_warn(
-                    "No se pudo leer como PDF digital con pdfplumber. "
-                    f"Detalle: {e}. Se procederá al OCR si no hay más opciones."
-                )
-                pages_text = []
+                                    lines = []
+                                    for _, group in groupby(
+                                        sorted_chars, key=lambda c: round(c.get("top", 0.0), 1)
+                                    ):
+                                        line_text = "".join(char.get("text", "") for char in group)
+                                        if line_text.strip():
+                                            lines.append(line_text)
+
+                                    if lines:
+                                        text = "\n".join(lines)
+
+                            # Respetar saltos tal cual vienen (limpieza ocurrirá en Cleaner)
+                            pages_text.append(text)
+                except Exception as e:
+                    log_warn(
+                        "No se pudo leer como PDF digital con pdfplumber. "
+                        f"Detalle: {e}. Se procederá al OCR si no hay más opciones."
+                    )
+                    pages_text = []
+                    pdfplumber_failed = True
 
         # 3) PDF DIGITAL → devolver
         if is_digital:
             log_info("✅ PDF digital detectado (pdfplumber)")
             pages_with_tags = [f"=== PAGE {i+1} ===\n{p.strip()}" for i, p in enumerate(pages_text)]
             full_text = "\n\n".join(pages_with_tags)
+            self._last_pdf_was_ocr = False
+            self._last_pdf_raw_text = full_text
             return full_text, pages_text
+        
+        if pymupdf_detected:
+            meaningful_pages = [page for page in pymupdf_pages if page.strip()]
+            if meaningful_pages:
+                log_info("✅ PDF digital detectado (PyMuPDF fallback)")
+                pages_with_tags = [
+                    f"=== PAGE {i+1} ===\n{p.strip()}" for i, p in enumerate(pymupdf_pages)
+                ]
+                full_text = "\n\n".join(pages_with_tags)
+                self._last_pdf_was_ocr = False
+                self._last_pdf_raw_text = full_text
+                return full_text, pymupdf_pages
 
         # 4) Sino → usar OCR
-        log_warn("⚠ PDF escaneado detectado. Ejecutando OCR...")
-        return self._load_pdf_ocr(filepath)
-    
-    def _try_load_pdf_with_pymupdf(self, filepath: str) -> Optional[Tuple[str, List[str]]]:
-        """Extrae texto usando PyMuPDF para evitar OCR si el PDF tiene capa de texto."""
+        if pdfplumber_failed:
+            log_warn(
+                "⚠ PDF escaneado detectado. Ejecutando OCR tras fallo de pdfplumber..."
+            )
+        else:
+            log_warn("⚠ PDF escaneado detectado. Ejecutando OCR...")
+        self._last_pdf_was_ocr = True
+        ocr_full_text, pages_text = self._load_pdf_ocr(filepath)
+        self._last_pdf_raw_text = ocr_full_text
+        # Para el pipeline oficial (loader → cleaner → segmenter → splitter),
+        # mantenemos el contenido vacío y dejamos el texto crudo en metadata/pages.
+        return "", pages_text
+
+    def _try_load_pdf_with_pymupdf(self, filepath: str) -> Optional[Tuple[bool, List[str]]]:
+        """Analiza el PDF con PyMuPDF para detectar si existe capa de texto real."""
 
         try:
             import fitz  # type: ignore
@@ -395,24 +504,19 @@ class DocumentLoader:
 
         try:
             pages_text: List[str] = []
-            is_digital = False
+            pages_with_content = 0
 
             with fitz.open(filepath) as pdf_document:
                 for page in pdf_document:
-                    text = page.get_text("text")
-                    if text and text.strip():
-                        is_digital = True
-                    pages_text.append(text.strip() if text else "")
+                    page_text = self._extract_text_from_pymupdf_page(page)
+                    if page_text.strip():
+                        pages_with_content += 1
+                    pages_text.append(page_text)
 
-            if not is_digital:
-                return None
+            if pages_with_content == 0:
+                return (False, pages_text)
 
-            log_info("✅ PDF digital detectado mediante fallback PyMuPDF")
-            pages_with_tags = [
-                f"=== PAGE {i+1} ===\n{p.strip()}" for i, p in enumerate(pages_text)
-            ]
-            full_text = "\n\n".join(pages_with_tags)
-            return full_text, pages_text
+            return (True, pages_text)
 
         except Exception as e:
             log_warn(
@@ -421,42 +525,178 @@ class DocumentLoader:
             )
             return None
 
+
+    def _extract_text_from_pymupdf_page(self, page: "fitz.Page") -> str:
+        """Obtiene texto significativo de una página PyMuPDF evitando falsos positivos."""
+
+        try:
+            dict_data = page.get_text("dict") or {}
+        except Exception:
+            dict_data = {}
+
+        lines: List[str] = []
+        page_has_meaningful = False
+
+        blocks = dict_data.get("blocks", []) if isinstance(dict_data, dict) else []
+        for block in blocks:
+            if not isinstance(block, dict) or block.get("type") != 0:
+                continue
+
+            for line in block.get("lines", []) or []:
+                if not isinstance(line, dict):
+                    continue
+                spans_text: List[str] = []
+                for span in line.get("spans", []) or []:
+                    if not isinstance(span, dict):
+                        continue
+                    span_text = span.get("text", "")
+                    if not span_text:
+                        continue
+                    cleaned = span_text.replace("\u00ad", "").strip()
+                    if not cleaned:
+                        continue
+                    spans_text.append(cleaned)
+                    if not page_has_meaningful and MEANINGFUL_TEXT_PATTERN.search(cleaned):
+                        page_has_meaningful = True
+
+                if spans_text:
+                    lines.append(" ".join(spans_text))
+
+        text = "\n".join(lines).strip()
+
+        if not text:
+            # Fallback a extracción básica para cubrir casos donde no hay estructura dict
+            try:
+                fallback = page.get_text("text") or ""
+                fallback = fallback.strip()
+                if fallback and MEANINGFUL_TEXT_PATTERN.search(fallback):
+                    text = fallback
+                    page_has_meaningful = True
+            except Exception:
+                text = ""
+
+        if not text or not page_has_meaningful:
+            return ""
+
+        return text
+
+
     def _load_pdf_ocr(self, filepath: str) -> Tuple[str, List[str]]:
         """
         OCR de PDF escaneado con PyMuPDF + OpenCV + Tesseract.
         Perfil 'limpio' (rápido, conserva estructura). Manejo básico de columnas con psm=4.
         """
-        import fitz  # PyMuPDF
+        try:
+            import fitz  # PyMuPDF
+        except Exception as import_error:
+            log_error(f"PyMuPDF es requerido para OCR: {import_error}")
+            self._register_issue("PyMuPDF no está disponible para ejecutar OCR.")
+            return "", []
         import cv2
         import numpy as np
         import pytesseract
+        from PIL import Image
+        import tempfile
+
+        def _cleanup_tmp(paths: List[str]) -> None:
+            for path in paths:
+                if not path:
+                    continue
+                try:
+                    os.remove(path)
+                except FileNotFoundError:
+                    continue
+                except OSError:
+                    # En Windows puede haber procesos que mantengan el handler un instante.
+                    pass
 
         pages_text: List[str] = []
         log_info("🧠 Iniciando OCR página por página...")
 
+        previous_tempdir = getattr(pytesseract.pytesseract, "TEMP_DIR", None)
+
         try:
-            pdf_document = fitz.open(filepath)
-            total = len(pdf_document)
+            with tempfile.TemporaryDirectory(prefix="tess_tmp_") as tess_tempdir:
+                pytesseract.pytesseract.TEMP_DIR = tess_tempdir
 
-            for i, page in enumerate(pdf_document):
-                if i % 5 == 0:
-                    log_info(f"OCR procesando página {i+1}/{total}")
+                pdf_document = fitz.open(filepath)
+                total = len(pdf_document)
 
-                # Render a imagen a 200 dpi (suele ser suficiente)
-                pix = page.get_pixmap(dpi=200)
-                img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, 3)
+                for i, page in enumerate(pdf_document):
+                    if i % 5 == 0:
+                        log_info(f"OCR procesando página {i+1}/{total}")
 
-                # Preproceso básico para OCR
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                gray = cv2.bilateralFilter(gray, 11, 17, 17)
-                thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                            cv2.THRESH_BINARY, 11, 2)
+                    page_text = ""
+                    try:
+                        pix = page.get_pixmap(dpi=200)
+                        img = np.frombuffer(
+                            pix.samples, dtype=np.uint8
+                        ).reshape(pix.height, pix.width, pix.n)
 
-                # OCR en español, psm=4 respeta bloques (funciona aceptable con doble columna)
-                text = pytesseract.image_to_string(thresh, lang="spa", config="--psm 4")
-                pages_text.append(text.strip())
+                        if pix.n == 4:
+                            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+                        elif pix.n == 1:
+                            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-            pdf_document.close()
+                        del pix
+
+                        # Preproceso básico para OCR
+                        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                        gray = cv2.bilateralFilter(gray, 11, 17, 17)
+                        thresh = cv2.adaptiveThreshold(
+                            gray,
+                            255,
+                            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                            cv2.THRESH_BINARY,
+                            11,
+                            2,
+                        )
+
+                        pil_image = Image.fromarray(thresh)
+                        image_path = ""
+                        text_path = ""
+                        try:
+                            # Guardamos la imagen en disco para evitar locks de Windows con NamedTemporaryFile.
+                            base_name = os.path.join(
+                                tess_tempdir,
+                                f"page_{i+1}_{uuid.uuid4().hex}",
+                            )
+                            image_path = f"{base_name}.png"
+                            text_path = f"{base_name}.txt"
+                            pil_image.save(image_path)
+
+                            pytesseract.pytesseract.run_tesseract(
+                                image_path,
+                                base_name,
+                                lang="spa",
+                                config="--psm 4",
+                            )
+
+                            if os.path.exists(text_path):
+                                with open(text_path, "r", encoding="utf-8", errors="ignore") as fh:
+                                    page_text = fh.read()
+                            else:
+                                self._register_issue(
+                                    f"El OCR no devolvió texto en la página {i+1}."
+                                )
+                        except PermissionError as page_error:
+                            log_warn(f"OCR falló en la página {i+1}: {page_error}")
+                            self._register_issue(
+                                f"OCR falló en la página {i+1}."
+                            )
+                        except Exception as page_error:
+                            log_warn(f"OCR falló en la página {i+1}: {page_error}")
+                            self._register_issue(
+                                f"OCR falló en la página {i+1}."
+                            )
+                        finally:
+                            pil_image.close()
+                            _cleanup_tmp([image_path, text_path])
+                    finally:
+                            pil_image.close()
+                            _cleanup_tmp([image_path, text_path])
+
+                pdf_document.close()
 
             # Concatenar con separadores de página
             pages_with_tags = [f"=== PAGE {i+1} ===\n{p}" for i, p in enumerate(pages_text)]
@@ -467,13 +707,83 @@ class DocumentLoader:
 
         except Exception as e:
             log_error(f"❌ Error durante OCR: {e}")
-            return "", []
+            self._register_issue("El OCR no pudo procesar el PDF escaneado.")
+
+            fallback_pages: List[str] = []
+            try:
+                with fitz.open(filepath) as pdf_document:
+                    fallback_pages = [""] * len(pdf_document)
+            except Exception:
+                fallback_pages = []
+
+            return "", fallback_pages
+        finally:
+            if previous_tempdir is not None:
+                pytesseract.pytesseract.TEMP_DIR = previous_tempdir
+            elif hasattr(pytesseract.pytesseract, "TEMP_DIR"):
+                delattr(pytesseract.pytesseract, "TEMP_DIR")
 
 
 
     # ------------------------------------------------------------
     # Tablas PDF con Camelot (export a CSV por documento)
     # ------------------------------------------------------------
+    def _save_camelot_tables(
+        self,
+        tables: Any,
+        base_dir: str,
+        tables_meta: List[Dict[str, Any]],
+    ) -> int:
+        """Guarda tablas de Camelot en CSV y actualiza metadata.
+
+        Devuelve el número de tablas válidas persistidas.
+        """
+
+        if not tables:
+            return 0
+
+        valid_count = 0
+
+        for idx, table in enumerate(tables):
+            try:
+                df = getattr(table, "df", None)
+                if df is None or df.empty:
+                    continue
+
+                if df.shape[0] < 2 or df.shape[1] < 2:
+                    # Filtrar tablas triviales o con datos incompletos.
+                    continue
+
+                page_number = getattr(table, "page", None)
+                if page_number is None:
+                    parsing_report = getattr(table, "parsing_report", None)
+                    if isinstance(parsing_report, dict):
+                        page_number = parsing_report.get("page")
+
+                if not page_number:
+                    page_number = "unknown"
+
+                out_name = f"page_{page_number}_{idx + 1}.csv"
+                out_path = os.path.join(base_dir, out_name)
+                ensure_dir(base_dir)
+                df.to_csv(out_path, index=False)
+
+                tables_meta.append(
+                    {
+                        "page": page_number,
+                        "path": out_path.replace("\\", "/"),
+                    }
+                )
+                valid_count += 1
+            except Exception as exc:  # pragma: no cover - protección adicional
+                log_warn(f"No se pudo guardar tabla {idx + 1}: {exc}")
+                self._register_issue(
+                    f"Fallo al exportar tabla {idx + 1} detectada por Camelot"
+                )
+
+        return valid_count
+    
+    
     def _extract_pdf_tables(self, filepath: str) -> List[Dict[str, Any]]:
         """
         Extrae tablas de un PDF usando Camelot.
@@ -490,6 +800,7 @@ class DocumentLoader:
             import camelot  # type: ignore
         except Exception:
             log_warn("Camelot no está instalado. Saltando extracción de tablas PDF.")
+            self._register_issue("Camelot no está disponible; no se extrajeron tablas del PDF.")
             return tables_meta
 
         # 1) Construir carpeta de salida: data/outputs/tables/<nombre_sin_ext>/
@@ -509,6 +820,7 @@ class DocumentLoader:
             valid_count = self._save_camelot_tables(tables, base_dir, tables_meta)
         except Exception as e:
             log_warn(f"Fallo 'lattice': {e}")
+            self._register_issue("Camelot falló con el modo lattice.")
             valid_count = 0
 
         # 3) Si no encontró nada útil, intentamos 'stream' (detecta columnas por espacios)
@@ -523,6 +835,7 @@ class DocumentLoader:
                 valid_count = self._save_camelot_tables(tables, base_dir, tables_meta)
             except Exception as e:
                 log_warn(f"Fallo 'stream': {e}")
+                self._register_issue("Camelot falló con el modo stream.")
 
         log_info(f"Tablas extraídas: {len(tables_meta)}")
         return tables_meta

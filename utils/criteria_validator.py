@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import unicodedata
 from pathlib import Path, PureWindowsPath
 from typing import List
 
@@ -15,6 +16,28 @@ except ModuleNotFoundError:  # pragma: no cover - fallback when package not on s
     if str(repo_root) not in sys.path:
         sys.path.append(str(repo_root))
     from utils.validators import VALIDATORS, ValidationResult
+
+
+def _normalize_filename(name: str) -> str:
+    """Return ``name`` lowercased and without diacritical marks."""
+
+    normalized = unicodedata.normalize("NFKD", name)
+    return "".join(ch for ch in normalized if not unicodedata.combining(ch)).lower()
+
+
+def _resolve_with_normalized(candidate: Path) -> Path | None:
+    """Return an existing path whose name matches ``candidate`` ignoring accents."""
+
+    parent = candidate.parent
+    try:
+        entries = list(parent.iterdir())
+    except FileNotFoundError:
+        return None
+    normalized_target = _normalize_filename(candidate.name)
+    for entry in entries:
+        if _normalize_filename(entry.name) == normalized_target:
+            return entry
+    return None
 
 
 def _resolve_path(path: Path) -> Path:
@@ -56,12 +79,18 @@ def _resolve_path(path: Path) -> Path:
     for candidate in candidates:
         if candidate.exists():
             return candidate
+        normalized_candidate = _resolve_with_normalized(candidate)
+        if normalized_candidate and normalized_candidate.exists():
+            return normalized_candidate
         try:
             resolved = candidate.resolve(strict=False)
         except RuntimeError:
             resolved = candidate
         if resolved.exists():
             return resolved
+        normalized_resolved = _resolve_with_normalized(resolved)
+        if normalized_resolved and normalized_resolved.exists():
+            return normalized_resolved
 
     return path
 
@@ -78,10 +107,20 @@ def validate_file(path: Path) -> ValidationResult:
         result = ValidationResult()
         result.errors.append(f"No se pudo cargar '{resolved_path}': {exc}")
         return result
-
+    
     tipo = data.get("tipo_informe")
-    if tipo in VALIDATORS:
-        return VALIDATORS[tipo](data)
+    validator = VALIDATORS.get(tipo)
+    if validator is not None:
+        validator_result = validator(data)
+        if isinstance(validator_result, ValidationResult):
+            return validator_result
+
+        fallback = ValidationResult()
+        fallback.errors.append(
+            f"El validador registrado para '{tipo}' devolvió un resultado inesperado "
+            f"({type(validator_result).__name__})."
+        )
+        return fallback
 
     result = ValidationResult()
     result.warnings.append(
@@ -131,8 +170,13 @@ def _format_output(path: Path, result: ValidationResult) -> List[str]:
 
 def main(argv: List[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Valida archivos de criterios para el evaluador.")
-    parser.add_argument("files", nargs="+", type=Path, help="Rutas de archivos JSON a validar")
+    parser.add_argument("files", nargs="*", type=Path, help="Rutas de archivos JSON a validar")
     args = parser.parse_args(argv)
+
+    if not args.files:
+        parser.print_usage(sys.stdout)
+        print("No se proporcionaron archivos para validar.")
+        return 0
 
     exit_code = 0
     for file_path in args.files:
@@ -151,7 +195,6 @@ def main(argv: List[str] | None = None) -> int:
         if not result.ok():
             exit_code = 1
     return exit_code
-
 
 if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
     raise SystemExit(main())
