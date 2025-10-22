@@ -1,0 +1,1148 @@
+{
+    "tipo_informe": "institucional",
+    "version": "2024.1",
+    "last_update": "2025-10-21",
+    "descripcion": "Metodolog\u00eda de evaluaci\u00f3n para informes institucionales con 12 secciones y tres dimensiones principales.",
+    "escala_likert_defecto": [
+        {
+            "valor": 0,
+            "descripcion": "No cumple."
+        },
+        {
+            "valor": 1,
+            "descripcion": "Cumple muy poco."
+        },
+        {
+            "valor": 2,
+            "descripcion": "Cumple parcialmente."
+        },
+        {
+            "valor": 3,
+            "descripcion": "Cumple bastante."
+        },
+        {
+            "valor": 4,
+            "descripcion": "Cumple totalmente."
+        }
+    ],
+    "metrica_global": {
+        "metodo": "suma_ponderada",
+        "orden_agregacion": [
+            "pregunta",
+            "dimension",
+            "seccion",
+            "global"
+        ],
+        "descripcion": "El puntaje total es la suma de los puntajes de cada secci\u00f3n multiplicados por su ponderaci\u00f3n.",
+        "formula_global": "E*0.25 + C*0.40 + P*0.35",
+        "escala_resultado": {
+            "min": 0,
+            "max": 4,
+            "unidad": "likert_normalizado"
+        }
+    },
+    "dimensiones_defecto": {
+        "Estructura": 0.25,
+        "Claridad y coherencia": 0.4,
+        "Pertinencia": 0.35
+    },
+    "secciones": [
+        {
+            "tipo": "segmento",
+            "id_segmenter": "resumen_ejecutivo",
+            "titulo": "Resumen Ejecutivo",
+            "ponderacion": 0.07,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.3846,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "RESUMEN_EJECUTIVO_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se sintetiza el avance en la implementaci\u00f3n de las AEI, conclusiones y recomendaciones obtenidos en la evaluaci\u00f3n?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.6154,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "RESUMEN_EJECUTIVO_CLARIDAD_1",
+                            "texto": "\u00bfLa s\u00edntesis del avance de implementaci\u00f3n de las AEI, conclusiones y recomendaciones es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "RESUMEN_EJECUTIVO_CLARIDAD_2",
+                            "texto": "\u00bfLa s\u00edntesis del avance de implementaci\u00f3n de las AEI, conclusiones y recomendaciones muestra coherencia en su presentaci\u00f3n?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "prioridades_politica_institucional",
+            "titulo": "Prioridades de la pol\u00edtica institucional",
+            "ponderacion": 0.07,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.3846,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "PRIORIDADES_POLITICA_INSTITUCIONAL_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en la que se describe la misi\u00f3n de la entidad y las principales prioridades de su pol\u00edtica institucional?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "PRIORIDADES_POLITICA_INSTITUCIONAL_ESTRUCTURA_2",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en la que se presenta la priorizaci\u00f3n realizada en el paso de delimitaci\u00f3n del alcance de la evaluaci\u00f3n?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.6154,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "PRIORIDADES_POLITICA_INSTITUCIONAL_CLARIDAD_1",
+                            "texto": "\u00bfLa descripci\u00f3n de la misi\u00f3n de la entidad y las prioridades de la pol\u00edtica institucional es clara y coherente?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "PRIORIDADES_POLITICA_INSTITUCIONAL_CLARIDAD_2",
+                            "texto": "\u00bfLa priorizaci\u00f3n en la delimitaci\u00f3n del alcance de la evaluaci\u00f3n es clara y coherente?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "analisis_oei",
+            "titulo": "An\u00e1lisis de resultados de los objetivos estrat\u00e9gicos institucionales (OEI)",
+            "ponderacion": 0.1,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_OEI_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene los principales resultados de cada uno de sus OEI?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_OEI_CLARIDAD_1",
+                            "texto": "\u00bfEl an\u00e1lisis de resultados de los OEI es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "ANALISIS_OEI_CLARIDAD_2",
+                            "texto": "\u00bfEl an\u00e1lisis de resultados de los OEI es coherente con la misi\u00f3n y prioridad institucional de la entidad?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_OEI_PERTINENCIA_1",
+                            "texto": "\u00bfEl an\u00e1lisis de los resultados de cada objetivo estrat\u00e9gico es pertinente para alcanzar los resultados misionales de la entidad (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "diagnostico_oei_priorizados",
+            "titulo": "Diagn\u00f3stico sobre los OEI priorizados con bajo nivel de cumplimiento",
+            "ponderacion": 0.08,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "DIAGNOSTICO_OEI_PRIORIZADOS_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en la que se analiza los OEI priorizados por su nivel cr\u00edtico de resultados, en relaci\u00f3n con sus AEI?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "DIAGNOSTICO_OEI_PRIORIZADOS_CLARIDAD_1",
+                            "texto": "\u00bfEl an\u00e1lisis de resultados de los OEI priorizados es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "DIAGNOSTICO_OEI_PRIORIZADOS_CLARIDAD_2",
+                            "texto": "\u00bfEl an\u00e1lisis de resultados de los OEI priorizados por su nivel cr\u00edtico es coherente en relaci\u00f3n con sus AEI?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "DIAGNOSTICO_OEI_PRIORIZADOS_PERTINENCIA_1",
+                            "texto": "\u00bfEl an\u00e1lisis de los OEI priorizados es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "analisis_implementacion_aei",
+            "titulo": "An\u00e1lisis de implementaci\u00f3n de las acciones estrat\u00e9gicas institucionales (AEI)",
+            "ponderacion": 0.1,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_IMPLEMENTACION_AEI_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en la que se analiza el nivel de avance en la implementaci\u00f3n de todas las AEI?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_IMPLEMENTACION_AEI_CLARIDAD_1",
+                            "texto": "\u00bfEl an\u00e1lisis de la implementaci\u00f3n de todas las AEI es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "ANALISIS_IMPLEMENTACION_AEI_CLARIDAD_2",
+                            "texto": "\u00bfEl an\u00e1lisis de resultados de las AEI es coherente en relaci\u00f3n con sus indicadores y AO e inversiones?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_IMPLEMENTACION_AEI_PERTINENCIA_1",
+                            "texto": "\u00bfEl an\u00e1lisis de la implementaci\u00f3n de todas las AEI es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "analisis_aei_oei",
+            "titulo": "An\u00e1lisis de implementaci\u00f3n de las AEI de los OEI priorizados",
+            "ponderacion": 0.08,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_AEI_OEI_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se aborda el an\u00e1lisis de la implementaci\u00f3n de las AEI de los OEI priorizados?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_AEI_OEI_CLARIDAD_1",
+                            "texto": "\u00bfEl an\u00e1lisis de la implementaci\u00f3n de las AEI de los OEI priorizados es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "ANALISIS_AEI_OEI_CLARIDAD_2",
+                            "texto": "\u00bfEl an\u00e1lisis de implementaci\u00f3n de las AEI de los OEI priorizados es coherente (hay un hilo conductor entre las AEI y los OEI)?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_AEI_OEI_PERTINENCIA_1",
+                            "texto": "\u00bfEl an\u00e1lisis de la implementaci\u00f3n de las AEI de los OEI priorizados es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "analisis_productos_aei",
+            "titulo": "An\u00e1lisis de los productos de la AEI",
+            "ponderacion": 0.08,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_PRODUCTOS_AEI_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se aborda el an\u00e1lisis de los productos a trav\u00e9s de los cuales se concretan las AEI cr\u00edticas?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_PRODUCTOS_AEI_CLARIDAD_1",
+                            "texto": "\u00bfEl an\u00e1lisis de implementaci\u00f3n de los productos a trav\u00e9s de los cu\u00e1les se concretan las AEI cr\u00edticas es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "ANALISIS_PRODUCTOS_AEI_CLARIDAD_2",
+                            "texto": "\u00bfEl an\u00e1lisis de implementaci\u00f3n de los productos a trav\u00e9s de los cu\u00e1les se concretan las AEI cr\u00edticas es coherente (hay una correcta vinculaci\u00f3n entre los productos y las AEI)?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_PRODUCTOS_AEI_PERTINENCIA_1",
+                            "texto": "\u00bfEl an\u00e1lisis de implementaci\u00f3n de los productos a trav\u00e9s de los cu\u00e1les se concretan las AEI cr\u00edticas es pertinente (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "analisis_ejecucion_operativa",
+            "titulo": "An\u00e1lisis de la ejecuci\u00f3n operativa en las AEI cr\u00edticas",
+            "ponderacion": 0.08,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_EJECUCION_OPERATIVA_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se aborda el an\u00e1lisis de las AO e inversiones de las AEI cr\u00edticas?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_EJECUCION_OPERATIVA_CLARIDAD_1",
+                            "texto": "\u00bfEl an\u00e1lisis de implementaci\u00f3n de las actividades operativas de las AEI cr\u00edticas es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "ANALISIS_EJECUCION_OPERATIVA_CLARIDAD_2",
+                            "texto": "\u00bfEl an\u00e1lisis de implementaci\u00f3n de las AO e inversiones de las AEI cr\u00edticas es coherente (hay un hilo conductor entre las AO y AEI)?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANALISIS_EJECUCION_OPERATIVA_PERTINENCIA_1",
+                            "texto": "\u00bfEl an\u00e1lisis de implementaci\u00f3n de las AEI cr\u00edticas es pertinente con el avance de sus AO e inversiones (detalla los principales hallazgos y factores que influyeron en su cumplimiento)?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "aplicacion_recomendaciones",
+            "titulo": "Aplicaci\u00f3n de las recomendaciones para mejorar la implementaci\u00f3n de las AEI",
+            "ponderacion": 0.07,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.3846,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "APLICACION_RECOMENDACIONES_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se describe la aplicaci\u00f3n de las recomendaciones obtenidas de la \u00faltima evaluaci\u00f3n semestral?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.6154,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "APLICACION_RECOMENDACIONES_CLARIDAD_1",
+                            "texto": "\u00bfLa descripci\u00f3n de la forma en la que se han aplicado las recomendaciones de la \u00faltima evaluaci\u00f3n semestral es clara (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "APLICACION_RECOMENDACIONES_CLARIDAD_2",
+                            "texto": "\u00bfLa descripci\u00f3n de la forma en la que se han aplicado las recomendaciones de la \u00faltima evaluaci\u00f3n semestral es coherente (hay relaci\u00f3n entre las recomendaciones aplicadas y los resultados obtenidos)?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "conclusiones",
+            "titulo": "Conclusiones",
+            "ponderacion": 0.1,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "CONCLUSIONES_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se aborda, a trav\u00e9s de juicios de valor, el logro alcanzado en los OEI y sus aprendizajes?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "CONCLUSIONES_CLARIDAD_1",
+                            "texto": "\u00bfEl desarrollo de las conclusiones respecto de los logros en los OEI y sus aprendizajes es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "CONCLUSIONES_CLARIDAD_2",
+                            "texto": "\u00bfEl desarrollo de las conclusiones respecto de los logros en los OEI y sus aprendizajes es coherente (hay relaci\u00f3n entre lo desarrollado en el informe y las conclusiones a las que se llega)?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "CONCLUSIONES_PERTINENCIA_1",
+                            "texto": "\u00bfEl desarrollo de las conclusiones respecto de los logros en los OEI y sus aprendizajes es pertinente (sintetiza los principales hallazgos del informe de evaluaci\u00f3n)?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "recomendaciones",
+            "titulo": "Recomendaciones",
+            "ponderacion": 0.1,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 0.25,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "RECOMENDACIONES_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se abordan medidas preventivas y correctivas para garantizar el logro de los resultados de los OEI en el siguiente periodo de implementaci\u00f3n del PEI?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Claridad y coherencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.4,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "RECOMENDACIONES_CLARIDAD_1",
+                            "texto": "\u00bfEl desarrollo de las medidas preventivas y correctivas para garantizar el logro de los resultados de los OEI es claro (se entiende al leerla)?",
+                            "ponderacion": 0.5
+                        },
+                        {
+                            "id": "RECOMENDACIONES_CLARIDAD_2",
+                            "texto": "\u00bfEl desarrollo de las medidas preventivas y correctivas para garantizar el logro de los resultados de los OEI es coherente (hay relaci\u00f3n entre los hallazgos y las recomendaciones establecidas)?",
+                            "ponderacion": 0.5
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                },
+                {
+                    "nombre": "Pertinencia",
+                    "tipo_escala": "likert",
+                    "ponderacion": 0.35,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "RECOMENDACIONES_PERTINENCIA_1",
+                            "texto": "\u00bfEl desarrollo de las recomendaciones es pertinente considerando elementos como: aspectos de mejora, unidades org\u00e1nicas responsables y plazos?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cumple."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Cumple muy poco."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Cumple parcialmente."
+                        },
+                        {
+                            "valor": 3,
+                            "descripcion": "Cumple bastante."
+                        },
+                        {
+                            "valor": 4,
+                            "descripcion": "Cumple totalmente."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "anexos",
+            "titulo": "Anexos",
+            "ponderacion": 0.07,
+            "dimensiones": [
+                {
+                    "nombre": "Estructura",
+                    "tipo_escala": "binario",
+                    "ponderacion": 1.0,
+                    "metodo_agregacion": "promedio_ponderado",
+                    "preguntas": [
+                        {
+                            "id": "ANEXOS_ESTRUCTURA_1",
+                            "texto": "\u00bfEl IEI 2023 contiene una secci\u00f3n en donde se presentan la matriz de compromisos, el reporte de seguimiento del PEI/POI?",
+                            "ponderacion": 1.0
+                        }
+                    ],
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No presenta la secci\u00f3n o no contiene el contenido requerido."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Presenta la secci\u00f3n con el contenido requerido."
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
