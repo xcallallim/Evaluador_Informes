@@ -1,3 +1,5 @@
+"""Tests for the criteria validation CLI and registry."""
+
 from __future__ import annotations
 
 import json
@@ -77,6 +79,17 @@ def test_cli_execution(criteria_dir: Path) -> None:
     assert process.returncode == 0, process.stdout + process.stderr
 
 
+def test_validate_file_supports_windows_style_paths(criteria_dir: Path) -> None:
+    """Windows-style absolute paths should be resolved inside the repository."""
+
+    windows_root = Path("C:/dummy/dir") / REPO_ROOT.name
+    windows_style = windows_root / criteria_dir.relative_to(REPO_ROOT) / "metodologia_institucional.json"
+
+    result = validate_file(windows_style)
+
+    assert result.ok(), result.errors
+
+
 def test_cli_output_falls_back_to_ascii(monkeypatch) -> None:
     """Unicode symbols should degrade to ASCII when stdout cannot encode them."""
 
@@ -134,6 +147,7 @@ def test_cli_accepts_repo_relative_paths_from_external_cwd(tmp_path: Path) -> No
     )
 
     assert process.returncode == 0, process.stdout + process.stderr
+
 
 if __name__ == "__main__":
     import pytest

@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import List
 
 try:  # pragma: no cover - allows script execution via ``python utils/criteria_validator.py``
@@ -17,15 +17,66 @@ except ModuleNotFoundError:  # pragma: no cover - fallback when package not on s
     from utils.validators import VALIDATORS, ValidationResult
 
 
+def _resolve_path(path: Path) -> Path:
+    """Resolve ``path`` against common repository locations."""
+
+    repo_root = Path(__file__).resolve().parent.parent
+    repo_name = repo_root.name
+
+    if path.exists():
+        return path
+
+    candidates: list[Path] = []
+
+    if not path.is_absolute():
+        candidates.append(Path.cwd() / path)
+    else:
+        try:
+            parts = list(path.parts)
+        except TypeError:
+            parts = []
+        if parts and repo_name in parts:
+            suffix = Path(*parts[parts.index(repo_name) + 1 :])
+            candidates.append(repo_root / suffix)
+        else:
+            windows_parts = list(PureWindowsPath(str(path)).parts)
+            if repo_name in windows_parts:
+                suffix = Path(*windows_parts[windows_parts.index(repo_name) + 1 :])
+                candidates.append(repo_root / suffix)
+
+    candidates.append(repo_root / path)
+
+    raw = str(path)
+    if repo_name in raw:
+        suffix = raw.split(repo_name, 1)[1].lstrip("/\\")
+        suffix = suffix.replace("\\", "/")
+        if suffix:
+            candidates.append(repo_root / Path(suffix))
+
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+        try:
+            resolved = candidate.resolve(strict=False)
+        except RuntimeError:
+            resolved = candidate
+        if resolved.exists():
+            return resolved
+
+    return path
+
+
 def validate_file(path: Path) -> ValidationResult:
     """Run the validator registered for the JSON report type."""
 
+    resolved_path = _resolve_path(path)
+
     try:
-        with path.open("r", encoding="utf-8") as handle:
+        with resolved_path.open("r", encoding="utf-8") as handle:
             data = json.load(handle)
     except Exception as exc:  # pragma: no cover - defensive logging
         result = ValidationResult()
-        result.errors.append(f"No se pudo cargar '{path}': {exc}")
+        result.errors.append(f"No se pudo cargar '{resolved_path}': {exc}")
         return result
 
     tipo = data.get("tipo_informe")
@@ -85,7 +136,7 @@ def main(argv: List[str] | None = None) -> int:
 
     exit_code = 0
     for file_path in args.files:
-        resolved_path = _resolve_cli_path(file_path)
+        resolved_path = _resolve_path(file_path)
         result = validate_file(resolved_path)
         for line in _format_output(resolved_path, result):
             try:
@@ -100,20 +151,6 @@ def main(argv: List[str] | None = None) -> int:
         if not result.ok():
             exit_code = 1
     return exit_code
-
-
-def _resolve_cli_path(path: Path) -> Path:
-    """Resolve CLI-provided paths relative to the repository when needed."""
-
-    if path.exists():
-        return path
-
-    repo_root = Path(__file__).resolve().parent.parent
-    candidate = repo_root / path
-    if candidate.exists():
-        return candidate
-
-    return path
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entrypoint

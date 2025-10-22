@@ -301,34 +301,125 @@ class DocumentLoader:
         """
         log_info("📄 Analizando PDF...")
 
+        # 1) Intentar primero con PyMuPDF: es rápido y fiable para detectar capa de texto.
+        pymupdf_text = self._try_load_pdf_with_pymupdf(filepath)
+        if pymupdf_text:
+            return pymupdf_text
+
         pages_text: List[str] = []
         is_digital = False
 
-        # 1) Intentar PDF digital con pdfplumber
+        # 2) Intentar PDF digital con pdfplumber
         try:
-            import pdfplumber
-            with pdfplumber.open(filepath) as pdf:
-                for page in pdf.pages:
-                    text = page.extract_text()
-                    if text and text.strip():
-                        is_digital = True
-                    # Respetar saltos tal cual vienen (limpieza ocurrirá en Cleaner)
-                    pages_text.append(text if text else "")
-        except Exception as e:
-            log_warn(f"No se pudo leer como PDF digital. Se intentará OCR. Detalle: {e}")
-            pages_text = []
+            import pdfplumber  # type: ignore
+        except Exception:
+            log_warn(
+                "pdfplumber no está disponible o falló la importación. "
+                "Se procederá al OCR si no se detecta texto con otros métodos."
+            )
+        else:
+            try:
+                with pdfplumber.open(filepath) as pdf:
+                    for page in pdf.pages:
+                        text = page.extract_text() or ""
+                        words = []
+                        try:
+                            words = page.extract_words() or []
+                        except Exception:
+                            # Algunos backends pueden fallar al extraer palabras; continuar silenciosamente.
+                            words = []
 
-        # 2) PDF DIGITAL → devolver
+                        if text.strip() or words:
+                            is_digital = True
+
+                        if not text.strip() and words:
+                            # Fallback para PDFs digitales donde extract_text falla pero sí hay palabras.
+                            text = " ".join(word.get("text", "") for word in words).strip()
+
+                        if not text.strip() and not words:
+                            # Algunos motores devuelven caracteres individuales accesibles via page.chars
+                            # aunque extract_text y extract_words queden vacíos. Reconstruimos líneas simples.
+                            chars = getattr(page, "chars", []) or []
+                            if chars:
+                                is_digital = True
+
+                                # Ordenar por coordenadas para agrupar líneas aproximadas.
+                                sorted_chars = sorted(
+                                    chars,
+                                    key=lambda c: (round(c.get("top", 0.0), 1), c.get("x0", 0.0)),
+                                )
+
+                                from itertools import groupby
+
+                                lines = []
+                                for _, group in groupby(
+                                    sorted_chars, key=lambda c: round(c.get("top", 0.0), 1)
+                                ):
+                                    line_text = "".join(char.get("text", "") for char in group)
+                                    if line_text.strip():
+                                        lines.append(line_text)
+
+                                if lines:
+                                    text = "\n".join(lines)
+
+                        # Respetar saltos tal cual vienen (limpieza ocurrirá en Cleaner)
+                        pages_text.append(text)
+            except Exception as e:
+                log_warn(
+                    "No se pudo leer como PDF digital con pdfplumber. "
+                    f"Detalle: {e}. Se procederá al OCR si no hay más opciones."
+                )
+                pages_text = []
+
+        # 3) PDF DIGITAL → devolver
         if is_digital:
-            log_info("✅ PDF digital detectado")
+            log_info("✅ PDF digital detectado (pdfplumber)")
             pages_with_tags = [f"=== PAGE {i+1} ===\n{p.strip()}" for i, p in enumerate(pages_text)]
             full_text = "\n\n".join(pages_with_tags)
             return full_text, pages_text
 
-        # 3) Sino → usar OCR
+        # 4) Sino → usar OCR
         log_warn("⚠ PDF escaneado detectado. Ejecutando OCR...")
         return self._load_pdf_ocr(filepath)
+    
+    def _try_load_pdf_with_pymupdf(self, filepath: str) -> Optional[Tuple[str, List[str]]]:
+        """Extrae texto usando PyMuPDF para evitar OCR si el PDF tiene capa de texto."""
 
+        try:
+            import fitz  # type: ignore
+        except Exception:
+            log_warn(
+                "PyMuPDF no está disponible para el fallback de PDFs digitales."
+            )
+            return None
+
+        try:
+            pages_text: List[str] = []
+            is_digital = False
+
+            with fitz.open(filepath) as pdf_document:
+                for page in pdf_document:
+                    text = page.get_text("text")
+                    if text and text.strip():
+                        is_digital = True
+                    pages_text.append(text.strip() if text else "")
+
+            if not is_digital:
+                return None
+
+            log_info("✅ PDF digital detectado mediante fallback PyMuPDF")
+            pages_with_tags = [
+                f"=== PAGE {i+1} ===\n{p.strip()}" for i, p in enumerate(pages_text)
+            ]
+            full_text = "\n\n".join(pages_with_tags)
+            return full_text, pages_text
+
+        except Exception as e:
+            log_warn(
+                "Fallback con PyMuPDF falló. Se procederá a OCR. "
+                f"Detalle: {e}"
+            )
+            return None
 
     def _load_pdf_ocr(self, filepath: str) -> Tuple[str, List[str]]:
         """

@@ -1,21 +1,36 @@
 # py tests/test_loader_ocr.py
 # python -m tests.test_loader_ocr
 
-import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import pytest
 
 from data.preprocessing.loader import DocumentLoader
 
 loader = DocumentLoader()
 
-doc = loader.load("data/inputs/test_pdf_ocr.pdf")
+def test_digital_pdf_is_loaded_without_ocr(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Digital PDFs should bypass OCR and return the embedded text."""
 
-print("\n✅ METADATOS DEL DOCUMENTO:")
-print(doc.metadata)
+    loader = DocumentLoader()
 
-print("\n✅ CONTENIDO OCR (primeros 500 caracteres):")
-print(doc.content[:500])
+    def fail_if_called(_path: str):  # pragma: no cover - defensive guard
+        raise AssertionError("_load_pdf_ocr should not run for digital PDFs")
+    
+    monkeypatch.setattr(loader, "_load_pdf_ocr", fail_if_called)
 
-with open("data/outputs/loaded_test.txt", "w", encoding="utf-8") as f:
-    f.write(doc.content)
-print("\n📝 Archivo guardado en: data/outputs/loaded_test.txt")
+    doc = loader.load("data/inputs/test_pdf_ocr.pdf", extract_tables=False, extract_images=False)
+
+    assert "Resumen Ejecutivo" in doc.content
+    assert doc.metadata["extension"] == ".pdf"
+    assert doc.metadata["filename"] == "test_pdf_ocr.pdf"
+    assert len(doc.metadata["pages"]) >= 1
+
+if __name__ == "__main__":
+    import pytest
+    
+    result = pytest.main(["-s", __file__])
+    if result == 0:
+        print("\n✅ Todas las pruebas del loader OCR pasaron correctamente.")
+    else:
+        print("\n❌ Algunas pruebas del loader OCR fallaron. Revisa el detalle anterior.")
+    
+    raise SystemExit(pytest.main(["-s", __file__]))

@@ -429,7 +429,7 @@
                     "id": "ANALISIS_IMPLEMENTACION_P6",
                     "grupo": "Análisis de la implementación",
                     "texto": "¿Se evalúan las recomendaciones de la evaluación anterior y su grado de implementación en la mejora de los servicios?",
-                    "ponderacion": 0.1667,
+                    "ponderacion": 0.1665,
                     "responsable": "ia",
                     "niveles": [
                         {
@@ -653,7 +653,7 @@
                     "id": "MANUAL_P3",
                     "grupo": "Otros",
                     "texto": "¿Se ha utilizado alguna técnica de recolección para la información complementaria (encuestas, entrevistas, grupos focales, talleres, estudios de caso, panel de expertos, revisión bibliográfica, etc.)?",
-                    "ponderacion": 0.3333,
+                    "ponderacion": 0.3334,
                     "responsable": "especialista",
                     "niveles": null,
                     "tipo_escala": "manual"

@@ -1,13 +1,10 @@
 # py tests/test_loader_pdf.py
 # python -m tests.test_loader_pdf
 
-import os
-import sys
 from pathlib import Path
+from typing import Dict
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-import pytest
+import pytest   
 
 from data.preprocessing.loader import DocumentLoader
 
