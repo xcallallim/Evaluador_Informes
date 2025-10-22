@@ -1,8 +1,58 @@
 {
-  "institucional": [
-    "Estructura",
-    "Claridad y coherencia",
-    "Pertinencia"
-  ],
-  "politica nacional": []
+    "version": "2024.1",
+    "tipos": {
+        "institucional": {
+            "descripcion": "Informe de evaluaci\u00f3n institucional con 12 secciones enlazadas a dimensiones de estructura, claridad y pertinencia.",
+            "archivo": "metodologia_institucional.json",
+            "secciones": 12,
+            "dimensiones": [
+                "Estructura",
+                "Claridad y coherencia",
+                "Pertinencia"
+            ],
+            "ponderaciones": {
+                "secciones": {
+                    "resumen_ejecutivo": 0.07,
+                    "prioridades_politica_institucional": 0.07,
+                    "analisis_oei": 0.1,
+                    "diagnostico_oei_priorizados": 0.08,
+                    "analisis_implementacion_aei": 0.1,
+                    "analisis_aei_oei": 0.08,
+                    "analisis_productos_aei": 0.08,
+                    "analisis_ejecucion_operativa": 0.08,
+                    "aplicacion_recomendaciones": 0.07,
+                    "conclusiones": 0.1,
+                    "recomendaciones": 0.1,
+                    "anexos": 0.07
+                },
+                "dimensiones": {
+                    "Estructura": 0.25,
+                    "Claridad y coherencia": 0.4,
+                    "Pertinencia": 0.35
+                }
+            }
+        },
+        "politica_nacional": {
+            "descripcion": "Informe anual de pol\u00edtica nacional basado en 22 preguntas con escala 0-2 y normalizaci\u00f3n porcentual.",
+            "archivo": "metodologia_politica_nacional.json",
+            "bloques": 8,
+            "escala": {
+                "tipo": "likert",
+                "min": 0,
+                "max": 2
+            },
+            "ponderaciones": {
+                "bloques": {
+                    "resumen_ejecutivo": 0.1,
+                    "descripcion_politica": 0.12,
+                    "analisis_resultados": 0.2,
+                    "analisis_implementacion": 0.24,
+                    "conclusiones": 0.1,
+                    "recomendaciones": 0.1,
+                    "anexos": 0.07,
+                    "manual": 0.07
+                }
+            }
+        }
+    }
 }

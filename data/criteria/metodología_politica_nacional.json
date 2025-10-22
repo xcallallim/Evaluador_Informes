@@ -1,0 +1,666 @@
+{
+    "tipo_informe": "politica_nacional",
+    "version": "2024.1",
+    "descripcion": "Metodología basada en 22 preguntas con escala de 0 a 2 y proceso de normalización.",
+    "escala": {
+        "tipo": "rango_0_2",
+        "tipo_valores": "float",
+        "min": 0,
+        "max": 2,
+        "descripcion": "0: No cumple, 1: Cumple parcialmente, 2: Cumple totalmente"
+    },
+    "metodologia": {
+        "pasos": [
+            "Calcular el puntaje de cada bloque como la suma ponderada de las respuestas a sus preguntas.",
+            "Multiplicar el puntaje de cada bloque por su ponderación.",
+            "Sumar los puntajes ponderados y normalizar dividiendo entre el puntaje máximo posible (ponderaciones * escala.max).",
+            "Multiplicar el resultado por 100 para obtener un índice porcentual."
+        ],
+        "formula_normalizacion": "PF = (Σ_b (Σ_p respuesta_p * ponderacion_p) * ponderacion_b) / 2 * 100",
+        "resultado": {
+            "unidad": "porcentaje",
+            "rango": [
+                0,
+                100
+            ]
+        }
+    },
+    "bloques": [
+        {
+            "tipo": "segmento",
+            "id_segmenter": "resumen_ejecutivo",
+            "titulo": "Resumen Ejecutivo",
+            "ponderacion": 0.1,
+            "preguntas": [
+                {
+                    "id": "RESUMEN_EJECUTIVO_P1",
+                    "grupo": "Resumen Ejecutivo",
+                    "texto": "¿Se describe de manera breve el cumplimiento de los objetivos prioritarios, situación de cumplimiento de los servicios, y situación del problema público respecto al futuro deseado?",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No cuenta con resumen ejecutivo o no menciona nada referido a objetivos prioritarios, situación de cumplimiento de los servicios y la situación futura deseada."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Menciona solo el nivel de avance de los objetivos o de los servicios, mas no existe un comentario de la evaluación."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Brinda alcances sobre si los objetivos y servicios se encuentran avanzando según lo proyectado, sin comentario de evaluación."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Menciona los avances a nivel de objetivo y servicio, y prioriza lo que se evaluará."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Menciona el cumplimiento de los objetivos, servicios y situación futura, explicando si se reduce la brecha del problema público según lo proyectado."
+                        }
+                    ]
+                },
+                {
+                    "id": "RESUMEN_EJECUTIVO_P2",
+                    "grupo": "Resumen Ejecutivo",
+                    "texto": "¿Se describe de manera breve las medidas recomendadas a adoptar en el corto plazo (dos siguientes años) para mejorar el cumplimiento de la política nacional?",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se describe alcances sobre acciones inmediatas o próximas de los actores involucrados."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se brinda algunos alcances generales sobre acciones que pueden ser desarrolladas de manera inmediata o próxima por parte de los actores involucrados en la Política con la finalidad de mejorar la implementación de esta."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se brinda alcances sobre acciones que puedan ser desarrolladas de manera inmediata o próxima por parte de los actores involucrados en  la Política con la finalidad de mejorar la implementación de esta."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "descripcion_politica",
+            "titulo": "Descripción de la política nacional",
+            "ponderacion": 0.12,
+            "preguntas": [
+                {
+                    "id": "DESCRIPCION_POLITICA_P1",
+                    "grupo": "Descripción de la política nacional",
+                    "texto": "Se describe de manera clara: 1. El problema público, 2. La situación futura deseada, 3. La población objetivo que atiende la política nacional, 4. La articulación de los objetivos de la Política con los objetivos de otros instrumentos (Políticas Nacionales, Política de Estado, PGG, PEDN u ODS).",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se menciona nada referido al problema público, situación futura deseada, población objetivo o articulación de los objetivos de la Política con los objetivos de otros instrumentos."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Menciona solo el problema público que se busca atender en la Política."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Menciona el problema público, la situación futura deseada que se ha propuesto en la Política."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Menciona el problema público, la situación futura deseada y la población objetivo que busca atender la política nacional."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Menciona el problema público, la situación futura deseada, la población objetivo,  y la articulación que existe de los objetivos prioritarios con otros instrumentos de política."
+                        }
+                    ]
+                },
+                {
+                    "id": "DESCRIPCION_POLITICA_P2",
+                    "grupo": "Descripción de la política nacional",
+                    "texto": "¿Se ha realizado una delimitación del alcance de la evaluación considerando las alertas identificadas en los reportes de seguimiento a nivel de OP y servicios de la política nacional?",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se menciona nada referido a aquellos elementos (OP y servicios) críticos que requieren ser evaluados."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado una inadecuada delimitación. Solo se ha acotado el análisis pero sin quedar claro el alcance o las necesidades de evidencia."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado una delimitación indicando el alcance pero sin una justificación que permita comprender la orientación de la evaluación."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se ha realizado una delimitación de la evaluación, indicando claramente el alcance y su justificación (necesidadesde evidencia), pero se encuentra divorciado de los resultados del seguimiento."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se presentan aquellos objetivo prioritario y servicios que no cuentan con resultados favorables en el reporte de seguimiento y que requieren ser evaluados o se ha realizado una delimitación de la evaluación, indicando claramente el alcance y su justificación (necesidadesde evidencia), haciendo alución a las principales alertas identificadas durante el seguimiento."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "analisis_resultados",
+            "titulo": "Análisis de los resultados de la política nacional",
+            "ponderacion": 0.2,
+            "preguntas": [
+                {
+                    "id": "ANALISIS_RESULTADOS_P1",
+                    "grupo": "Análisis de los resultados de la política nacional",
+                    "texto": "¿Se realiza una valoración integral del cumplimiento de la política nacional, en base al avance de los objetivos prioritarios?",
+                    "ponderacion": 0.25,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado una valoración integral"
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado una valoración parcial y subjetiva, ignorando el uso de indicadores y logros esperados."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado una valoración parcial, se ha comentado menos de la mitad de los OPs debido a falta de información."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se ha realizado una valoración parcial que cubre la mayoría de los OP e identifica vacíos de información pendientes."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se presenta una valoración integral para todos los OP, con análisis de resultados y vacíos de información completamente documentados."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_RESULTADOS_P2",
+                    "grupo": "Análisis de los resultados de la política nacional",
+                    "texto": "¿Se realiza un análisis de los OP considerando lo que se busca lograr o alcanzar?",
+                    "ponderacion": 0.25,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado un análisis según OP."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado un análisis parcial, sin considerar todos los OP o en su defecto, sin considerar la delimitación de la evaluación."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado un análisis de lo logrado, pero de manera subjetiva, sin utilizar la información de los indicadores."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se ha realizado un análisis de lo logrado, respecto a lo esperado, para cada OP, usando información parcial de indicadores (omitiendo logros esperados por ejemplo), considerando además la delimitación de la evaluación."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se ha realizado un análisis de lo logrado, respecto a lo esperado, para cada OP, usando la información de los indicadores y logros esperados, considerando además la delimitación de la evaluación."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_RESULTADOS_P3",
+                    "grupo": "Análisis de los resultados de la política nacional",
+                    "texto": "¿Se realiza un análisis de otros resultados que se busca alcanzar en la política nacional?",
+                    "ponderacion": 0.25,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se realiza un análisis adicional según OP más allá de sus indicadores."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se describe el cumplimiento de los servicios pero sin realizar vínculo alguno con el cumplimiento de los OP."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se realiza un intento por vincular los resultados de los OP con sus servicios, pero sin quedar clara la contribución ni el cumplimiento de los estándares."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se vinculan la mayoría de resultados de los OP con sus servicios, aunque persisten casos sin explicar completamente los estándares."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se vinculan todos los resultados de los OP con sus servicios, explicitando la contribución y el cumplimiento de los estándares en cada caso."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_RESULTADOS_P4",
+                    "grupo": "Análisis de los resultados de la política nacional",
+                    "texto": "¿Se analiza factores que influyeron en los resultados?",
+                    "ponderacion": 0.25,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado un análisis de factores según OP."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado un análisis general de  factores sin diferenciar según OP."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado un análisis de factores específico para cada OP pero parcialmente coherente con los resultados de los indicadores y cuya influencia no queda clara."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se ha realizado un análisis de factores para cada OP, que es coherente con los resultados de los indicadores para todos los casos pero sin quedar totalmente claro la influencia de los factores sobre los OP."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se ha realizado un análisis de factores para cada OP, que es coherente con los resultados de los indicadores y que contiene la explicación de la influencia sobre los OP para todos los casos."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "analisis_implementacion",
+            "titulo": "Análisis de la implementación",
+            "ponderacion": 0.24,
+            "preguntas": [
+                {
+                    "id": "ANALISIS_IMPLEMENTACION_P1",
+                    "grupo": "Análisis de la implementación",
+                    "texto": "¿Se realiza un análisis detallado del avance de la implementación de los servicios, evaluando su cobertura y calidad?",
+                    "ponderacion": 0.1667,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado ningún análisis sobre el avance de la implementación de los servicios, ni se ha evaluado la cobertura o calidad."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado un análisis parcial y limitado de la implementación, evaluando solo aspectos de la cobertura o la calidad de los servicios."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado una descripción de la implementación, cubriendo tanto la cobertura como la calidad, pero sin profundidad en ciertos aspectos clave."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "El análisis abarca de manera adecuada la cobertura y calidad, pero el análisis no contiene una explicación a detalle."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "El análisis es detallado, cubriendo completamente la cobertura y calidad de los servicios con evidencia sólida y bien documentada."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_IMPLEMENTACION_P2",
+                    "grupo": "Análisis de la implementación",
+                    "texto": "¿Se analiza la asignación de recursos (financieros, humanos, logísticos) y sus niveles de ejecución (nacional, regional, local) para la implementación eficaz de la política?",
+                    "ponderacion": 0.1667,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado ningún análisis sobre la asignación ni la ejecución de los recursos en ningún nivel (nacional, regional, local)."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado un análisis parcial de la asignación o ejecución de los recursos y solo en algunos niveles o tipos de recursos (por ejemplo, solo financieros o humanos)."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado un análisis adecuado que cubre la mayoría de los recursos (financieros, humanos, logísticos) y niveles (nacional, regional, local), pero carece de profundidad o detalle en ciertos aspectos."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "El análisis es bastante completo, abarcando adecuadamente la asignación y ejecución de los recursos en todos los niveles, aunque podría beneficiarse de un mayor detalle o precisión en algunas áreas."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "El análisis es detallado, abarcando completamente la asignación y ejecución de todos los recursos (financieros, humanos, logísticos) en todos los niveles (nacional, regional, local), con evidencia clara y bien documentada de su eficacia en la implementación de la política."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_IMPLEMENTACION_P3",
+                    "grupo": "Análisis de la implementación",
+                    "texto": "¿Se evalúan las principales actividades operativas que sustentan la prestación del servicio, incluyendo los procesos clave y su eficiencia?",
+                    "ponderacion": 0.1667,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado ningún análisis sobre las actividades operativas ni sobre los procesos clave involucrados en la prestación del servicio."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado un análisis parcial o superficial de las actividades operativas, pero no se han evaluado todos los procesos clave o su eficiencia de manera adecuada."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado un análisis adecuado de las actividades operativas, evaluando los procesos clave, pero algunos aspectos de la eficiencia y el funcionamiento de las actividades no han sido completamente abordados."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "El análisis de las actividades operativas y los procesos clave es bastante completo, abordando su eficiencia en gran medida, aunque podría beneficiarse de un análisis más detallado en algunas áreas."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "El análisis es detallado, evaluando completamente las actividades operativas y todos los procesos clave con un enfoque específicos en la eficiencia y efectividad en la prestación del servicio."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_IMPLEMENTACION_P4",
+                    "grupo": "Análisis de la implementación",
+                    "texto": "¿Se evalúan los mecanismos de coordinación entre actores  y los factores que influyen en el proceso de entrega y desempeño de los servicios?",
+                    "ponderacion": 0.1667,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado ningún análisis sobre los mecanismos de coordinación entre actores ni sobre los factores que influyen en el proceso de entrega de los servicios."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se ha realizado un análisis limitado o superficial sobre la coordinación entre actores y no se analizan los factores clave que influyen en el proceso de entrega de los servicios."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se ha realizado un análisis adecuado de los mecanismos de coordinación y sólo se describen los factores que afectan la entrega y el desempeño de los servicios."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se analizan los mecanismos de coordinación entre actores y soló algunos de los factores que influyen en el proceso de entrega de los servicios."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se ha realizado un análisis detallado de los mecanismos de coordinación entre actores y se analiza de manera detallada todos los factores que influyen en el proceso de entrega y desempeño de los servicios, con evidencia clara y bien documentada."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_IMPLEMENTACION_P5",
+                    "grupo": "Análisis de la implementación",
+                    "texto": "¿Se analizan los lineamientos que aún no cuentan con servicios?",
+                    "ponderacion": 0.1667,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado ningún análisis sobre los lineamientos que aún no cuentan con servicios."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Sólo se describen los lineamientos que no cuentan con servicios."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se analizan los lineamientos que aun no cuentan conservicios, aunque faltan detalles sobre los factores que explican esta carencia."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se analizan los lineamientos sin servicios y se proporciona información sobre las causas y consecuencias de esta situación."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se realiza un análisis completo de los lineamientos sin servicios, proporcionando información detallada y  fundamentada sobre las causas y consecuencias de esta situación, respaldada por evidencia sólida y recomendaciones claras."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANALISIS_IMPLEMENTACION_P6",
+                    "grupo": "Análisis de la implementación",
+                    "texto": "¿Se evalúan las recomendaciones de la evaluación anterior y su grado de implementación en la mejora de los servicios?",
+                    "ponderacion": 0.1667,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha realizado ningún análisis sobre las recomendaciones de la evaluación anterior ni su grado de implementación."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se menciona de forma superficial algunas recomendaciones previas, sin evidencia sobre su implementación ni impacto en los servicios."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se analiza parcialmente un conjunto de recomendaciones previas, describiendo avances pero sin detallar implementación ni efectos en los servicios."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se ha realizado un análisis de varias de las recomendaciones de la evaluación anterior, y se ha evaluado en parte su grado de implementación y su contribución a la mejora de los servicios."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Se ha realizado un análisis de todas las recomendaciones de la evaluación anterior, y se ha evaluado de forma detallada su grado de implementación y su contribución a la mejora de los servicios."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "conclusiones",
+            "titulo": "Conclusiones",
+            "ponderacion": 0.1,
+            "preguntas": [
+                {
+                    "id": "CONCLUSIONES_P1",
+                    "grupo": "Conclusiones",
+                    "texto": "¿Sintetiza de manera clara los principales hallazgos, ofrece una valoración general del desempeño de la política y está sustentada en el análisis de los resultados e implementación?",
+                    "ponderacion": 1.0,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No contiene la sección de conclusiones o no desarrolla nada relacionado a los hallazgos, resultados o desempeño de la política."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Presentan únicamente una descripción de los avances en los objetivos prioritarios y servicios de la política o se limita a describir de forma muy general la situación actual de la política sin un análisis profundo o una valoración del desempeño."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Se menciona el avance en los objetivos prioritarios y servicios y hace una valoración general del desempeño de la política, pero sin un análisis de los factores que propiciaron o limitaron los resultados."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Se presentan los avances en los objetivos prioritarios y servicios, con una descripción general del estado de implementación de la política y una valoración de los logros alcanzados, mencionando algunos de los factores y limitantes que influyeron en la implementación de la política."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Presentan de manera clara y coherente los principales hallazgos, los avances en los objetivos prioritarios y servicios, y realiza un análisis valorativo del desempeño de la política, identificando los factores y limitantes clave que influyeron en los resultados, y menciona las lecciones aprendidas del proceso de evaluación."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "recomendaciones",
+            "titulo": "Recomendaciones",
+            "ponderacion": 0.1,
+            "preguntas": [
+                {
+                    "id": "RECOMENDACIONES_P1",
+                    "grupo": "Recomendaciones",
+                    "texto": "¿Las recomendaciones están bien fundamentadas en los hallazgos y conclusiones del informe?",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "Las recomendaciones no están basadas en los hallazgos del informe."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Las recomendaciones tienen poca relación con los hallazgos."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Algunas recomendaciones están relacionadas con los hallazgos, pero no todas."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "La mayoría de las recomendaciones están bien fundamentadas en los hallazgos y conclusiones, aunque algunas carecen de evidencia explícita."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Todas las recomendaciones se sustentan plenamente en los hallazgos y conclusiones del informe, mostrando coherencia directa."
+                        }
+                    ]
+                },
+                {
+                    "id": "RECOMENDACIONES_P2",
+                    "grupo": "Recomendaciones",
+                    "texto": "¿Las recomendaciones son útiles para mejorar los aspectos críticos de la política evaluada?",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "Las recomendaciones no tienen impacto en la mejora de la política."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Las recomendaciones tienen un impacto limitado en áreas no prioritarias."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Las recomendaciones pueden mejorar algunos aspectos, pero no los más críticos."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "Las recomendaciones abordan áreas clave y pueden mejorar la política de manera efectiva."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Las recomendaciones mejoran significativamente los aspectos más críticos de la política."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "segmento",
+            "id_segmenter": "anexos",
+            "titulo": "Anexos",
+            "ponderacion": 0.07,
+            "preguntas": [
+                {
+                    "id": "ANEXOS_P1",
+                    "grupo": "Matriz de compromisos",
+                    "texto": "¿Los compromisos son coherentes con las recomendaciones del informe de evaluación?",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "Los compromisos no guardan ninguna relación con las recomendaciones."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Solo algunos compromisos están relacionados con las recomendaciones."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "La mitad de los compromisos están alineados con las recomendaciones."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "La mayoría de los compromisos están alineados con las recomendaciones."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Todos los compromisos son coherentes con las recomendaciones."
+                        }
+                    ]
+                },
+                {
+                    "id": "ANEXOS_P2",
+                    "grupo": "Matriz de compromisos",
+                    "texto": "¿Se han asignado responsables y plazos y medios de verficicación claros para cada acción clave?",
+                    "ponderacion": 0.5,
+                    "responsable": "ia",
+                    "niveles": [
+                        {
+                            "valor": 0,
+                            "descripcion": "No se ha asignado ningún responsable para las acciones clave."
+                        },
+                        {
+                            "valor": 0.5,
+                            "descripcion": "Se han asignado responsables, pero de manera vaga."
+                        },
+                        {
+                            "valor": 1,
+                            "descripcion": "Algunos responsables están definidos claramente, pero otros no."
+                        },
+                        {
+                            "valor": 1.5,
+                            "descripcion": "La mayoría de las acciones clave tienen responsables claros y bien definidos."
+                        },
+                        {
+                            "valor": 2,
+                            "descripcion": "Todas las acciones clave tienen responsables claramente definidos."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tipo": "manual",
+            "id_segmenter": null,
+            "titulo": "Preguntas complementarias",
+            "ponderacion": 0.07,
+            "preguntas": [
+                {
+                    "id": "MANUAL_P1",
+                    "grupo": "Otros",
+                    "texto": "¿El informe de evaluación se ha aprobado y publicado en el plazo correspondiente?",
+                    "ponderacion": 0.3333,
+                    "responsable": "especialista",
+                    "niveles": null,
+                    "tipo_escala": "manual"
+                },
+                {
+                    "id": "MANUAL_P2",
+                    "grupo": "Otros",
+                    "texto": "¿Se utiliza información complementaria (cuantitativa o cualitativa) que se necesite para dar respuesta a las interrogantes de evaluación?",
+                    "ponderacion": 0.3333,
+                    "responsable": "especialista",
+                    "niveles": null,
+                    "tipo_escala": "manual"
+                },
+                {
+                    "id": "MANUAL_P3",
+                    "grupo": "Otros",
+                    "texto": "¿Se ha utilizado alguna técnica de recolección para la información complementaria (encuestas, entrevistas, grupos focales, talleres, estudios de caso, panel de expertos, revisión bibliográfica, etc.)?",
+                    "ponderacion": 0.3333,
+                    "responsable": "especialista",
+                    "niveles": null,
+                    "tipo_escala": "manual"
+                }
+            ],
+            "tipo_escala": "manual",
+            "evaluacion": "externa"
+        }
+    ]
+}
