@@ -1,5 +1,3 @@
-"""Pruebas para la validación de criterios CLI y registro."""
-
 from __future__ import annotations
 
 import json
@@ -26,14 +24,14 @@ def criteria_dir() -> Path:
 
 
 def test_validators_registered() -> None:
-    """Todos los tipos de informes esperados deben estar presentes en el registro."""
+    """All expected report types should be present in the registry."""
 
     assert "institucional" in VALIDATORS
     assert "politica_nacional" in VALIDATORS
 
 
 def test_institutional_schema_passes(criteria_dir: Path) -> None:
-    """La metodología institucional JSON debe validarse sin errores."""
+    """The institutional methodology JSON should validate without errors."""
 
     result = validate_file(criteria_dir / "metodologia_institucional.json")
     assert result.ok()
@@ -41,7 +39,7 @@ def test_institutional_schema_passes(criteria_dir: Path) -> None:
 
 
 def test_politica_nacional_schema_passes(criteria_dir: Path) -> None:
-    """La metodología de política nacional JSON debe validarse sin errores."""
+    """The national policy methodology JSON should validate without errors."""
 
     result = validate_file(criteria_dir / "metodologia_politica_nacional.json")
     assert result.ok()
@@ -49,7 +47,7 @@ def test_politica_nacional_schema_passes(criteria_dir: Path) -> None:
 
 
 def test_unknown_tipo_informe_emits_warning(tmp_path: Path) -> None:
-    """Los tipos de informes desconocidos deberían generar una advertencia, pero no errores."""
+    """Unknown report types should produce a warning but no errors."""
 
     payload = {"tipo_informe": "desconocido"}
     file_path = tmp_path / "metodologia.json"
@@ -61,7 +59,7 @@ def test_unknown_tipo_informe_emits_warning(tmp_path: Path) -> None:
 
 
 def test_cli_execution(criteria_dir: Path) -> None:
-    """La CLI debería salir exitosamente al validar archivos conocidos."""
+    """The CLI should exit successfully when validating known files."""
 
     process = subprocess.run(
         [
@@ -94,8 +92,22 @@ def test_cli_output_falls_back_to_ascii(monkeypatch) -> None:
     assert "[WARN]" in lines[-2]
 
 
+def test_stdout_supports_returns_false_when_encoding_missing(monkeypatch) -> None:
+    """If stdout encoding is undefined, the helper should disable Unicode symbols."""
+
+    class DummyStdout:
+        encoding = None
+
+    class DummySys:
+        stdout = DummyStdout()
+
+    monkeypatch.setattr(criteria_cli, "sys", DummySys())
+
+    assert not criteria_cli._stdout_supports("✔")
+
+
 def test_cli_accepts_repo_relative_paths_from_external_cwd(tmp_path: Path) -> None:
-    """Las rutas relativas deben resolverse incluso cuando se ejecutan desde fuera del repositorio."""
+    """Relative paths should be resolved even when running from outside the repo."""
 
     env = os.environ.copy()
     existing_pythonpath = env.get("PYTHONPATH")
@@ -122,3 +134,11 @@ def test_cli_accepts_repo_relative_paths_from_external_cwd(tmp_path: Path) -> No
     )
 
     assert process.returncode == 0, process.stdout + process.stderr
+
+if __name__ == "__main__":
+    import pytest
+
+    raise SystemExit(pytest.main([__file__]))
+
+# py tests/test_criteria_validator.py
+# python -m tests.test_criteria_validator

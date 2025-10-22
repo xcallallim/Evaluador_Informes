@@ -99,16 +99,19 @@ class DocumentLoader:
 
         # Estructura de tablas en metadata (multi-origen)
         tables_meta: Dict[str, Any] = {}
+        flat_tables: List[Any] = []
 
         if ext == ".txt":
             content, pages, txt_tables = self._load_txt(filepath)
             if extract_tables and txt_tables:
                 tables_meta["txt"] = txt_tables
+                flat_tables.extend(txt_tables)
 
         elif ext == ".docx":
             content, pages, docx_tables = self._load_docx(filepath)
             if extract_tables and docx_tables:
                 tables_meta["docx"] = docx_tables
+                flat_tables.extend(docx_tables)
 
         elif ext == ".pdf":
             content, pages = self._load_pdf(filepath)
@@ -117,6 +120,7 @@ class DocumentLoader:
                 pdf_tables_meta = self._extract_pdf_tables(filepath)
                 if pdf_tables_meta:
                     tables_meta["pdf"] = pdf_tables_meta
+                    flat_tables.extend(pdf_tables_meta)
 
             if extract_images:
                 pdf_images_meta = self._extract_pdf_images(filepath)
@@ -146,7 +150,12 @@ class DocumentLoader:
         log_info("✅ Documento cargado correctamente ✅")
 
         # Devolvemos Document con texto completo + metadata rica
-        return Document(content=content, metadata=metadata, pages=pages, tables=tables_meta)
+        return Document(
+            content=content,
+            metadata=metadata,
+            pages=pages,
+            tables=flat_tables,
+        )
 
     def _split_text_into_pages(self, text: str, max_chars: int = 4000) -> List[str]:
         """
@@ -251,7 +260,7 @@ class DocumentLoader:
                         break
 
             _flush_page()
-            
+
             # Fallback: si no detectó páginas correctamente
             if not pages:
                 pages = self._split_text_into_pages(raw_text, max_chars=4000)

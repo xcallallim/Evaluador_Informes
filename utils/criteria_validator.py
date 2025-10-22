@@ -1,17 +1,16 @@
-"""Utilidades para validar esquemas JSON metodológicos utilizados por el evaluador."""
-
 from __future__ import annotations
+
+"""Utilities to validate methodological JSON schemas used by the evaluator."""
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import List
 
 try:  # pragma: no cover - allows script execution via ``python utils/criteria_validator.py``
     from utils.validators import VALIDATORS, ValidationResult
 except ModuleNotFoundError:  # pragma: no cover - fallback when package not on sys.path
-    import sys
-
     repo_root = Path(__file__).resolve().parent.parent
     if str(repo_root) not in sys.path:
         sys.path.append(str(repo_root))
@@ -19,7 +18,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback when package not on s
 
 
 def validate_file(path: Path) -> ValidationResult:
-    """Ejecuta el validador registrado para el tipo de informe JSON."""
+    """Run the validator registered for the JSON report type."""
 
     try:
         with path.open("r", encoding="utf-8") as handle:
@@ -43,7 +42,9 @@ def validate_file(path: Path) -> ValidationResult:
 def _stdout_supports(symbol: str) -> bool:
     """Return True when the active stdout encoding can render ``symbol``."""
 
-    encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+    encoding = getattr(sys.stdout, "encoding", None)
+    if not encoding:
+        return False
     try:
         symbol.encode(encoding)
     except UnicodeEncodeError:
@@ -84,12 +85,35 @@ def main(argv: List[str] | None = None) -> int:
 
     exit_code = 0
     for file_path in args.files:
-        result = validate_file(file_path)
-        for line in _format_output(file_path, result):
-            print(line)
+        resolved_path = _resolve_cli_path(file_path)
+        result = validate_file(resolved_path)
+        for line in _format_output(resolved_path, result):
+            try:
+                print(line)
+            except UnicodeEncodeError:
+                fallback_line = (
+                    line.replace("✔", "[OK]")
+                    .replace("✖", "[ERROR]")
+                    .replace("⚠", "[WARN]")
+                )
+                print(fallback_line)
         if not result.ok():
             exit_code = 1
     return exit_code
+
+
+def _resolve_cli_path(path: Path) -> Path:
+    """Resolve CLI-provided paths relative to the repository when needed."""
+
+    if path.exists():
+        return path
+
+    repo_root = Path(__file__).resolve().parent.parent
+    candidate = repo_root / path
+    if candidate.exists():
+        return candidate
+
+    return path
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entrypoint
