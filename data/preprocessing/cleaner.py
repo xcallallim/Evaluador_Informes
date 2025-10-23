@@ -32,10 +32,24 @@ class Cleaner:
     # =========================================================
     # API PRINCIPAL
     # =========================================================
-    def clean(self, text: str, return_report: bool = False) -> str | Tuple[str, Dict]:
-        """
-        Punto de entrada principal del limpiador (texto plano).
-        Limpia texto completo con opción de devolver reporte.
+    def clean(
+        self,
+        text: str,
+        return_report: bool = False,
+        *,
+        is_ocr_like: Optional[bool] = None,
+    ) -> str | Tuple[str, Dict]:
+        """Punto de entrada principal del limpiador (texto plano).
+
+        Parameters
+        ----------
+        text:
+            Texto completo a limpiar.
+        return_report:
+            Si es ``True`` devuelve también las métricas de limpieza.
+        is_ocr_like:
+            Forza el modo OCR cuando se proporciona. Si es ``None`` el
+            limpiador decide automáticamente mediante :meth:`_infer_is_ocr_like`.
         """
         if not isinstance(text, str) or not text.strip():
             log_warn("Texto vacío recibido para limpieza.")
@@ -45,7 +59,7 @@ class Cleaner:
         log_info(f"{len(pages)} páginas detectadas para limpieza.")
 
         # Inferir si parece OCR para decidir fuzzy matching
-        is_ocr_like = getattr(self, "_force_ocr", self._infer_is_ocr_like(pages))
+        is_ocr_like = self._resolve_is_ocr_like(pages, is_ocr_like)
 
         # Detectar candidatos repetidos en primeras/últimas líneas
         header_candidates, footer_candidates = self._collect_candidates(pages)
@@ -110,15 +124,8 @@ class Cleaner:
         # Detectar si proviene de OCR según metadata del loader
         is_ocr = document.metadata.get("is_ocr", False)
 
-        # Pasar el valor de OCR al método clean mediante flag interno temporal
-        self._force_ocr = is_ocr  # guardamos una variable interna solo para esta ejecución
-
-        # Ejecutar limpieza
-        cleaned_text, report = self.clean(text, return_report=True)
-
-        # limpiar flag interno
-        if hasattr(self, "_force_ocr"):
-            del self._force_ocr
+        # Ejecutar limpieza pasando el flag explícitamente
+        cleaned_text, report = self.clean(text, return_report=True, is_ocr_like=is_ocr)
 
         # ✅ Devolver siempre un Document, no un string
         cleaned_doc = Document(
@@ -130,7 +137,22 @@ class Cleaner:
         )
 
         return (cleaned_doc, report) if return_report else cleaned_doc
+    
+    def _resolve_is_ocr_like(
+        self,
+        pages: List[str],
+        override: Optional[bool],
+    ) -> bool:
+        """Determina si el documento debe tratarse como OCR.
 
+        Si ``override`` es ``None`` utiliza la heurística interna
+        :meth:`_infer_is_ocr_like`. En caso contrario se respeta el valor
+        proporcionado explícitamente.
+        """
+
+        if override is not None:
+            return bool(override)
+        return self._infer_is_ocr_like(pages)
 
 
     # =========================================================
