@@ -8,7 +8,10 @@ from collections import Counter
 from core.logger import log_info, log_warn
 from core.utils import normalize_whitespace
 from core.config import CUSTOM_HEADERS, CUSTOM_FOOTERS
+from core.warning_filters import suppress_external_deprecation_warnings
 from data.models.document import Document
+
+suppress_external_deprecation_warnings()
 
 try:
     from rapidfuzz import fuzz

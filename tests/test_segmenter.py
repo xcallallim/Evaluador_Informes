@@ -480,3 +480,5 @@ def test_segmenter_loader_reports_match_types(
     assert regex_match is not None and regex_match[1] == "regex"
     assert alias_match is not None and alias_match[1] == "alias"
     assert fuzzy_match is not None and fuzzy_match[1] == "fuzzy"
+
+# pytest tests/test_segmenter.py -v

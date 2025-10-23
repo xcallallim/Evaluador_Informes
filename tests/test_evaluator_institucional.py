@@ -390,4 +390,4 @@ def test_evaluation_result_generated_at_traces_timestamp() -> None:
     assert isinstance(reconstructed.generated_at, datetime)
     assert abs((reconstructed.generated_at - result.generated_at).total_seconds()) < 1
 
-#pytest -v tests/test_evaluator_politica.py
+# pytest tests/test_evaluator_institucional.py -v

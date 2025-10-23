@@ -9,10 +9,13 @@ from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, TYPE_CH
 
 from core.config import TESSERACT_PATH
 from core.logger import log_info, log_warn
+from core.warning_filters import suppress_external_deprecation_warnings
 from core.utils import ensure_dir
 from data.models.document import Document
 from data.preprocessing.metadata import LoaderContext
 from data.preprocessing.ocr import perform_pdf_ocr
+
+suppress_external_deprecation_warnings()
 
 try:  # pragma: no cover - dependencia opcional
     from core.config import GHOSTSCRIPT_PATH

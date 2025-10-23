@@ -10,6 +10,10 @@ from typing import List, Dict, Optional, Tuple, Any, Iterable
 
 from core.logger import log_info, log_warn, log_error
 from core.config import CRITERIA_DIR  # Ruta donde están los JSON
+from core.warning_filters import suppress_external_deprecation_warnings
+
+
+suppress_external_deprecation_warnings()
 
 try:
     # Opcional: si no está instalado, seguimos con modo basado en SequenceMatcher

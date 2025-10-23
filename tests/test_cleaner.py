@@ -105,3 +105,5 @@ def test_cleaner_preserves_metadata(noisy_document: Document, cleaner: Cleaner) 
     assert cleaned_doc.pages == noisy_document.pages
     assert cleaned_doc.tables == noisy_document.tables
     assert cleaned_doc.images == noisy_document.images
+
+# pytest tests/test_cleaner.py -v

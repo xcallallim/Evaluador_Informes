@@ -272,7 +272,6 @@ def test_iter_document_chunks_is_lazy(sample_sections: Dict[str, str]) -> None:
         chunk.metadata["id"] for chunk in materialised.chunks
     ]
 
-
 def test_iter_document_chunks_marks_page_fallback_strategy() -> None:
     document = Document(
         metadata={"id": "doc-page"},
@@ -289,6 +288,33 @@ def test_iter_document_chunks_marks_page_fallback_strategy() -> None:
     strategies = {chunk.metadata.get("source_strategy") for chunk in chunks}
     assert strategies == {"page"}
     assert {chunk.metadata.get("source_type") for chunk in chunks} == {"page"}
+    
+
+def test_iter_document_chunks_uses_page_fallback_when_sections_are_unusable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    document = Document(
+        metadata={"id": "doc-page-fallback"},
+        sections={"placeholder": "texto valido"},
+        pages=["   ", "Página util para fallback."],
+    )
+    # Simula una etapa previa que introduce secciones vacías en el documento
+    document.sections = {"introduccion": "   ", "desarrollo": ""}
+
+    splitter = Splitter(chunk_size=120, chunk_overlap=0)
+
+    warnings: list[str] = []
+    monkeypatch.setattr(splitter_module, "log_warn", lambda message: warnings.append(message))
+
+    chunks = list(splitter.iter_document_chunks(document))
+
+    assert chunks, "El fallback por páginas debería generar al menos un chunk"
+    assert warnings == [
+        "⚠️ No se generaron chunks por secciones. Usando páginas como fallback.",
+    ]
+    assert {chunk.metadata.get("source_strategy") for chunk in chunks} == {"page"}
+    assert {chunk.metadata.get("source_type") for chunk in chunks} == {"page"}
+    assert all(chunk.metadata.get("document_metadata", {}).get("id") == "doc-page-fallback" for chunk in chunks)
 
 
 def test_iter_document_chunks_marks_content_fallback_strategy() -> None:
@@ -308,6 +334,58 @@ def test_iter_document_chunks_marks_content_fallback_strategy() -> None:
     strategies = {chunk.metadata.get("source_strategy") for chunk in chunks}
     assert strategies == {"content"}
     assert {chunk.metadata.get("source_type") for chunk in chunks} == {"document"}
+
+
+def test_iter_document_chunks_handles_missing_metadata() -> None:
+    document = Document(
+        metadata={},
+        sections={"introduccion": "Contenido suficiente para un único chunk."},
+    )
+    splitter = Splitter(chunk_size=200, chunk_overlap=0)
+
+    chunks = list(splitter.iter_document_chunks(document))
+
+    assert chunks, "La ausencia de metadatos no debería impedir la generación de chunks"
+    for chunk in chunks:
+        assert chunk.metadata.get("document_metadata") == {}
+        assert "document_id" not in chunk.metadata
+
+
+def test_iter_document_chunks_without_viable_sources_emits_warnings(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    document = Document(metadata={}, sections={}, pages=[], content="   ")
+    splitter = Splitter(chunk_size=80, chunk_overlap=0)
+
+    warnings: list[str] = []
+    monkeypatch.setattr(splitter_module, "log_warn", lambda message: warnings.append(message))
+
+    chunks = list(splitter.iter_document_chunks(document))
+
+    assert chunks == []
+    assert warnings == [
+        "⚠️ Documento no contiene secciones. Intentando generar chunks con fallback.",
+        "⚠️ No fue posible generar chunks para el documento.",
+    ]
+
+
+def test_split_content_map_ignores_empty_entries() -> None:
+    splitter = Splitter(chunk_size=200, chunk_overlap=0)
+    content_map = {
+        "valida": "Texto útil para generar chunks.",
+        "nula": None,
+        "numerica": 12345,
+        "espacios": "   ",
+    }
+
+    chunks = splitter._split_content_map(
+        content_map,
+        origin="section",
+        base_metadata={"document_metadata": {"id": "doc"}},
+    )
+
+    assert chunks, "Se esperaba al menos un chunk con contenido válido"
+    assert {chunk.metadata["source_id"] for chunk in chunks} == {"valida", "numerica"}
 
 
 @pytest.mark.parametrize("normalize", [False, True])
@@ -368,3 +446,5 @@ def test_split_content_map_respects_logging_level(
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__]))
+
+# pytest tests/test_splitter.py -v

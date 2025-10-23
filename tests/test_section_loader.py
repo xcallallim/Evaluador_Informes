@@ -360,3 +360,5 @@ def test_fuzzy_match_returns_score_above_threshold(loader_factory) -> None:
     assert match is not None
     assert match[1] == "fuzzy"
     assert match[2] >= 86.0
+
+# pytest tests/test_section_loader.py -v
