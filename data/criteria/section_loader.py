@@ -10,7 +10,7 @@ from core.config import CRITERIA_DIR  # Ruta donde están los JSON
 
 try:
     # Opcional: si no está instalado, seguimos con modo sin fuzzy
-    from rapidfuzz import fuzz, process  # type: ignore
+    from rapidfuzz import fuzz  # type: ignore
     _HAS_FUZZ = True
 except Exception:
     _HAS_FUZZ = False
@@ -50,18 +50,32 @@ class SectionLoader:
 
     def __init__(self, tipo: str = "institucional", fuzzy: bool = True):
         self.tipo = tipo.lower().strip()
-        self.fuzzy = fuzzy
+        self.fuzzy = bool(fuzzy)
         self.sections_file = self._select_file()
         self.schema: Dict[str, Dict[str, Any]] = self._load_schema()
         self.sections: List[str] = list(self.schema.keys())
         self.patterns: Dict[str, List[re.Pattern]] = self._build_patterns()
         self._fuzzy_index: Dict[str, List[str]] = self._build_fuzzy_index()
-        log_info(f"SectionLoader listo. Tipo='{self.tipo}', secciones={len(self.sections)}, fuzzy={'ON' if fuzzy else 'OFF'}")
 
+        self._fuzzy_enabled = False
+        if self.fuzzy:
+            if not _HAS_FUZZ:
+                log_warn(
+                    "Modo fuzzy solicitado, pero rapidfuzz no está disponible. Se usará coincidencia exacta."
+                )
+            else:
+                self._fuzzy_enabled = True
+
+        self._fuzzy_index: Dict[str, List[str]] = (
+            self._build_fuzzy_index() if self._fuzzy_enabled else {}
+        )
+
+        fuzzy_state = "ON" if self._fuzzy_enabled else "OFF"
+        if self.fuzzy and not self._fuzzy_enabled:
+            fuzzy_state += " (rapidfuzz no disponible)"
 
         log_info(
-            f"SectionLoader listo. Tipo='{self.tipo}', "
-            f"secciones={len(self.sections)}, fuzzy={'ON' if _HAS_FUZZ else 'OFF'}"
+            f"SectionLoader listo. Tipo='{self.tipo}', secciones={len(self.sections)}, fuzzy={fuzzy_state}"
         )
 
     # ----------- carga / construcción -----------
@@ -96,19 +110,32 @@ class SectionLoader:
         try:
             with open(self.sections_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            if not isinstance(data, dict):
-                raise ValueError("El JSON debe ser un objeto con claves por sección.")
-            # Validación mínima
-            for k, v in data.items():
-                if not isinstance(v, dict) or "title" not in v:
-                    raise ValueError(f"Sección '{k}' inválida: falta 'title'")
-                v.setdefault("aliases", [])
-                v.setdefault("keywords", [])
-            log_info(f"Secciones cargadas para '{self.tipo}'. Total: {len(data)}.")
-            return data
-        except Exception as e:
-            log_error(f"Error al cargar secciones desde {self.sections_file}: {e}")
-            return {}
+        except Exception as exc:
+            log_error(
+                f"No se pudo leer el archivo de secciones '{self.sections_file}': {exc}"
+            )
+            raise RuntimeError(
+                f"No se pudo cargar la configuración de secciones para '{self.tipo}'."
+            ) from exc
+
+        if not isinstance(data, dict):
+            msg = (
+                f"El JSON de secciones '{self.sections_file}' debe ser un objeto "
+                "con claves por sección."
+            )
+            log_error(msg)
+            raise ValueError(msg)
+
+        # Validación mínima
+        for k, v in data.items():
+            if not isinstance(v, dict) or "title" not in v:
+                raise ValueError(
+                    f"Sección '{k}' inválida en '{self.sections_file}': falta 'title'"
+                )
+            v.setdefault("aliases", [])
+            v.setdefault("keywords", [])
+        log_info(f"Secciones cargadas para '{self.tipo}'. Total: {len(data)}.")
+        return data
 
     def _build_patterns(self) -> Dict[str, List[re.Pattern]]:
         """
@@ -180,7 +207,7 @@ class SectionLoader:
                     return (key, "regex", 100.0, text)
 
         # 2) Fuzzy (si está disponible)
-        if _HAS_FUZZ:
+        if self._fuzzy_enabled:
             # Quitar prefijos numéricos antes de fuzzy
             pref = re.compile(_prefix_num_pattern(), flags=re.IGNORECASE)
             stripped = pref.sub("", text).strip()
@@ -198,6 +225,7 @@ class SectionLoader:
 
             if best_key and best_score >= fuzzy_threshold:
                 return (best_key, "fuzzy", float(best_score), text)
+            return None
 
         # 3) Keywords (como refuerzo: todas las keywords deben estar o al menos 2)
         if keyword_boost:

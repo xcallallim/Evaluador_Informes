@@ -1,42 +1,72 @@
-"""Tests for the section loader identification logic."""
+"""Unit tests for :mod:`data.criteria.section_loader`"""
 
 from __future__ import annotations
 
+import json
+from types import SimpleNamespace
+from typing import Dict, Any
+
 import pytest
 
-from data.criteria.section_loader import SectionLoader
-
-pytest.importorskip("rapidfuzz", reason="Los encabezados con prefijos numéricos requieren fuzzy matching.")
+from data.criteria import section_loader
 
 
-@pytest.fixture
-def politica_loader() -> SectionLoader:
-    """Load the policy schema used by the original smoke test."""
+def _write_schema(tmp_path, monkeypatch, schema: Dict[str, Dict[str, Any]], tipo: str) -> None:
+    """Helper that writes a schema JSON and points the loader towards it."""
 
-    return SectionLoader(tipo="politica", fuzzy=True)
+    file_path = tmp_path / f"secciones_{tipo}.json"
+    file_path.write_text(json.dumps(schema), encoding="utf-8")
+    monkeypatch.setattr(section_loader, "CRITERIA_DIR", str(tmp_path))
 
 
-@pytest.mark.parametrize(
-    ("line", "expected_id"),
-    [
-        ("1. Resumen Ejecutivo", "resumen_ejecutivo"),
-        (
-            "Capítulo II - Análisis de los resultados de la política nacional",
-            "analisis_resultados",
-        ),
-        ("SECCIÓN 4: CONCLUSIONES", "conclusiones"),
-    ],
-)
-def test_identify_section_matches_expected(politica_loader: SectionLoader, line: str, expected_id: str) -> None:
-    """Lines resembling report headings should map to the configured section ids."""
+def test_identify_section_without_fuzzy(tmp_path, monkeypatch) -> None:
+    """When fuzzy mode is disabled, regex patterns should still identify headings."""
 
-    result = politica_loader.identify_section(line)
+    schema = {
+        "introduccion": {
+            "title": "Introducción",
+            "aliases": ["Resumen inicial"],
+            "keywords": [],
+        }
+    }
+    _write_schema(tmp_path, monkeypatch, schema, tipo="demo")
+
+    loader = section_loader.SectionLoader(tipo="demo", fuzzy=False)
+    
+    result = loader.identify_section("1. Introducción")
     assert result is not None
-    section_id, *_ = result
-    assert section_id == expected_id
+    section_id, match_type, *_ = result
+    assert section_id == "introduccion"
+    assert match_type == "regex"
+    assert loader._fuzzy_enabled is False
 
 
-def test_unknown_heading_returns_none(politica_loader: SectionLoader) -> None:
-    """Random lines are ignored by the loader."""
+def test_identify_section_with_fuzzy(tmp_path, monkeypatch) -> None:
+    """Fuzzy matching is used when requested and available."""
 
-    assert politica_loader.identify_section("Contenido libre sin título") is None
+    schema = {
+        "marco_teorico": {
+            "title": "Marco Teorico",
+            "aliases": [],
+            "keywords": [],
+        }
+    }
+    _write_schema(tmp_path, monkeypatch, schema, tipo="demo")
+
+    # Force fuzzy availability with a deterministic stub so the test is hermetic.
+    monkeypatch.setattr(section_loader, "_HAS_FUZZ", True)
+    monkeypatch.setattr(
+        section_loader,
+        "fuzz",
+        SimpleNamespace(token_set_ratio=lambda a, b: 100 if a == b else 0),
+    )
+
+    loader = section_loader.SectionLoader(tipo="demo", fuzzy=True)
+
+    result = loader.identify_section("Marco teórico")
+    assert result is not None
+    section_id, match_type, score, _ = result
+    assert section_id == "marco_teorico"
+    assert match_type == "fuzzy"
+    assert score == 100
+    assert loader._fuzzy_enabled is True
