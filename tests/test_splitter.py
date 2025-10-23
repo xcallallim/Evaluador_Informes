@@ -42,6 +42,7 @@ def _assert_chunk_metadata(
     expected_source: str,
     expected_count: int,
     expected_overlap: int,
+    expected_strategy: str = "section",
 ) -> None:
     """Valida los metadatos generados por el splitter para un chunk."""
 
@@ -54,6 +55,7 @@ def _assert_chunk_metadata(
     assert metadata["length"] == len(chunk.page_content)
     assert metadata["id"].startswith(f"{expected_source}_")
     assert metadata["chunk_overlap"] == expected_overlap
+    assert metadata["source_strategy"] == expected_strategy
     assert "document_metadata" in metadata
 
 
@@ -245,6 +247,9 @@ def test_split_content_map_streams_without_materialising(sample_sections: Dict[s
     assert [chunk.metadata["id"] for chunk in streamed_chunks] == [
         chunk.metadata["id"] for chunk in eager_chunks
     ]
+    assert [chunk.metadata["source_strategy"] for chunk in streamed_chunks] == [
+        chunk.metadata["source_strategy"] for chunk in eager_chunks
+    ]
 
 
 def test_iter_document_chunks_is_lazy(sample_sections: Dict[str, str]) -> None:
@@ -266,6 +271,43 @@ def test_iter_document_chunks_is_lazy(sample_sections: Dict[str, str]) -> None:
     assert [chunk.metadata["id"] for chunk in streamed_chunks] == [
         chunk.metadata["id"] for chunk in materialised.chunks
     ]
+
+
+def test_iter_document_chunks_marks_page_fallback_strategy() -> None:
+    document = Document(
+        metadata={"id": "doc-page"},
+        sections={},
+        pages=[
+            "Contenido de la página 1 con suficiente longitud para crear chunks.",
+        ],
+    )
+    splitter = Splitter(chunk_size=80, chunk_overlap=0)
+
+    chunks = list(splitter.iter_document_chunks(document))
+
+    assert chunks, "Se esperaban chunks generados a partir del fallback por páginas"
+    strategies = {chunk.metadata.get("source_strategy") for chunk in chunks}
+    assert strategies == {"page"}
+    assert {chunk.metadata.get("source_type") for chunk in chunks} == {"page"}
+
+
+def test_iter_document_chunks_marks_content_fallback_strategy() -> None:
+    document = Document(
+        metadata={"id": "doc-content"},
+        sections={},
+        pages=["", "   "],
+        content=(
+            "Texto completo del documento usado como último recurso para generar chunks."
+        ),
+    )
+    splitter = Splitter(chunk_size=60, chunk_overlap=0)
+
+    chunks = list(splitter.iter_document_chunks(document))
+
+    assert chunks, "Se esperaban chunks generados a partir del fallback del contenido"
+    strategies = {chunk.metadata.get("source_strategy") for chunk in chunks}
+    assert strategies == {"content"}
+    assert {chunk.metadata.get("source_type") for chunk in chunks} == {"document"}
 
 
 @pytest.mark.parametrize("normalize", [False, True])

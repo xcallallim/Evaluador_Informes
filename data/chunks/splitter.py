@@ -209,6 +209,7 @@ class Splitter:
             raise ValueError("chunk_overlap debe ser menor que chunk_size")
 
         self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
         self.normalize_newlines = normalize_newlines
         normalized_log_level = log_level.lower()
         valid_levels: set[str] = {"info", "warn", "silent"}
@@ -241,6 +242,12 @@ class Splitter:
         chunks bajo demanda sin materializar una lista completa. El iterador incluye
         los mismos metadatos enriquecidos que la versión previa, por lo que los
         consumidores pueden alternar entre los dos modos sin cambios adicionales.
+
+        La clave ``source_strategy`` indica la ruta empleada para obtener el
+        contenido de origen (``section`` → secciones principales, ``page`` →
+        fallback por páginas y ``content`` → fallback del texto completo). Se
+        conserva ``source_type`` para garantizar compatibilidad con el esquema
+        previo.
         """
 
         def _log_progress(message: str) -> None:
@@ -276,6 +283,7 @@ class Splitter:
                         {
                             "source_id": content_id,
                             "source_type": origin,
+                            "chunk_overlap": self.chunk_overlap,
                             "source_strategy": strategy,
                         }
                     ],
@@ -295,6 +303,7 @@ class Splitter:
                             "chunk_index": idx,
                             "chunks_in_source": section_total,
                             "length": len(chunk.page_content),
+                            "chunk_overlap": self.chunk_overlap,
                             "source_strategy": strategy,
                         }
                     )
@@ -342,7 +351,7 @@ class Splitter:
                 origin="section",
                 base_metadata=shared_metadata,
                 stream=True,
-                source_strategy="content",
+                source_strategy="section",
             ):
                 produced_any = True
                 yield chunk
@@ -376,6 +385,7 @@ class Splitter:
                 origin="page",
                 base_metadata=shared_metadata,
                 stream=True,
+                source_strategy="page",
             ):
                 produced_any = True
                 yield chunk
@@ -399,6 +409,7 @@ class Splitter:
                 origin="document",
                 base_metadata=shared_metadata,
                 stream=True,
+                source_strategy="content",
             ):
                 produced_any = True
                 yield chunk
