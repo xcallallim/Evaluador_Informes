@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import Dict, List, Optional, Protocol, Tuple
+from typing import Dict, List, Optional, Protocol, Tuple, TYPE_CHECKING
 
 from core.logger import log_error, log_info
 from data.models.document import Document
@@ -13,6 +13,9 @@ from data.preprocessing.metadata import (
     log_document_summary,
     prepare_metadata,
 )
+
+if TYPE_CHECKING:
+    from data.preprocessing.pdf_loader import PDFResourceExporter
 
 class LoaderStrategy(Protocol):
     """Contrato mínimo para los loaders especializados."""
@@ -29,9 +32,15 @@ class LoaderStrategy(Protocol):
 class DocumentLoader:
     """Fachada thread-safe que compone resultados de loaders especializados."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        resource_exporter: Optional["PDFResourceExporter"] = None,
+    ) -> None:
         pdf_loader.configure_ocr()
         self._ghostscript_cmd: Optional[str] = pdf_loader.resolve_ghostscript()
+        self._resource_exporter: "PDFResourceExporter" = (
+            resource_exporter or pdf_loader.FileSystemPDFResourceExporter()
+        )
         self._strategies: Dict[str, LoaderStrategy] = {}
         self._register_default_strategies()
 
@@ -141,7 +150,9 @@ class DocumentLoader:
             extract_images=extract_images,
             ghostscript_cmd=self._ghostscript_cmd,
             issues=issues,
+            detector=self._try_load_pdf_with_pymupdf,
             ocr_loader=_ocr_loader,
+            resource_exporter=self._resource_exporter,
         )
 
     def _load_pdf_ocr(
@@ -151,39 +162,47 @@ class DocumentLoader:
 
         issues_list = issues if issues is not None else []
         return pdf_loader._load_pdf_ocr(filepath, issues_list)
+    
+    def _try_load_pdf_with_pymupdf(
+        self, filepath: str
+    ) -> Optional[Tuple[bool, List[str]]]:
+        """Proxy para facilitar pruebas unitarias y personalización."""
 
-        # ------------------------------------------------------------------
-        # Composición final del documento
-        # ------------------------------------------------------------------
-        def _finalize_document(
-            partial: Document,
-            *,
-            filepath: str,
-            extension: str,
-            include_images: bool,
-        ) -> Document:
-            raw_metadata = dict(partial.metadata)
-            context = extract_loader_context(raw_metadata)
+        return pdf_loader._try_load_pdf_with_pymupdf(filepath)
 
-            final_metadata = prepare_metadata(
-                filepath=filepath,
-                extension=extension,
-                pages=partial.pages,
-                tables_meta=context.tables_meta,
-                extra_metadata=context.extra_metadata,
-                images_meta=context.images_meta if include_images else None,
-                issues=context.issues,
-            )
+    # ------------------------------------------------------------------
+    # Composición final del documento
+    # ------------------------------------------------------------------
+    def _finalize_document(
+        self,
+        partial: Document,
+        *,
+        filepath: str,
+        extension: str,
+        include_images: bool,
+    ) -> Document:
+        raw_metadata = dict(partial.metadata)
+        context = extract_loader_context(raw_metadata)
 
-            for key, value in raw_metadata.items():
-                final_metadata.setdefault(key, value)
+        final_metadata = prepare_metadata(
+            filepath=filepath,
+            extension=extension,
+            pages=partial.pages,
+            tables_meta=context.tables_meta,
+            extra_metadata=context.extra_metadata,
+            images_meta=context.images_meta if include_images else None,
+            issues=context.issues,
+        )
 
-            log_document_summary(
-                partial.pages,
-                final_metadata.get("tables", {}),
-                context.images_meta if include_images else None,
-                context.issues,
-            )
+        for key, value in raw_metadata.items():
+            final_metadata.setdefault(key, value)
+
+        log_document_summary(
+            partial.pages,
+            final_metadata.get("tables", {}),
+            context.images_meta if include_images else None,
+            context.issues,
+        )
 
         images = context.images_meta if include_images else partial.images
 

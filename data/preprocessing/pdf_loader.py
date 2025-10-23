@@ -6,8 +6,9 @@ import os
 import re
 import shutil
 import uuid
+from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, TYPE_CHECKING
+
 import fitz
-from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from core.config import TESSERACT_PATH
 from core.logger import log_error, log_info, log_warn
@@ -21,8 +22,73 @@ except Exception:  # pragma: no cover - fallback limpio
     GHOSTSCRIPT_PATH = None  # type: ignore
 
 
+if TYPE_CHECKING:  # pragma: no cover - anotaciones opcionales
+    from PIL import Image  # type: ignore
+
+
 MEANINGFUL_TEXT_PATTERN = re.compile(r"[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]")
 
+
+class PDFResourceExporter(Protocol):
+    """Define cómo se persisten las tablas e imágenes extraídas del PDF."""
+
+    def save_table(
+        self,
+        stem: str,
+        page_number: str,
+        table_index: int,
+        dataframe: Any,
+    ) -> str:
+        """Persiste la tabla y devuelve una referencia estable (p. ej. ruta o URL)."""
+
+    def save_image(
+        self,
+        stem: str,
+        page_number: int,
+        image_index: int,
+        image: "Image",
+    ) -> str:
+        """Persiste la imagen y devuelve una referencia estable (p. ej. ruta o URL)."""
+
+
+class FileSystemPDFResourceExporter:
+    """Persistencia por defecto utilizando el sistema de archivos local."""
+
+    def __init__(self, base_dir: Optional[str] = None) -> None:
+        self._base_dir = base_dir or os.path.join("data", "outputs")
+
+    def _normalize_path(self, path: str) -> str:
+        return path.replace("\\", "/")
+
+    def save_table(
+        self,
+        stem: str,
+        page_number: str,
+        table_index: int,
+        dataframe: Any,
+    ) -> str:
+        base_dir = os.path.join(self._base_dir, "tables", stem)
+        ensure_dir(base_dir)
+        filename = f"page_{page_number}_{table_index + 1}.csv"
+        output_path = os.path.join(base_dir, filename)
+        dataframe.to_csv(output_path, index=False)
+        return self._normalize_path(output_path)
+
+    def save_image(
+        self,
+        stem: str,
+        page_number: int,
+        image_index: int,
+        image: "Image",
+    ) -> str:
+        safe_stem = _slugify_filename(stem)
+        base_dir = os.path.join(self._base_dir, "images", safe_stem)
+        ensure_dir(base_dir)
+        filename = f"page_{page_number}_img_{image_index}.png"
+        output_path = os.path.join(base_dir, filename)
+        image.save(output_path, format="PNG")
+        return self._normalize_path(output_path)
+    
 
 def configure_ocr() -> None:
     """Configura la ruta de Tesseract OCR si está disponible."""
@@ -74,12 +140,14 @@ def load(
     issues: Optional[List[str]] = None,
     detector: Optional[Callable[[str], Optional[Tuple[bool, List[str]]]]] = None,
     ocr_loader: Optional[Callable[[str], Tuple[str, List[str]]]] = None,
+    resource_exporter: Optional[PDFResourceExporter] = None,
 ) -> Document:
     """Carga un PDF y devuelve un ``Document`` parcial listo para la fachada."""
 
     issues = issues if issues is not None else []
     tables_meta: Dict[str, Any] = {}
     flat_tables: List[Any] = []
+    resource_exporter = resource_exporter or FileSystemPDFResourceExporter()
 
     content, pages, is_ocr, raw_text = _load_pdf(
         filepath,
@@ -90,13 +158,18 @@ def load(
 
     images_meta: List[Dict[str, Any]] = []
     if extract_tables:
-        pdf_tables_meta = _extract_pdf_tables(filepath, ghostscript_cmd, issues)
+        pdf_tables_meta = _extract_pdf_tables(
+            filepath,
+            ghostscript_cmd,
+            issues,
+            resource_exporter,
+        )
         if pdf_tables_meta:
             tables_meta["pdf"] = pdf_tables_meta
             flat_tables.extend(pdf_tables_meta)
 
     if extract_images:
-        images_meta = _extract_pdf_images(filepath)
+        images_meta = _extract_pdf_images(filepath, resource_exporter)
 
     extra_metadata = {
         "is_ocr": is_ocr,
@@ -475,9 +548,10 @@ def _load_pdf_ocr(filepath: str, issues: List[str]) -> Tuple[str, List[str]]:
 
 def _save_camelot_tables(
     tables: Any,
-    base_dir: str,
+    stem: str,
     tables_meta: List[Dict[str, Any]],
     issues: List[str],
+    exporter: PDFResourceExporter,
 ) -> int:
     if not tables:
         return 0
@@ -502,15 +576,11 @@ def _save_camelot_tables(
             if not page_number:
                 page_number = "unknown"
 
-            out_name = f"page_{page_number}_{index + 1}.csv"
-            out_path = os.path.join(base_dir, out_name)
-            ensure_dir(base_dir)
-            df.to_csv(out_path, index=False)
-
+            out_path = exporter.save_table(stem, str(page_number), index, df)
             tables_meta.append(
                 {
                     "page": page_number,
-                    "path": out_path.replace("\\", "/"),
+                    "path": out_path,
                 }
             )
             valid_count += 1
@@ -527,6 +597,7 @@ def _extract_pdf_tables(
     filepath: str,
     ghostscript_cmd: Optional[str],
     issues: List[str],
+    exporter: PDFResourceExporter,
 ) -> List[Dict[str, Any]]:
     tables_meta: List[Dict[str, Any]] = []
 
@@ -539,9 +610,6 @@ def _extract_pdf_tables(
 
     fname = os.path.basename(filepath)
     stem, _ = os.path.splitext(fname)
-    base_dir = os.path.join("data", "outputs", "tables", stem)
-    ensure_dir(base_dir)
-
     valid_count = 0
 
     if ghostscript_cmd:
@@ -549,7 +617,13 @@ def _extract_pdf_tables(
             log_info("Extrayendo tablas (Camelot - lattice)...")
             kwargs = {"flavor": "lattice", "pages": "all", "gs": ghostscript_cmd}
             tables = camelot.read_pdf(filepath, **kwargs)
-            valid_count = _save_camelot_tables(tables, base_dir, tables_meta, issues)
+            valid_count = _save_camelot_tables(
+                tables,
+                stem,
+                tables_meta,
+                issues,
+                exporter,
+            )
         except Exception as exc:
             log_warn(f"Fallo 'lattice': {exc}")
             _register_issue(issues, "Camelot falló con el modo lattice.")
@@ -571,7 +645,13 @@ def _extract_pdf_tables(
             if ghostscript_cmd:
                 kwargs["gs"] = ghostscript_cmd
             tables = camelot.read_pdf(filepath, **kwargs)
-            valid_count = _save_camelot_tables(tables, base_dir, tables_meta, issues)
+            valid_count = _save_camelot_tables(
+                tables,
+                stem,
+                tables_meta,
+                issues,
+                exporter,
+            )
         except Exception as exc:
             log_warn(f"Fallo 'stream': {exc}")
             _register_issue(issues, "Camelot falló con el modo stream.")
@@ -580,7 +660,10 @@ def _extract_pdf_tables(
     return tables_meta
 
 
-def _extract_pdf_images(filepath: str) -> List[Dict[str, Any]]:
+def _extract_pdf_images(
+    filepath: str,
+    exporter: PDFResourceExporter,
+) -> List[Dict[str, Any]]:
     images_meta: List[Dict[str, Any]] = []
 
     try:
@@ -590,10 +673,6 @@ def _extract_pdf_images(filepath: str) -> List[Dict[str, Any]]:
 
         fname = os.path.basename(filepath)
         stem, _ = os.path.splitext(fname)
-        safe_stem = _slugify_filename(stem)
-        base_dir = os.path.join("data", "outputs", "images", safe_stem)
-        ensure_dir(base_dir)
-
         doc = fitz.open(filepath)
         for page_index in range(len(doc)):
             page = doc[page_index]
@@ -614,14 +693,16 @@ def _extract_pdf_images(filepath: str) -> List[Dict[str, Any]]:
                     img_bytes = pix.tobytes("png")
                     image = Image.open(BytesIO(img_bytes))
 
-                    out_name = f"page_{page_index + 1}_img_{img_counter}.png"
-                    out_path = os.path.join(base_dir, out_name)
-                    image.save(out_path, format="PNG")
-
+                    out_path = exporter.save_image(
+                        stem,
+                        page_index + 1,
+                        img_counter,
+                        image,
+                    )
                     images_meta.append(
                         {
                             "page": page_index + 1,
-                            "path": out_path.replace("\\", "/"),
+                            "path": out_path,
                         }
                     )
                 except Exception as exc:
