@@ -230,9 +230,10 @@ class SectionResult:
 class EvaluationResult:
     """Top level object returned by the evaluator."""
 
-    document_id: Optional[str]
-    document_type: Optional[str]
+    document_id: Optional[str] = None
+    document_type: Optional[str] = None
     criteria_source: Optional[str] = None
+    methodology: Optional[str] = None
     generated_at: datetime = field(default_factory=datetime.utcnow)
     score: Optional[float] = None
     sections: List[SectionResult] = field(default_factory=list)
@@ -260,6 +261,7 @@ class EvaluationResult:
             document_id=data.get("document_id"),
             document_type=data.get("document_type"),
             criteria_source=data.get("criteria_source"),
+            methodology=data.get("methodology"),
             generated_at=generated_at,
             score=data.get("score"),
             sections=[
@@ -274,6 +276,7 @@ class EvaluationResult:
             "document_id": self.document_id,
             "document_type": self.document_type,
             "criteria_source": self.criteria_source,
+            "methodology": self.methodology,
             "generated_at": self.generated_at.isoformat(),
             "score": self.score,
             "sections": [section.to_dict() for section in self.sections],

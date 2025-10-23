@@ -12,6 +12,7 @@ import os
 import re
 import shutil
 import uuid
+import fitz
 from typing import Any, Dict, List, Optional, Tuple
 
 from core.logger import log_error, log_info, log_warn

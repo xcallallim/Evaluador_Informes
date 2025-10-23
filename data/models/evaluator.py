@@ -116,6 +116,8 @@ class Evaluator:
             metadata={
                 "criteria_version": criteria.get("version"),
                 "criteria_description": criteria.get("descripcion"),
+                "methodology": criteria.get("metodologia")
+                or criteria.get("tipo_metodologia"),
             },
         )
 
