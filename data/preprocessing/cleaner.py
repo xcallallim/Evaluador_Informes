@@ -5,7 +5,7 @@ import unicodedata
 from typing import List, Dict, Tuple, Optional
 from collections import Counter
 
-from core.logger import log_info, log_warn, log_error
+from core.logger import log_info, log_warn
 from core.utils import normalize_whitespace
 from core.config import CUSTOM_HEADERS, CUSTOM_FOOTERS
 from data.models.document import Document
@@ -474,14 +474,6 @@ class Cleaner:
         # Colapsa múltiples líneas vacías
         text = re.sub(r"\n{3,}", "\n\n", text)
         return text
-    
-    def _strip_trailing_page_num(self, s: str) -> str:
-        """
-        Quita numeración final típica de pie de página. Conserva el resto del texto.
-        """
-        s = re.sub(r"(p[aá]g(?:ina)?\s*\d+\s*(de\s*\d+)?)\s*$", "", s, flags=re.IGNORECASE).strip()
-        s = re.sub(r"[\s\-–—]*\d{1,4}\s*$", "", s).strip()
-        return s
     
     def _strip_trailing_page_num(self, s: str) -> str:
         """
