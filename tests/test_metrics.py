@@ -1,3 +1,5 @@
+"""Pruebas para la normalización y agregación de métricas del evaluador."""
+
 import math
 import time
 

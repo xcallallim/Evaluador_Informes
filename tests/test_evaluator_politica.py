@@ -1,3 +1,5 @@
+"""Casos de prueba del evaluador para informes de política nacional."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

@@ -1,6 +1,10 @@
-# core/config.py
-# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-# .\venv\Scripts\activate
+"""Configuración y rutas de archivos para el Evaluador de Informes.
+
+Este módulo centraliza las rutas de carpetas utilizadas a lo largo del
+proyecto y expone banderas de configuración globales. Al importarlo se aseguran
+los directorios mínimos necesarios para ejecutar la aplicación, lo que evita
+errores cuando se guardan salidas o se buscan criterios.
+"""
 
 import os
 

@@ -45,7 +45,11 @@ Atributo: `chunks`
 Tipo: `List[langchain_core.documents.Document]`
 Productor: Splitter
 Consumidores: Evaluator
-Notas: Documentos LangChain listos para embedding o recuperación.
+Notas: Documentos LangChain listos para embedding o recuperación. A partir de
+      la versión actual el divisor expone `Splitter.iter_document_chunks`, que
+      produce los chunks bajo demanda sin materializar la lista. El servicio de
+      evaluación ofrece `EvaluationService.stream_document_chunks` como fachada
+      de alto nivel para preparar el documento y consumir el iterador perezoso.
 
 ## Contrato de metadatos
 A menos que se indique lo contrario, `DocumentLoader` garantiza la presencia de las siguientes claves dentro de `Document.metadata`. Todos los valores son serializables en JSON, por lo que el objeto puede persistir o transportarse por la red sin procesamiento adicional.

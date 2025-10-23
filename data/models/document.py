@@ -1,4 +1,4 @@
-# data/models/document.py
+"""Definiciones de la entidad ``Document`` usada en el pipeline de evaluación."""
 
 from __future__ import annotations
 

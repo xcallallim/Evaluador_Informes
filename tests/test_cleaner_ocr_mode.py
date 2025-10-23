@@ -66,4 +66,5 @@ def test_clean_uses_heuristic_when_no_override(monkeypatch):
     cleaner.clean("=== PAGE 1 ===\nHeader\nBody\n")
 
     assert calls == [True, True]
-    
+
+# pytest tests/test_cleaner_ocr_mode.py -v

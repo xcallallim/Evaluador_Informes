@@ -1,3 +1,5 @@
+"""Pruebas unitarias para la eliminación de números de página en el limpiador."""
+
 import pytest
 
 from data.preprocessing.cleaner import Cleaner
@@ -24,3 +26,5 @@ def test_strip_trailing_page_num_removes_page_indicators(cleaner: Cleaner, origi
 def test_strip_trailing_page_num_keeps_non_page_suffix(cleaner: Cleaner) -> None:
     text = "Capítulo 5: Resultados finales"
     assert cleaner._strip_trailing_page_num(text) == text
+
+# pytest tests/test_cleaner_page_numbers.py -v

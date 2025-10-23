@@ -1,4 +1,4 @@
-# data/preprocessing/cleaner.py
+"""Herramientas para limpiar texto y eliminar ruidos comunes de los informes."""
 
 import re
 import unicodedata

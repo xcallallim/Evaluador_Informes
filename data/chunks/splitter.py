@@ -233,6 +233,7 @@ class Splitter:
         origin: str,
         base_metadata: Optional[Dict[str, Any]] = None,
         stream: bool = False,
+        source_strategy: Optional[str] = None,
     ) -> Union[List["LCDocumentType"], Iterator["LCDocumentType"]]:
         """Divide cada entrada de ``content_map`` en fragmentos LangChain.
 
@@ -256,6 +257,7 @@ class Splitter:
             )
             shared_metadata = dict(base_metadata or {})
             total_chunks = 0
+            strategy = source_strategy or origin
 
             for content_id, raw_value in content_map.items():
                 if raw_value is None:
@@ -270,7 +272,13 @@ class Splitter:
 
                 documents = self.splitter.create_documents(
                     texts=[text],
-                    metadatas=[{"source_id": content_id, "source_type": origin}],
+                    metadatas=[
+                        {
+                            "source_id": content_id,
+                            "source_type": origin,
+                            "source_strategy": strategy,
+                        }
+                    ],
                 )
                 section_total = len(documents)
                 _log_progress(
@@ -287,7 +295,7 @@ class Splitter:
                             "chunk_index": idx,
                             "chunks_in_source": section_total,
                             "length": len(chunk.page_content),
-                            "chunk_overlap": self.chunk_overlap,
+                            "source_strategy": strategy,
                         }
                     )
                     chunk.metadata = metadata
@@ -334,6 +342,7 @@ class Splitter:
                 origin="section",
                 base_metadata=shared_metadata,
                 stream=True,
+                source_strategy="content",
             ):
                 produced_any = True
                 yield chunk

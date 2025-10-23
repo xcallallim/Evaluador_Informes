@@ -92,7 +92,8 @@ class DocumentLoader:
     cumplan con el contrato de datos descrito en :mod:`data.models.document`.
     Quienes llaman siempre deben interactuar con esta fachada en lugar de instanciar los 
     cargadores directamente para garantizar que los campos de metadatos obligatorios 
-    (``source``, ``processed_with``, ``is_ocr``, etc.) estén presentes y sean consistentes."""
+    (``source``, ``processed_with``, ``is_ocr``, etc.) estén presentes y sean consistentes.
+    """
 
     def __init__(
         self,

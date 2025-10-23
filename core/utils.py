@@ -1,5 +1,10 @@
-# core/utils.py
-# from core.utils import []
+"""Utilidades comunes para manejo de texto, archivos y directorios.
+
+El módulo agrupa funciones auxiliares reutilizadas en distintas etapas del
+pipeline de evaluación: normalización de cadenas, lectura y escritura de JSON,
+formateo de mensajes y soporte para dividir texto en fragmentos compatibles con
+LangChain.
+"""
 
 import json
 import unicodedata
