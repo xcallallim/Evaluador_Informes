@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import pytest
 
 from data.models.document import Document
 from data.preprocessing import loader as loader_module
 from data.preprocessing.loader import DocumentLoader
-from data.preprocessing.metadata import LoaderContext
+from data.preprocessing.metadata import DocumentSummary, LoaderContext
 from data.preprocessing import docx_loader, pdf_loader, txt_loader
 
 
@@ -46,35 +46,53 @@ def patch_pdf_dependencies(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(pdf_loader, "_try_load_pdf_with_pymupdf", lambda filepath: (True, []))
 
 
+class RecordingEvents(loader_module.NullLoaderEventHandler):
+    """Captura eventos emitidos por :class:`DocumentLoader` durante las pruebas."""
+
+    def __init__(self) -> None:
+        self.started: List[str] = []
+        self.summaries: List[DocumentSummary] = []
+        self.failures: List[Tuple[str, Exception]] = []
+
+    def on_load_started(self, filepath: str) -> None:
+        self.started.append(filepath)
+
+    def on_load_succeeded(
+        self,
+        filepath: str,
+        document: Document,
+        summary: DocumentSummary,
+    ) -> None:
+        self.summaries.append(summary)
+
+    def on_load_failed(self, filepath: str, error: Exception) -> None:
+        self.failures.append((filepath, error))
+
+
 @pytest.fixture
-def loader(patch_pdf_dependencies: None) -> DocumentLoader:
+def event_recorder() -> RecordingEvents:
+    return RecordingEvents()
+
+
+@pytest.fixture
+def loader(
+    patch_pdf_dependencies: None, event_recorder: RecordingEvents
+) -> DocumentLoader:
     """Return a DocumentLoader configured with the lightweight exporter."""
 
-    return DocumentLoader(resource_exporter=DummyExporter())
+    return DocumentLoader(resource_exporter=DummyExporter(), events=event_recorder)
 
 
-def _capture_summary(monkeypatch: pytest.MonkeyPatch) -> Dict[str, Any]:
-    """Capture the arguments sent to ``log_document_summary``."""
-
-    summary: Dict[str, Any] = {}
-
-    def fake_summary(pages, tables_meta, images_meta, issues) -> None:
-        summary["pages"] = list(pages)
-        summary["tables"] = dict(tables_meta)
-        summary["images"] = None if images_meta is None else list(images_meta)
-        summary["issues"] = list(issues)
-
-    monkeypatch.setattr(loader_module, "log_document_summary", fake_summary)
-    return summary
-
-
-def test_load_pdf_digital_compiles_metadata(monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader, tmp_path: Path) -> None:
-    """Digital PDFs should merge loader context metadata and log a summary."""
+def test_load_pdf_digital_compiles_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+    loader: DocumentLoader,
+    event_recorder: RecordingEvents,
+    tmp_path: Path,
+) -> None:
 
     pdf_path = tmp_path / "sample.pdf"
     pdf_path.write_bytes(b"%PDF-1.4")
 
-    summary = _capture_summary(monkeypatch)
     pdf_call: Dict[str, Any] = {}
 
     def fake_pdf_load(
@@ -154,23 +172,25 @@ def test_load_pdf_digital_compiles_metadata(monkeypatch: pytest.MonkeyPatch, loa
     assert metadata["images"] == [{"path": "image-1.png"}]
     assert document.images == [{"path": "image-1.png"}]
 
-    assert summary == {
-        "pages": ["Página 1"],
-        "tables": {"pdf": [{"id": "t1"}]},
-        "images": [{"path": "image-1.png"}],
-        "issues": ["tabla sin encabezado"],
-    }
+    assert len(event_recorder.summaries) == 1
+    summary = event_recorder.summaries[0]
+    assert summary.pages == ["Página 1"]
+    assert summary.tables == {"pdf": [{"id": "t1"}]}
+    assert summary.images == [{"path": "image-1.png"}]
+    assert summary.issues == ["tabla sin encabezado"]
 
 
 def test_load_pdf_ocr_preserves_partial_images_when_disabled(
-    monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    loader: DocumentLoader,
+    event_recorder: RecordingEvents,
+    tmp_path: Path,
 ) -> None:
     """When images are disabled the partial images should be kept as-is."""
 
     pdf_path = tmp_path / "scanned.pdf"
     pdf_path.write_bytes(b"%PDF-1.4")
 
-    summary = _capture_summary(monkeypatch)
 
     def fake_pdf_load(
         filepath: str,
@@ -217,23 +237,24 @@ def test_load_pdf_ocr_preserves_partial_images_when_disabled(
     assert "images" not in document.metadata
     assert document.images == ["imagen parcial"]
 
-    assert summary == {
-        "pages": ["Página OCR"],
-        "tables": {},
-        "images": None,
-        "issues": ["ocr fallback"],
-    }
+    summary = event_recorder.summaries[0]
+    assert summary.pages == ["Página OCR"]
+    assert summary.tables == {}
+    assert summary.images is None
+    assert summary.issues == ["ocr fallback"]
 
 
 def test_load_docx_delegates_and_respects_extract_tables(
-    monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    loader: DocumentLoader,
+    event_recorder: RecordingEvents,
+    tmp_path: Path,
 ) -> None:
     """DOCX files must forward the ``extract_tables`` flag to the specialised loader."""
 
     docx_path = tmp_path / "sample.docx"
     docx_path.write_text("dummy", encoding="utf-8")
 
-    summary = _capture_summary(monkeypatch)
     called: Dict[str, Any] = {}
 
     def fake_docx_load(filepath: str, *, extract_tables: bool) -> Document:
@@ -263,23 +284,24 @@ def test_load_docx_delegates_and_respects_extract_tables(
     assert document.metadata["issues"] == ["tabla sin cabecera"]
     assert "images" not in document.metadata
 
-    assert summary == {
-        "pages": ["Página 1"],
-        "tables": {"docx": [["A", "B"]]},
-        "images": None,
-        "issues": ["tabla sin cabecera"],
-    }
+    summary = event_recorder.summaries[0]
+    assert summary.pages == ["Página 1"]
+    assert summary.tables == {"docx": [["A", "B"]]}
+    assert summary.images is None
+    assert summary.issues == ["tabla sin cabecera"]
 
 
 def test_load_txt_merges_extra_metadata(
-    monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    loader: DocumentLoader,
+    event_recorder: RecordingEvents,
+    tmp_path: Path,
 ) -> None:
     """TXT files should also benefit from loader context metadata."""
 
     txt_path = tmp_path / "notes.txt"
     txt_path.write_text("contenido", encoding="utf-8")
 
-    summary = _capture_summary(monkeypatch)
 
     def fake_txt_load(filepath: str) -> Document:
         assert filepath == str(txt_path)
@@ -303,43 +325,67 @@ def test_load_txt_merges_extra_metadata(
     assert document.metadata["tables"] == {}
     assert document.metadata["pages"] == ["Contenido TXT"]
 
-    assert summary == {
-        "pages": ["Contenido TXT"],
-        "tables": {},
-        "images": [],
-        "issues": [],
-    }
+    summary = event_recorder.summaries[0]
+    assert summary.pages == ["Contenido TXT"]
+    assert summary.tables == {}
+    assert summary.images == []
+    assert summary.issues == []
 
 
-def test_load_missing_file_logs_error(monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader, tmp_path: Path) -> None:
-    """Missing files must raise ``FileNotFoundError`` and emit a log entry."""
+def test_load_missing_file_notifies_failure(
+    loader: DocumentLoader, event_recorder: RecordingEvents, tmp_path: Path
+) -> None:
+    """Missing files must raise ``FileNotFoundError`` and notify listeners."""
 
     missing_path = tmp_path / "ghost.pdf"
-    errors: List[str] = []
-    monkeypatch.setattr(loader_module, "log_error", errors.append)
 
     with pytest.raises(FileNotFoundError):
         loader.load(str(missing_path))
 
-    assert errors == [f"Archivo no encontrado: {missing_path}"]
+    assert len(event_recorder.failures) == 1
+    failure_path, failure_error = event_recorder.failures[0]
+    assert failure_path == str(missing_path)
+    assert isinstance(failure_error, FileNotFoundError)
+    assert str(failure_error) == f"Archivo no encontrado: {missing_path}"
+    assert loader.failures == 1
+    traces = loader.failure_traces
+    assert len(traces) == 1
+    assert traces[0] == {
+        "filepath": str(missing_path),
+        "error_type": "FileNotFoundError",
+        "message": f"Archivo no encontrado: {missing_path}",
+    }
 
 
-def test_load_unsupported_extension_logs_error(monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader, tmp_path: Path) -> None:
-    """Unsupported file types should be rejected with a helpful error message."""
+def test_load_unsupported_extension_notifies_failure(
+    loader: DocumentLoader, event_recorder: RecordingEvents, tmp_path: Path
+) -> None:
+    """Unsupported file types should notify listeners about the failure."""
 
     path = tmp_path / "notes.md"
     path.write_text("contenido", encoding="utf-8")
 
-    errors: List[str] = []
-    monkeypatch.setattr(loader_module, "log_error", errors.append)
-
     with pytest.raises(ValueError, match="Formato no soportado: .md"):
         loader.load(str(path))
 
-    assert errors == ["Formato no soportado: .md"]
+    assert len(event_recorder.failures) == 1
+    failure_path, failure_error = event_recorder.failures[0]
+    assert failure_path == str(path)
+    assert isinstance(failure_error, ValueError)
+    assert str(failure_error) == "Formato no soportado: .md"
+    assert loader.failures == 1
+    traces = loader.failure_traces
+    assert len(traces) == 1
+    assert traces[0] == {
+        "filepath": str(path),
+        "error_type": "ValueError",
+        "message": "Formato no soportado: .md",
+    }
 
 
 def test_supported_extensions_are_sorted(loader: DocumentLoader) -> None:
     """The loader should expose its supported extensions in alphabetical order."""
 
     assert loader.supported_extensions == [".docx", ".pdf", ".txt"]
+
+# pytest tests/test_document_loader.py -v

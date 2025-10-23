@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Optional
 
 from core.logger import log_info, log_warn
+from data.models.document import Document
 
 
 @dataclass
@@ -24,7 +25,26 @@ class LoaderContext:
             "issues": list(dict.fromkeys(self.issues)),
             "images_meta": list(self.images_meta),
             "extra_metadata": dict(self.extra_metadata),
+        "extra_metadata": dict(self.extra_metadata),
         }
+
+
+@dataclass(frozen=True)
+class DocumentSummary:
+    """Resumen de la carga empleado por capas superiores (logging, métricas, etc.)."""
+
+    pages: List[str] = field(default_factory=list)
+    tables: Dict[str, Any] = field(default_factory=dict)
+    images: Optional[List[Any]] = None
+    issues: List[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class DocumentComposition:
+    """Empaqueta el documento final junto al resumen generado durante la carga."""
+
+    document: Document
+    summary: DocumentSummary
 
 
 def extract_loader_context(metadata: MutableMapping[str, Any]) -> LoaderContext:
@@ -107,33 +127,76 @@ def prepare_metadata(
     return metadata
 
 
-def log_document_summary(
-    pages: Iterable[str],
-    tables_meta: Mapping[str, Any],
-    images_meta: Optional[List[Any]],
-    issues: Iterable[str],
-) -> None:
+def log_document_summary(summary: DocumentSummary) -> None:
     """Centraliza el logging resumen tras la carga de un documento."""
 
-    pages_list = list(pages) if pages else []
+    pages_list = list(summary.pages) if summary.pages else []
     tables_total = 0
-    for _, table_group in (tables_meta or {}).items():
+    for _, table_group in (summary.tables or {}).items():
         try:
             tables_total += len(table_group)
         except TypeError:
             continue
 
-    images_count = len(images_meta) if images_meta else 0
+    images_meta = summary.images or []
+    images_count = len(images_meta)
 
     log_info("📊 Resumen de carga del documento:")
     log_info(f"   • Páginas detectadas: {len(pages_list)}")
     log_info(f"   • Tablas extraídas: {tables_total}")
     log_info(f"   • Imágenes extraídas: {images_count}")
 
-    issues_list = [issue for issue in issues if issue]
+    issues_list = [issue for issue in summary.issues if issue]
     if issues_list:
         log_warn("⚠ Documento cargado con advertencias. Revisar detalles:")
         for issue in issues_list:
             log_warn(f"   • {issue}")
     else:
         log_info("✅ Documento cargado correctamente ✅")
+
+
+def compose_document(
+    partial: Document,
+    *,
+    filepath: str,
+    extension: str,
+    include_images: bool,
+) -> DocumentComposition:
+    """Genera el documento final y su resumen reutilizable."""
+
+    raw_metadata = dict(partial.metadata)
+    context = extract_loader_context(raw_metadata)
+
+    final_metadata = prepare_metadata(
+        filepath=filepath,
+        extension=extension,
+        pages=partial.pages,
+        tables_meta=context.tables_meta,
+        extra_metadata=context.extra_metadata,
+        images_meta=context.images_meta if include_images else None,
+        issues=context.issues,
+    )
+
+    for key, value in raw_metadata.items():
+        final_metadata.setdefault(key, value)
+
+    images = context.images_meta if include_images else partial.images
+
+    document = Document(
+        content=partial.content,
+        metadata=final_metadata,
+        pages=partial.pages,
+        tables=partial.tables,
+        images=images,
+        sections=partial.sections,
+        chunks=partial.chunks,
+    )
+
+    summary = DocumentSummary(
+        pages=list(partial.pages),
+        tables=dict(final_metadata.get("tables", {})),
+        images=list(context.images_meta) if include_images else None,
+        issues=list(context.issues),
+    )
+
+    return DocumentComposition(document=document, summary=summary)

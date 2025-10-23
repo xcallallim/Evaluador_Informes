@@ -9,9 +9,10 @@ from core.logger import log_error, log_info
 from data.models.document import Document
 from data.preprocessing import docx_loader, pdf_loader, txt_loader
 from data.preprocessing.metadata import (
-    extract_loader_context,
+    DocumentComposition,
+    DocumentSummary,
+    compose_document,
     log_document_summary,
-    prepare_metadata,
 )
 
 if TYPE_CHECKING:
@@ -29,12 +30,67 @@ class LoaderStrategy(Protocol):
     ) -> Document:
         ...
 
+class LoaderEventHandler(Protocol):
+    """Eventos de alto nivel disparados durante ``load``."""
+
+    def on_load_started(self, filepath: str) -> None:
+        ...
+
+    def on_load_succeeded(
+        self,
+        filepath: str,
+        document: Document,
+        summary: DocumentSummary,
+    ) -> None:
+        ...
+
+    def on_load_failed(self, filepath: str, error: Exception) -> None:
+        ...
+
+
+class NullLoaderEventHandler:
+    """Implementación por defecto silenciosa para facilitar pruebas."""
+
+    def on_load_started(self, filepath: str) -> None:  # pragma: no cover - trivial
+        return
+
+    def on_load_succeeded(
+        self,
+        filepath: str,
+        document: Document,
+        summary: DocumentSummary,
+    ) -> None:  # pragma: no cover - trivial
+        return
+
+    def on_load_failed(self, filepath: str, error: Exception) -> None:  # pragma: no cover - trivial
+        return
+
+
+class LoggingLoaderEventHandler(NullLoaderEventHandler):
+    """Event handler that proxies the legacy logging behaviour."""
+
+    def on_load_started(self, filepath: str) -> None:
+        log_info(f"Cargando archivo: {filepath}")
+
+    def on_load_succeeded(
+        self,
+        filepath: str,
+        document: Document,
+        summary: DocumentSummary,
+    ) -> None:
+        log_document_summary(summary)
+
+    def on_load_failed(self, filepath: str, error: Exception) -> None:
+        log_error(str(error))
+
+
 class DocumentLoader:
     """Fachada thread-safe que compone resultados de loaders especializados."""
 
     def __init__(
         self,
         resource_exporter: Optional["PDFResourceExporter"] = None,
+        events: Optional[LoaderEventHandler] = None,
     ) -> None:
         pdf_loader.configure_ocr()
         self._ghostscript_cmd: Optional[str] = pdf_loader.resolve_ghostscript()
@@ -43,6 +99,9 @@ class DocumentLoader:
         )
         self._strategies: Dict[str, LoaderStrategy] = {}
         self._register_default_strategies()
+        self._events: LoaderEventHandler = events or LoggingLoaderEventHandler()
+        self.failures: int = 0
+        self._failure_traces: List[Dict[str, str]] = []
 
     # ------------------------------------------------------------------
     # Registro de estrategias
@@ -69,6 +128,12 @@ class DocumentLoader:
         """Lista de extensiones soportadas actualmente."""
 
         return sorted(self._strategies.keys())
+    
+    @property
+    def failure_traces(self) -> List[Dict[str, str]]:
+        """Historial inmutable de fallos reportados durante ``load``."""
+
+        return list(self._failure_traces)
 
     # ------------------------------------------------------------------
     # API pública
@@ -81,32 +146,60 @@ class DocumentLoader:
     ) -> Document:
         filepath = os.fspath(filepath)
 
+        self._events.on_load_started(filepath)
+
         if not os.path.isfile(filepath):
             log_error(f"Archivo no encontrado: {filepath}")
             raise FileNotFoundError(f"Archivo no encontrado: {filepath}")
+            error = FileNotFoundError(f"Archivo no encontrado: {filepath}")
+            self._events.on_load_failed(filepath, error)
+            raise error
 
         _, ext = os.path.splitext(filepath)
         ext = ext.lower()
 
         strategy = self._strategies.get(ext)
         if strategy is None:
-            log_error(f"Formato no soportado: {ext}")
-            raise ValueError(f"Formato no soportado: {ext}")
+            error = ValueError(f"Formato no soportado: {ext}")
+            self._events.on_load_failed(filepath, error)
+            raise error
 
-        log_info(f"Cargando archivo: {filepath}")
+        try:
+            partial = strategy(
+                filepath,
+                extract_tables=extract_tables,
+                extract_images=extract_images,
+            )
+            composition: DocumentComposition = compose_document(
+                partial,
+                filepath=filepath,
+                extension=ext,
+                include_images=extract_images,
+            )
+        except Exception as error:
+            self._events.on_load_failed(filepath, error)
+            raise
 
-        partial = strategy(
+        self._events.on_load_succeeded(
             filepath,
-            extract_tables=extract_tables,
-            extract_images=extract_images,
+            composition.document,
+            composition.summary,
         )
+        return composition.document
 
-        return self._finalize_document(
-            partial,
-            filepath=filepath,
-            extension=ext,
-            include_images=extract_images,
+    def _record_failure(self, filepath: str, error: Exception) -> None:
+        """Incrementa contadores y conserva trazabilidad para el pipeline."""
+
+        self.failures += 1
+        self._failure_traces.append(
+            {
+                "filepath": filepath,
+                "error_type": type(error).__name__,
+                "message": str(error),
+            }
         )
+        self._events.on_load_failed(filepath, error)
+    
     
     # ------------------------------------------------------------------
     # Estrategias internas
@@ -169,49 +262,3 @@ class DocumentLoader:
         """Proxy para facilitar pruebas unitarias y personalización."""
 
         return pdf_loader._try_load_pdf_with_pymupdf(filepath)
-
-    # ------------------------------------------------------------------
-    # Composición final del documento
-    # ------------------------------------------------------------------
-    def _finalize_document(
-        self,
-        partial: Document,
-        *,
-        filepath: str,
-        extension: str,
-        include_images: bool,
-    ) -> Document:
-        raw_metadata = dict(partial.metadata)
-        context = extract_loader_context(raw_metadata)
-
-        final_metadata = prepare_metadata(
-            filepath=filepath,
-            extension=extension,
-            pages=partial.pages,
-            tables_meta=context.tables_meta,
-            extra_metadata=context.extra_metadata,
-            images_meta=context.images_meta if include_images else None,
-            issues=context.issues,
-        )
-
-        for key, value in raw_metadata.items():
-            final_metadata.setdefault(key, value)
-
-        log_document_summary(
-            partial.pages,
-            final_metadata.get("tables", {}),
-            context.images_meta if include_images else None,
-            context.issues,
-        )
-
-        images = context.images_meta if include_images else partial.images
-
-        return Document(
-            content=partial.content,
-            metadata=final_metadata,
-            pages=partial.pages,
-            tables=partial.tables,
-            images=images,
-            sections=partial.sections,
-            chunks=partial.chunks,
-        )

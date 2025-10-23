@@ -45,7 +45,8 @@ def _normalise(
     if max_value <= min_value or target_max <= target_min:
         return None
     ratio = (float(score) - min_value) / (max_value - min_value)
-    return target_min + ratio * (target_max - target_min)
+    clamped_ratio = max(0.0, min(1.0, ratio))
+    return target_min + clamped_ratio * (target_max - target_min)
 
 
 def _resolve_tipo_informe(evaluation: EvaluationResult) -> Optional[str]:
@@ -69,16 +70,23 @@ def _section_summaries(
     min_value: float,
     max_value: float,
     target_range: Tuple[float, float],
+    weights: Optional[Mapping[str, float]] = None,
 ) -> list[Dict[str, Any]]:
     summaries: list[Dict[str, Any]] = []
     target_min, target_max = target_range
     tipo_informe = _resolve_tipo_informe(evaluation)
     for section in evaluation.sections:
+        weight = section.weight
+        if weights and section.section_id in weights:
+            try:
+                weight = float(weights[section.section_id])
+            except (TypeError, ValueError):
+                weight = section.weight
         summaries.append(
             {
                 "section_id": section.section_id,
                 "title": section.title,
-                "weight": section.weight,
+                "weight": weight,
                 "score": section.score,
                 "tipo_informe": tipo_informe,
                 "normalized_score": _normalise(
@@ -131,12 +139,15 @@ def calculate_institutional_metrics(
     criteria: Mapping[str, Any],
     *,
     normalized_range: Optional[Tuple[float, float]] = None,
+    weights: Optional[Mapping[str, float]] = None,
 ) -> MetricsSummary:
     """Compute the institutional index for an already weighted evaluation.
 
     The evaluator is expected to provide an :class:`EvaluationResult` where the
     section scores are already weighted averages.  The helper only normalises
-    those aggregates to the requested output scale.
+    those aggregates to the requested output scale.  ``weights`` can override
+    the recorded weight for each section when experimenting with alternative
+    ponderations.
     """
 
     scale = (
@@ -174,6 +185,7 @@ def calculate_institutional_metrics(
             min_value=min_value,
             max_value=max_value,
             target_range=(target_min, target_max),
+            weights=weights,
         ),
         "totals": _totals(evaluation),
     }
@@ -185,11 +197,13 @@ def calculate_policy_metrics(
     criteria: Mapping[str, Any],
     *,
     normalized_range: Optional[Tuple[float, float]] = None,
+    weights: Optional[Mapping[str, float]] = None,
 ) -> MetricsSummary:
     """Return the policy index for an already weighted evaluation.
 
     Section scores are assumed to be weighted averages.  The helper simply
-    normalises the results to the requested target range.
+    normalises the results to the requested target range.  ``weights`` allows
+    overriding the stored section weights for quick experiments.
     """
 
     scale = criteria.get("escala", {}) if isinstance(criteria, Mapping) else {}
@@ -222,6 +236,7 @@ def calculate_policy_metrics(
             min_value=min_value,
             max_value=max_value,
             target_range=(target_min, target_max),
+            weights=weights,
         ),
         "totals": _totals(evaluation),
     }
@@ -233,12 +248,14 @@ def calculate_metrics(
     criteria: Mapping[str, Any],
     *,
     normalized_range: Optional[Tuple[float, float]] = None,
+    weights: Optional[Mapping[str, float]] = None,
 ) -> MetricsSummary:
     """Dispatch the metric calculation according to the report type.
 
     The provided :class:`EvaluationResult` must already contain weighted
     aggregates for each section; this helper focuses on normalising those
-    values and reporting totals.
+    values and reporting totals.  When ``weights`` is provided it is propagated
+    to the section breakdown regardless of the report type.
     """
 
     report_type = ""
@@ -247,11 +264,11 @@ def calculate_metrics(
 
     if report_type == "institucional":
         return calculate_institutional_metrics(
-            evaluation, criteria, normalized_range=normalized_range
+            evaluation, criteria, normalized_range=normalized_range, weights=weights
         )
     if report_type in {"politica", "politica_nacional"}:
         return calculate_policy_metrics(
-            evaluation, criteria, normalized_range=normalized_range
+            evaluation, criteria, normalized_range=normalized_range, weights=weights
         )
 
     # Generic fallback: reuse the evaluation score without normalisation.
@@ -271,6 +288,7 @@ def calculate_metrics(
             min_value=0.0,
             max_value=1.0,
             target_range=(target_min, target_max),
+            weights=weights,
         ),
         "totals": _totals(evaluation),
     }

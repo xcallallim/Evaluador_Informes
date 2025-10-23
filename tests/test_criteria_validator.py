@@ -154,5 +154,4 @@ if __name__ == "__main__":
 
     raise SystemExit(pytest.main([__file__]))
 
-# py tests/test_criteria_validator.py
-# python -m tests.test_criteria_validator
+# pytest tests/test_criteria_validator.py -v
