@@ -32,6 +32,8 @@ from data.chunks.splitter import Splitter
 from metrics import calculate_metrics
 from reporting.repository import EvaluationRepository
 
+SERVICE_VERSION = "0.1.0"
+
 __all__ = [
     "EvaluationFilters",
     "EvaluationService",
@@ -271,6 +273,7 @@ class EvaluationService:
     ) -> tuple[EvaluationResult, Dict[str, Any]]:
         """Execute the full evaluation pipeline and optionally export the result."""
 
+        start_time = time.time()
         config = self.config.with_overrides(**(config_overrides or {}))
         self._configure_logging(config)
 
@@ -338,7 +341,11 @@ class EvaluationService:
         if mode == "reevaluacion" and previous_result is not None:
             evaluation = self._merge_results(previous_result, evaluation)
 
-        metrics_summary = calculate_metrics(evaluation, raw_criteria).to_dict()
+        try:
+            metrics_summary = calculate_metrics(evaluation, raw_criteria).to_dict()
+        except Exception as exc:  # pragma: no cover - robustez ante métricas
+            self.logger.exception("Error calculando métricas: %s", exc)
+            metrics_summary = {}
 
         export_metadata = {
             "config": config.dump(),
@@ -350,16 +357,32 @@ class EvaluationService:
         if not filters.is_empty():
             export_metadata["filters"] = filters.to_dict()
 
-        if output_path is not None:
-            self.repository.export(
-                evaluation,
-                metrics_summary,
-                output_path=Path(output_path),
-                output_format=output_format,
-                extra_metadata=export_metadata,
-            )
+        export_path = output_path
+        effective_format = output_format or "json"
+        if export_path is None:
+            if output_format in (None, "json"):
+                effective_format = "xlsx"
+            target_dir = Path(input_path).parent if input_path else Path.cwd()
+            extension = effective_format.lower()
+            if extension not in {"json", "csv", "xlsx"}:
+                extension = "xlsx"
+                effective_format = "xlsx"
+            export_path = target_dir / f"resultados_{document_id}_{config.run_id}.{extension}"
+        elif not effective_format:
+            suffix = Path(export_path).suffix.lstrip(".")
+            effective_format = suffix or "json"
 
-        self._print_summary(evaluation, metrics_summary)
+        self.repository.export(
+            evaluation,
+            metrics_summary,
+            output_path=Path(export_path),
+            output_format=effective_format,
+            extra_metadata=export_metadata,
+        )
+
+        duration_seconds = time.time() - start_time
+        question_counts = self._question_counts(evaluation)
+        self._print_summary(evaluation, metrics_summary, duration_seconds, question_counts)
         return evaluation, metrics_summary
 
     # ------------------------------------------------------------------
@@ -576,8 +599,11 @@ class EvaluationService:
             inner = MockAIService(model_name=config.model_name)
         else:
             raise RuntimeError(
-                "No se proporcionó un AIService real. Define 'ai_service_factory' o activa el modo mock."
+                "No se proporcionó un AIService real. Define 'ai_service_factory' al instanciar "
+                "EvaluationService (por ejemplo, EvaluationService(ai_service_factory=mi_factory)) "
+                "o ajusta tu config.py para registrar la factory correspondiente."
             )
+        # TODO: Integrar aquí el envío en lote/paralelo cuando se implemente batching de prompts.
         return RetryingAIService(
             inner,
             retries=config.retries,
@@ -651,10 +677,23 @@ class EvaluationService:
             index_questions[key] = update_question
         target_dimension.questions = list(index_questions.values())
 
+    def _question_counts(self, evaluation: EvaluationResult) -> tuple[int, int]:
+        total = 0
+        evaluated = 0
+        for section in evaluation.sections:
+            for dimension in section.dimensions:
+                total += len(dimension.questions)
+                for question in dimension.questions:
+                    if question.score is not None:
+                        evaluated += 1
+        return evaluated, total
+
     def _print_summary(
         self,
         evaluation: EvaluationResult,
         metrics_summary: Mapping[str, Any],
+        duration_seconds: float,
+        question_counts: tuple[int, int],
     ) -> None:
         report_type = evaluation.document_type or "desconocido"
         global_metrics = metrics_summary.get("global", {})
@@ -662,10 +701,14 @@ class EvaluationService:
         if normalized is not None:
             global_display = f"{normalized:.2f} (normalizado)"
         else:
-            global_display = str(global_metrics.get("raw_score"))
+            raw_score = global_metrics.get("raw_score")
+            global_display = str(raw_score) if raw_score is not None else "Sin calcular"
+        evaluated_count, total_questions = question_counts
         print("\n=== RESUMEN DE EVALUACIÓN ===")
         print(f"Tipo de informe: {report_type}")
         print(f"Puntaje global: {global_display}")
+        print(f"Evaluadas: {evaluated_count}/{total_questions}")
+        print(f"Duración total: {duration_seconds:.2f} s")
         print("------------------------------")
         section_summaries = metrics_summary.get("sections", [])
         justifications = self._best_justifications(evaluation)
@@ -723,12 +766,28 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Orquesta la evaluación de informes institucionales o de política."
     )
-    parser.add_argument("--input", dest="input_path", type=Path, required=True, help="Ruta del documento a evaluar.")
-    parser.add_argument("--criteria", dest="criteria_path", type=Path, required=True, help="Ruta del JSON de criterios.")
+    parser.add_argument(
+        "--version",
+        dest="show_version",
+        action="store_true",
+        help="Muestra la versión del servicio y de los criterios (si aplica).",
+    )
+    parser.add_argument("--input", dest="input_path", type=Path, help="Ruta del documento a evaluar.")
+    parser.add_argument(
+        "--criteria",
+        dest="criteria_path",
+        type=Path,
+        help="Ruta del JSON de criterios.",
+    )
     parser.add_argument("--tipo-informe", dest="tipo_informe", help="Tipo de informe (institucional o politica_nacional).")
     parser.add_argument("--modo", dest="modo", default="completo", choices=["completo", "parcial", "reevaluacion"], help="Modo de evaluación.")
     parser.add_argument("--output", dest="output_path", type=Path, help="Ruta del archivo de salida.")
-    parser.add_argument("--formato", dest="formato", default="json", help="Formato de salida: json, csv o xlsx.")
+    parser.add_argument(
+        "--formato",
+        dest="formato",
+        default="xlsx",
+        help="Formato de salida: json, csv o xlsx.",
+    )
     parser.add_argument("--model", dest="model_name", help="Modelo de IA a utilizar.")
     parser.add_argument("--retries", dest="retries", type=int, help="Número máximo de reintentos ante errores de IA.")
     parser.add_argument("--backoff", dest="backoff", type=float, help="Factor de backoff entre reintentos.")
@@ -764,6 +823,34 @@ def _load_previous_result(path: Path) -> EvaluationResult:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
+    if args.show_version:
+        print(f"EvaluationService versión: {SERVICE_VERSION}")
+        criteria_path: Optional[Path] = getattr(args, "criteria_path", None)
+        if criteria_path:
+            try:
+                with Path(criteria_path).open("r", encoding="utf-8") as handle:
+                    criteria_data = json.load(handle)
+                version = criteria_data.get("version")
+                if version:
+                    print(f"Versión de criterios: {version}")
+                else:
+                    print("Versión de criterios no especificada en el archivo.")
+            except Exception as exc:  # pragma: no cover - CLI UX
+                print(f"No se pudo leer la versión de criterios: {exc}", file=sys.stderr)
+        return 0
+
+    missing: List[str] = []
+    if args.input_path is None:
+        missing.append("--input")
+    if args.criteria_path is None:
+        missing.append("--criteria")
+    if missing:
+        print(
+            "Faltan argumentos requeridos: " + ", ".join(missing),
+            file=sys.stderr,
+        )
+        return 2
+
     service = EvaluationService()
     previous_result = None
     if args.previous_result:
