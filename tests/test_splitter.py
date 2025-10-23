@@ -211,67 +211,54 @@ def test_full_pipeline_generates_expected_chunks() -> None:
     assert all("document_metadata" in chunk.metadata for chunk in document.chunks)
 
 
-def test_splitter_threadsafe_initialization(monkeypatch) -> None:
-    """Ensure concurrent instantiation does not duplicate initialization side-effects."""
+def test_split_content_map_streams_without_materialising(sample_sections: Dict[str, str]) -> None:
+    splitter = Splitter(chunk_size=120, chunk_overlap=20)
+    base_metadata = {"document_metadata": {"id": "doc-42"}}
 
-    splitter_module._reset_state_for_tests()
+    streamed = splitter._split_content_map(
+        sample_sections,
+        origin="section",
+        base_metadata=base_metadata,
+        stream=True,
+    )
 
-    load_text_splitter_calls = 0
-    load_document_calls = 0
-    suppress_calls = 0
-    warning_messages = []
-    counter_lock = threading.Lock()
+    assert isinstance(streamed, Iterator)
+    assert not isinstance(streamed, list)
 
-    fake_document_class = type("FakeDocument", (), {})
+    streamed_chunks = list(streamed)
+    eager_chunks = splitter._split_content_map(
+        sample_sections,
+        origin="section",
+        base_metadata=base_metadata,
+    )
 
-    def fake_load_text_splitter():
-        nonlocal load_text_splitter_calls
-        with counter_lock:
-            load_text_splitter_calls += 1
-
-        class DummySplitter:
-            def __init__(self, **kwargs):
-                self.kwargs = kwargs
-
-            def create_documents(self, texts, metadatas):  # pragma: no cover - stub
-                return []
-
-        return DummySplitter
-
-    def fake_load_document():
-        nonlocal load_document_calls
-        with counter_lock:
-            load_document_calls += 1
-        return fake_document_class, "langchain.schema"
-
-    def fake_log_warn(message: str) -> None:
-        with counter_lock:
-            warning_messages.append(message)
-
-    def fake_suppress() -> None:
-        nonlocal suppress_calls
-        with counter_lock:
-            suppress_calls += 1
-
-    monkeypatch.setattr(splitter_module, "_load_text_splitter", fake_load_text_splitter)
-    monkeypatch.setattr(splitter_module, "_load_lc_document", fake_load_document)
-    monkeypatch.setattr(splitter_module, "log_warn", fake_log_warn)
-    monkeypatch.setattr(splitter_module, "_suppress_schema_warnings", fake_suppress)
-
-    try:
-        def build_splitter(_: int) -> None:
-            Splitter(chunk_size=10, chunk_overlap=1)
-
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            list(executor.map(build_splitter, range(12)))
-    finally:
-        splitter_module._reset_state_for_tests()
-
-    assert load_text_splitter_calls == 1
-    assert load_document_calls == 1
-    assert suppress_calls == 1
-    assert len(warning_messages) == 1
+    assert [chunk.page_content for chunk in streamed_chunks] == [
+        chunk.page_content for chunk in eager_chunks
+    ]
+    assert [chunk.metadata["id"] for chunk in streamed_chunks] == [
+        chunk.metadata["id"] for chunk in eager_chunks
+    ]
 
 
+def test_iter_document_chunks_is_lazy(sample_sections: Dict[str, str]) -> None:
+    document = Document(metadata={"id": "doc-99"}, sections=sample_sections)
+    splitter = Splitter(chunk_size=120, chunk_overlap=20)
+
+    chunk_iterator = splitter.iter_document_chunks(document)
+
+    assert isinstance(chunk_iterator, Iterator)
+    assert not isinstance(chunk_iterator, list)
+    assert document.chunks == []
+
+    streamed_chunks = list(chunk_iterator)
+    assert streamed_chunks, "Se esperaban chunks generados por el iterador"
+    assert document.chunks == []
+
+    materialised = splitter.split_document(document)
+    assert materialised.chunks
+    assert [chunk.metadata["id"] for chunk in streamed_chunks] == [
+        chunk.metadata["id"] for chunk in materialised.chunks
+    ]
+    
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__]))

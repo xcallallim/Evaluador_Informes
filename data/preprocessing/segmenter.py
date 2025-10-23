@@ -49,7 +49,7 @@ class Segmenter:
             setattr(document, "sections", {})
             return document
 
-        text = document
+        text = content
         sections = self._segment_text(text)
 
         if not sections:

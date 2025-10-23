@@ -5,7 +5,17 @@ import importlib.util
 import warnings
 from dataclasses import dataclass, field
 from threading import Lock
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+)
 from core.logger import log_info, log_warn
 
 if TYPE_CHECKING:
@@ -147,7 +157,13 @@ def _reset_state_for_tests() -> None:
 
 
 class Splitter:
-    """Divide cada sección de un documento en fragmentos con solapamiento."""
+    """Divide cada sección de un documento en fragmentos con solapamiento.
+
+    Además del comportamiento clásico (materializar ``document.chunks``) la
+    clase ofrece :meth:`iter_document_chunks` y el flag ``stream`` en
+    :meth:`_split_content_map` para obtener los fragmentos de forma perezosa,
+    útil en pipelines con restricciones de memoria.
+    """
 
     def __init__(self, chunk_size: int = 1500, chunk_overlap: int = 150):
         document_class, import_source = _SPLITTER_STATE.ensure_document_class()
@@ -190,117 +206,164 @@ class Splitter:
         *,
         origin: str,
         base_metadata: Optional[Dict[str, Any]] = None,
-    ) -> List["LCDocumentType"]:
-        """Divide cada entrada de ``content_map`` en fragmentos LangChain."""
-        log_info(
-            f"✂️ Iniciando división de {origin}s en chunks con LangChain..."
-        )
-        all_chunks: List["LCDocumentType"] = []
-        shared_metadata = dict(base_metadata or {})
+        stream: bool = False,
+    ) -> Union[List["LCDocumentType"], Iterator["LCDocumentType"]]:
+        """Divide cada entrada de ``content_map`` en fragmentos LangChain.
 
-        for content_id, raw_value in content_map.items():
-            if raw_value is None:
-                continue
+        Cuando ``stream`` es ``True`` la función devuelve un iterador que genera los
+        chunks bajo demanda sin materializar una lista completa. El iterador incluye
+        los mismos metadatos enriquecidos que la versión previa, por lo que los
+        consumidores pueden alternar entre los dos modos sin cambios adicionales.
+        """
 
-            text = raw_value if isinstance(raw_value, str) else str(raw_value)
-            text = text.strip()
-            if not text:
-                continue
-
-            documents = self.splitter.create_documents(
-                texts=[text],
-                metadatas=[{"source_id": content_id, "source_type": origin}],
-            )
-            section_total = len(documents)
+        def _chunk_iterator() -> Iterator["LCDocumentType"]:
             log_info(
-                f"{origin.title()} '{content_id}' → {section_total} chunks creados."
+                f"✂️ Iniciando división de {origin}s en chunks con LangChain..."
             )
+            shared_metadata = dict(base_metadata or {})
+            total_chunks = 0
 
-            for idx, chunk in enumerate(documents, start=1):
-                metadata: Dict[str, Any] = {}
-                metadata.update(shared_metadata)
-                metadata.update(chunk.metadata or {})
-                metadata.update(
-                    {
-                        "id": f"{content_id}_{idx}",
-                        "chunk_index": idx,
-                        "chunks_in_source": section_total,
-                        "length": len(chunk.page_content),
-                        "chunk_overlap": self.chunk_overlap,
-                    }
+            for content_id, raw_value in content_map.items():
+                if raw_value is None:
+                    continue
+
+                text = raw_value if isinstance(raw_value, str) else str(raw_value)
+                text = text.strip()
+                if not text:
+                    continue
+
+                documents = self.splitter.create_documents(
+                    texts=[text],
+                    metadatas=[{"source_id": content_id, "source_type": origin}],
                 )
-                chunk.metadata = metadata
-                all_chunks.append(chunk)
+                section_total = len(documents)
+                log_info(
+                    f"{origin.title()} '{content_id}' → {section_total} chunks creados."
+                )
 
-        log_info(f"✅ División completada. Total chunks: {len(all_chunks)}.")
-        return all_chunks
+                for idx, chunk in enumerate(documents, start=1):
+                    metadata: Dict[str, Any] = {}
+                    metadata.update(shared_metadata)
+                    metadata.update(chunk.metadata or {})
+                    metadata.update(
+                        {
+                            "id": f"{content_id}_{idx}",
+                            "chunk_index": idx,
+                            "chunks_in_source": section_total,
+                            "length": len(chunk.page_content),
+                            "chunk_overlap": self.chunk_overlap,
+                        }
+                    )
+                    chunk.metadata = metadata
+                    total_chunks += 1
+                    yield chunk
 
-    def split_document(self, document: "InternalDocument") -> "InternalDocument":
-        """Genera ``document.chunks`` a partir de ``document.sections``."""
+            log_info(f"✅ División completada. Total chunks: {total_chunks}.")
+
+        iterator = _chunk_iterator()
+        if stream:
+            return iterator
+        return list(iterator)
+
+    def iter_document_chunks(
+        self,
+        document: "InternalDocument",
+        *,
+        base_metadata: Optional[Dict[str, Any]] = None,
+    ) -> Iterator["LCDocumentType"]:
+        """Genera los chunks de ``document`` de forma perezosa.
+
+        El iterador aplica la misma lógica de *fallbacks* que
+        :meth:`split_document`, intentando primero las secciones, luego las
+        páginas y finalmente el contenido completo. Se detiene tan pronto como
+        alguno de los niveles produce chunks, replicando el comportamiento
+        previo pero sin materializar listas intermedias.
+        """
+
+        if base_metadata is None:
+            document_metadata = getattr(document, "metadata", {}) or {}
+            base_metadata = {
+                "document_metadata": dict(document_metadata),
+            }
+            if document_metadata.get("id"):
+                base_metadata["document_id"] = document_metadata["id"]
+        
+        shared_metadata = dict(base_metadata or {})
+        produced_any = False
 
         sections = getattr(document, "sections", None) or {}
-        chunks: List["LCDocumentType"] = []
-        document_metadata = getattr(document, "metadata", {}) or {}
-        base_chunk_metadata: Dict[str, Any] = {
-            "document_metadata": dict(document_metadata),
-        }
-        if document_metadata.get("id"):
-            base_chunk_metadata["document_id"] = document_metadata["id"]
-
         if sections:
-            chunks = self._split_content_map(
+            for chunk in self._split_content_map(
                 sections,
                 origin="section",
-                base_metadata=base_chunk_metadata,
-            )
+                base_metadata=shared_metadata,
+                stream=True,
+            ):
+                produced_any = True
+                yield chunk
         else:
             log_warn(
                 "⚠️ Documento no contiene secciones. Intentando generar chunks con fallback."
             )
 
-        if not chunks:
-            pages = getattr(document, "pages", None) or []
-            page_sections: Dict[str, str] = {}
-            for idx, page in enumerate(pages, start=1):
-                if page is None:
-                    continue
+        if produced_any:
+            return
 
-                page_text = page if isinstance(page, str) else str(page)
-                page_text = page_text.strip()
-                if not page_text:
-                    continue
+        pages = getattr(document, "pages", None) or []
+        page_sections: Dict[str, str] = {}
+        for idx, page in enumerate(pages, start=1):
+            if page is None:
+                continue
 
-                page_sections[f"page_{idx}"] = page_text
-            if page_sections:
-                log_warn(
-                    "⚠️ No se generaron chunks por secciones. Usando páginas como fallback."
-                )
-                chunks = self._split_content_map(
-                    page_sections,
-                    origin="page",
-                    base_metadata=base_chunk_metadata,
-                )
+            page_text = page if isinstance(page, str) else str(page)
+            page_text = page_text.strip()
+            if not page_text:
+                continue
 
-        if not chunks:
-            content = getattr(document, "content", "")
-            if content is not None:
-                content_text = content if isinstance(content, str) else str(content)
-                content_text = content_text.strip()
-            else:
-                content_text = ""
+            page_sections[f"page_{idx}"] = page_text
 
-            if content_text:
-                log_warn(
-                    "⚠️ No se generaron chunks por secciones ni páginas. Dividiendo el contenido completo."
-                )
-                chunks = self._split_content_map(
-                    {"document": content_text},
-                    origin="document",
-                    base_metadata=base_chunk_metadata,
-                )
+        if page_sections:
+            log_warn(
+                "⚠️ No se generaron chunks por secciones. Usando páginas como fallback."
+            )
+            for chunk in self._split_content_map(
+                page_sections,
+                origin="page",
+                base_metadata=shared_metadata,
+                stream=True,
+            ):
+                produced_any = True
+                yield chunk
 
-        if not chunks:
+        if produced_any:
+            return
+
+        content = getattr(document, "content", "")
+        if content is not None:
+            content_text = content if isinstance(content, str) else str(content)
+            content_text = content_text.strip()
+        else:
+            content_text = ""
+
+        if content_text:
+            log_warn(
+                "⚠️ No se generaron chunks por secciones ni páginas. Dividiendo el contenido completo."
+            )
+            for chunk in self._split_content_map(
+                {"document": content_text},
+                origin="document",
+                base_metadata=shared_metadata,
+                stream=True,
+            ):
+                produced_any = True
+                yield chunk
+
+        if not produced_any:
             log_warn("⚠️ No fue posible generar chunks para el documento.")
 
-        document.chunks = chunks
+    def split_document(self, document: "InternalDocument") -> "InternalDocument":
+        """Genera ``document.chunks`` a partir de ``document.sections``."""
+
+        chunk_iterator = self.iter_document_chunks(document)
+        document.chunks = list(chunk_iterator)
         return document

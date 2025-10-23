@@ -450,6 +450,7 @@ class EvaluationService:
         document: Optional[Document],
         input_path: Optional[Path],
         tipo_informe: str,
+        populate_chunks: bool = True,
     ) -> Document:
         if document is not None:
             if not isinstance(document, Document):
@@ -462,7 +463,32 @@ class EvaluationService:
         cleaned.metadata.setdefault("cleaning_report", cleaning_report)
         segmenter = Segmenter(tipo=self._segmenter_tipo(tipo_informe))
         segmented = segmenter.segment_document(cleaned)
-        return self.splitter.split_document(segmented)
+        if populate_chunks:
+            return self.splitter.split_document(segmented)
+        return segmented
+
+    def stream_document_chunks(
+        self,
+        *,
+        document: Optional[Document] = None,
+        input_path: Optional[Path] = None,
+        tipo_informe: str,
+    ) -> tuple[Document, Iterator[Any]]:
+        """Prepara un documento y devuelve un iterador perezoso de chunks.
+
+        El documento devuelto conserva la misma estructura que en el pipeline
+        habitual, pero sus chunks no se materializan en memoria. Los
+        consumidores pueden iterar sobre el segundo elemento de la tupla para
+        procesar los fragmentos bajo demanda.
+        """
+
+        prepared = self._prepare_document(
+            document=document,
+            input_path=input_path,
+            tipo_informe=tipo_informe,
+            populate_chunks=False,
+        )
+        return prepared, self.splitter.iter_document_chunks(prepared)
 
     def _segmenter_tipo(self, tipo_informe: str) -> str:
         if "politica" in tipo_informe:

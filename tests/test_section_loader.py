@@ -157,3 +157,120 @@ def test_fuzzy_toggle_reflects_availability(loader_factory) -> None:
         },
     )
     assert loader_with_fuzz._fuzzy_enabled is True
+
+
+def test_section_level_fuzzy_threshold(loader_factory) -> None:
+    """Secciones pueden personalizar su umbral fuzzy para títulos cortos."""
+
+    base_schema = {
+        "recomendaciones": {
+            "title": "Recomendaciones",
+            "aliases": [],
+            "keywords": [],
+        }
+    }
+    stub = lambda _a, b: 82 if b == "recomendaciones" else 0
+
+    base_loader = loader_factory(
+        base_schema,
+        {
+            "tipo": "base",
+            "fuzzy": True,
+            "_force_fuzz_available": True,
+            "_fuzz_stub": stub,
+        },
+    )
+    assert (
+        base_loader.identify_section("Aplicaciones recomendadas") is None
+    ), "Default threshold should reject low score"
+
+    tuned_schema = {
+        "recomendaciones": {
+            "title": "Recomendaciones",
+            "aliases": [],
+            "keywords": [],
+            "fuzzy_threshold": 80,
+        }
+    }
+
+    tuned_loader = loader_factory(
+        tuned_schema,
+        {
+            "tipo": "tuned",
+            "fuzzy": True,
+            "_force_fuzz_available": True,
+            "_fuzz_stub": stub,
+        },
+    )
+
+    result = tuned_loader.identify_section("Aplicaciones recomendadas")
+    assert result is not None
+    assert result[0] == "recomendaciones"
+    assert result[1] == "fuzzy"
+
+
+def test_schema_default_fuzzy_threshold(loader_factory) -> None:
+    """Configuración global aplica a todas las secciones sin umbral específico."""
+
+    schema = {
+        "__config__": {"default_fuzzy_threshold": 80},
+        "recomendaciones": {
+            "title": "Recomendaciones",
+            "aliases": [],
+            "keywords": [],
+        },
+    }
+    stub = lambda _a, b: 82 if b == "recomendaciones" else 0
+
+    loader = loader_factory(
+        schema,
+        {
+            "tipo": "config",
+            "fuzzy": True,
+            "_force_fuzz_available": True,
+            "_fuzz_stub": stub,
+        },
+    )
+
+    result = loader.identify_section("Aplicaciones recomendadas")
+    assert result is not None and result[1] == "fuzzy"
+
+    assert (
+        loader.identify_section("Aplicaciones recomendadas", fuzzy_threshold=90)
+        is None
+    ), "Call override should still be respected"
+
+
+def test_keyword_ratio_threshold(loader_factory) -> None:
+    """El refuerzo por keywords utiliza proporción de aciertos configurable."""
+
+    schema = {
+        "seguridad_datos": {
+            "title": "Seguridad de Datos",
+            "aliases": [],
+            "keywords": ["acceso", "seguridad", "datos"],
+        }
+    }
+
+    loader = loader_factory(schema, {"tipo": "kw", "fuzzy": False})
+
+    match = loader.identify_section(
+        "Plan de seguridad integral y acceso a los datos"
+    )
+    assert match is not None and match[0] == "seguridad_datos"
+
+    no_match = loader.identify_section("Monitoreo de acceso continuo")
+    assert no_match is None
+
+    tuned_schema = {
+        "seguridad_datos": {
+            "title": "Seguridad de Datos",
+            "aliases": [],
+            "keywords": ["acceso", "seguridad", "datos"],
+            "keyword_min_ratio": 0.3,
+        }
+    }
+
+    tuned_loader = loader_factory(tuned_schema, {"tipo": "kw_tuned", "fuzzy": False})
+    tuned_match = tuned_loader.identify_section("Monitoreo de acceso continuo")
+    assert tuned_match is not None and tuned_match[0] == "seguridad_datos"
