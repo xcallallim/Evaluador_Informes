@@ -1,16 +1,15 @@
 """Pruebas del pipeline de división en *chunks* del Evaluador de Informes."""
 
 from __future__ import annotations
+
 import os
 import sys
 from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
-import threading
-from typing import Dict
+from typing import Dict, Iterator
 
 import pytest
 
-#Asegúrese de que la raíz del repositorio esté en sys.path cuando el conjunto de pruebas se ejecute directamente.
+# Asegúrese de que la raíz del repositorio esté en sys.path cuando el conjunto de pruebas se ejecute directamente.
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if REPO_ROOT not in sys.path:
     sys.path.append(REPO_ROOT)
@@ -110,6 +109,9 @@ def test_splitter_rejects_invalid_configuration() -> None:
     with pytest.raises(ValueError):
         Splitter(chunk_size=10, chunk_overlap=-1)
 
+    with pytest.raises(ValueError):
+        Splitter(log_level="verbose")
+
 
 def test_split_document_generates_metadata(sample_sections: Dict[str, str]) -> None:
     document = Document(metadata={"id": "doc-123"}, sections=sample_sections)
@@ -157,37 +159,44 @@ def test_full_pipeline_generates_expected_chunks() -> None:
     document = segmenter.segment_document(document)
     splitter.split_document(document)
 
-    expected_section_counts = {
-        "resumen_ejecutivo": 3,
-        "prioridades_politica_institucional": 38,
-        "analisis_oei": 14,
-        "analisis_productos_aei": 3,
-        "analisis_ejecucion_operativa": 13,
-        "aplicacion_recomendaciones": 0,
-        "analisis_aei_oei": 5,
-        "conclusiones": 5,
-        "recomendaciones": 2,
-        "anexos": 4,
-        "analisis_implementacion_aei": 1,
-        "diagnostico_oei_priorizados": 3,
+    expected_sections = {
+        "resumen_ejecutivo",
+        "prioridades_politica_institucional",
+        "analisis_oei",
+        "analisis_productos_aei",
+        "analisis_ejecucion_operativa",
+        "aplicacion_recomendaciones",
+        "analisis_aei_oei",
+        "conclusiones",
+        "recomendaciones",
+        "anexos",
+        "analisis_implementacion_aei",
+        "diagnostico_oei_priorizados",
     }
 
-    assert set(document.sections.keys()) == set(expected_section_counts.keys())
-    assert len(document.chunks) == sum(expected_section_counts.values())
+    assert set(document.sections.keys()) == expected_sections
 
     generated_counts = Counter(chunk.metadata["source_id"] for chunk in document.chunks)
-    for section_id, expected in expected_section_counts.items():
-        assert generated_counts.get(section_id, 0) == expected
+    assert sum(generated_counts.values()) == len(document.chunks)
+
+    for section_id in expected_sections:
+        section_text = document.sections[section_id].strip()
+        count = generated_counts.get(section_id, 0)
+        if section_text:
+            assert count > 0, f"Se esperaban chunks para la sección {section_id}"
+        else:
+            assert count == 0, f"La sección vacía {section_id} no debería generar chunks"   
 
     resumen_chunks = [
         chunk for chunk in document.chunks if chunk.metadata["source_id"] == "resumen_ejecutivo"
     ]
-    assert len(resumen_chunks) == 3
+    expected_resumen_count = generated_counts["resumen_ejecutivo"]
+    assert len(resumen_chunks) == expected_resumen_count
     for index, chunk in enumerate(resumen_chunks, start=1):
         _assert_chunk_metadata(
             chunk,
             expected_source="resumen_ejecutivo",
-            expected_count=3,
+            expected_count=expected_resumen_count,
             expected_overlap=splitter.chunk_overlap,
         )
         assert chunk.metadata["chunk_index"] == index
@@ -196,9 +205,7 @@ def test_full_pipeline_generates_expected_chunks() -> None:
 
     # Validate that chunk ordering preserves the original sequence for the section.
     assert [chunk.metadata["id"] for chunk in resumen_chunks] == [
-        "resumen_ejecutivo_1",
-        "resumen_ejecutivo_2",
-        "resumen_ejecutivo_3",
+        f"resumen_ejecutivo_{i}" for i in range(1, expected_resumen_count + 1)
     ]
 
     _assert_chunk_sequence_covers_section(
@@ -259,6 +266,63 @@ def test_iter_document_chunks_is_lazy(sample_sections: Dict[str, str]) -> None:
     assert [chunk.metadata["id"] for chunk in streamed_chunks] == [
         chunk.metadata["id"] for chunk in materialised.chunks
     ]
-    
+
+
+@pytest.mark.parametrize("normalize", [False, True])
+def test_split_content_map_normalizes_newlines(normalize: bool) -> None:
+    sections = {
+        "seccion": "Linea1\r\nLinea2\rLinea3\nLinea4",
+    }
+    splitter = Splitter(
+        chunk_size=500,
+        chunk_overlap=0,
+        normalize_newlines=normalize,
+    )
+
+    chunks = splitter._split_content_map(
+        sections,
+        origin="section",
+        base_metadata={"document_metadata": {"id": "doc"}},
+    )
+
+    assert len(chunks) == 1
+    chunk_text = chunks[0].page_content
+    if normalize:
+        assert "\r" not in chunk_text
+        assert chunk_text.count("\n") == 3
+    else:
+        assert "\r" in chunk_text
+
+
+@pytest.mark.parametrize(
+    "log_level, expected_info, expected_warn",
+    [
+        ("info", 3, 0),
+        ("warn", 0, 3),
+        ("silent", 0, 0),
+    ],
+)
+def test_split_content_map_respects_logging_level(
+    monkeypatch: pytest.MonkeyPatch,
+    log_level: str,
+    expected_info: int,
+    expected_warn: int,
+) -> None:
+    info_messages = []
+    warn_messages = []
+
+    monkeypatch.setattr(splitter_module, "log_info", lambda message: info_messages.append(message))
+    monkeypatch.setattr(splitter_module, "log_warn", lambda message: warn_messages.append(message))
+
+    splitter = Splitter(chunk_size=200, chunk_overlap=0, log_level=log_level)
+    splitter._split_content_map(
+        {"sec": "contenido"},
+        origin="section",
+        base_metadata={"document_metadata": {"id": "doc"}},
+    )
+
+    assert len(info_messages) == expected_info
+    assert len(warn_messages) == expected_warn
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__]))

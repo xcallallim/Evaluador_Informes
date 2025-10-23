@@ -165,7 +165,26 @@ class Splitter:
     útil en pipelines con restricciones de memoria.
     """
 
-    def __init__(self, chunk_size: int = 1500, chunk_overlap: int = 150):
+    def __init__(
+        self,
+        chunk_size: int = 1500,
+        chunk_overlap: int = 150,
+        *,
+        normalize_newlines: bool = False,
+        log_level: str = "info",
+    ) -> None:
+        """Create a splitter that delegates chunking to LangChain.
+
+        Args:
+            chunk_size: Número máximo de caracteres por fragmento.
+            chunk_overlap: Cantidad de caracteres solapados entre fragmentos.
+            normalize_newlines: Cuando es ``True`` normaliza los saltos de línea a ``"\n"``
+                antes de dividir el contenido. El valor por defecto ``False`` mantiene el
+                comportamiento previo.
+            log_level: Controla el nivel de logging usado durante
+                :meth:`_split_content_map`. Acepta ``"info"``, ``"warn"`` o ``"silent"`` y
+                por defecto utiliza ``"info"`` para preservar la verbosidad actual.
+        """
         document_class, import_source = _SPLITTER_STATE.ensure_document_class()
         if document_class is None:
             raise ImportError(
@@ -190,7 +209,14 @@ class Splitter:
             raise ValueError("chunk_overlap debe ser menor que chunk_size")
 
         self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
+        self.normalize_newlines = normalize_newlines
+        normalized_log_level = log_level.lower()
+        valid_levels: set[str] = {"info", "warn", "silent"}
+        if normalized_log_level not in valid_levels:
+            raise ValueError(
+                "log_level debe ser uno de {'info', 'warn', 'silent'}"
+            )
+        self.log_level = normalized_log_level
         splitter_cls = _SPLITTER_STATE.get_splitter_cls()
         self.splitter = splitter_cls(
             separator="\n",
@@ -216,8 +242,16 @@ class Splitter:
         consumidores pueden alternar entre los dos modos sin cambios adicionales.
         """
 
+        def _log_progress(message: str) -> None:
+            if self.log_level == "silent":
+                return
+            if self.log_level == "warn":
+                log_warn(message)
+            else:
+                log_info(message)
+
         def _chunk_iterator() -> Iterator["LCDocumentType"]:
-            log_info(
+            _log_progress(
                 f"✂️ Iniciando división de {origin}s en chunks con LangChain..."
             )
             shared_metadata = dict(base_metadata or {})
@@ -228,6 +262,8 @@ class Splitter:
                     continue
 
                 text = raw_value if isinstance(raw_value, str) else str(raw_value)
+                if self.normalize_newlines:
+                    text = text.replace("\r\n", "\n").replace("\r", "\n")
                 text = text.strip()
                 if not text:
                     continue
@@ -237,7 +273,7 @@ class Splitter:
                     metadatas=[{"source_id": content_id, "source_type": origin}],
                 )
                 section_total = len(documents)
-                log_info(
+                _log_progress(
                     f"{origin.title()} '{content_id}' → {section_total} chunks creados."
                 )
 
@@ -258,7 +294,7 @@ class Splitter:
                     total_chunks += 1
                     yield chunk
 
-            log_info(f"✅ División completada. Total chunks: {total_chunks}.")
+            _log_progress(f"✅ División completada. Total chunks: {total_chunks}.")
 
         iterator = _chunk_iterator()
         if stream:

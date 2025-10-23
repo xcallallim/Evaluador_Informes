@@ -14,7 +14,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeou
 from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
+from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence
 
 from data.models.document import Document
 from data.models.evaluation import (
@@ -66,7 +66,8 @@ class ServiceConfig:
     use_mock_ai: bool = True
     run_id: str = field(default_factory=lambda: uuid.uuid4().hex)
     document_id: Optional[str] = None
-    extra_instructions: Optional[str] = None
+    splitter_normalize_newlines: bool = False
+    splitter_log_level: str = "info"
 
     def with_overrides(self, **overrides: Any) -> "ServiceConfig":
         data = {f.name: getattr(self, f.name) for f in fields(ServiceConfig)}
@@ -393,9 +394,13 @@ class EvaluationService:
 
     # ------------------------------------------------------------------
     # Internal helpers
+    # ------------------------------------------------------------------
     def _build_splitter(self) -> Splitter:
         try:
-            return Splitter()
+            return Splitter(
+                normalize_newlines=self.config.splitter_normalize_newlines,
+                log_level=self.config.splitter_log_level,
+            )
         except ImportError as exc:  # pragma: no cover - entorno sin LangChain
             raise RuntimeError(
                 "Splitter requiere LangChain instalado. Ejecuta 'pip install langchain-text-splitters'."

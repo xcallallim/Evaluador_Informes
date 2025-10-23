@@ -93,6 +93,19 @@ def loader_factory(
             None,
         ),
         (
+            "roman chapter prefixes remain detectable via regex",
+            {
+                "introduccion": {
+                    "title": "Introducción",
+                    "aliases": ["Introduccion"],
+                    "keywords": [],
+                }
+            },
+            "Capitulo II - Introducción",
+            {"tipo": "demo", "fuzzy": False},
+            ("introduccion", "regex"),
+        ),
+        (
             "fuzzy mode tolerates accent and suffix noise",
             {
                 "marco_teorico": {
@@ -274,3 +287,76 @@ def test_keyword_ratio_threshold(loader_factory) -> None:
     tuned_loader = loader_factory(tuned_schema, {"tipo": "kw_tuned", "fuzzy": False})
     tuned_match = tuned_loader.identify_section("Monitoreo de acceso continuo")
     assert tuned_match is not None and tuned_match[0] == "seguridad_datos"
+
+
+def test_keyword_fallback_without_regex_or_fuzzy(loader_factory) -> None:
+    """Las keywords deben identificar secciones cuando regex y fuzzy no aplican."""
+
+    schema = {
+        "analisis_riesgos": {
+            "title": "Análisis de Riesgos",
+            "aliases": [],
+            "keywords": ["riesgo", "impacto"],
+        }
+    }
+
+    loader = loader_factory(schema, {"tipo": "kw_only", "fuzzy": False})
+
+    line = "Evaluación del impacto y riesgo operativo"
+    match = loader.identify_section(line)
+
+    assert match is not None
+    assert match[0] == "analisis_riesgos"
+    assert match[1] == "keywords"
+
+
+def test_normalize_handles_accents_and_case() -> None:
+    """La normalización quita acentos y homogeneiza mayúsculas."""
+
+    accented = section_loader._normalize("MARCO TEÓRICO", strip_accents=True)
+    plain = section_loader._normalize("marco teorico", strip_accents=True)
+
+    assert accented == plain == "marco teorico"
+
+
+def test_invalid_schema_file_raises_runtime_error(tmp_path, monkeypatch) -> None:
+    """Un JSON malformado debe generar un RuntimeError controlado."""
+
+    bad_file = tmp_path / "secciones_err.json"
+    bad_file.write_text("{ invalid json", encoding="utf-8")
+
+    monkeypatch.setattr(section_loader, "CRITERIA_DIR", str(tmp_path))
+
+    with pytest.raises(RuntimeError):
+        section_loader.SectionLoader(tipo="err", fuzzy=False)
+
+
+def test_fuzzy_match_returns_score_above_threshold(loader_factory) -> None:
+    """El score fuzzy devuelto debe respetar el umbral mínimo requerido."""
+
+    schema = {
+        "resultados": {
+            "title": "Resultados",
+            "aliases": [],
+            "keywords": [],
+        }
+    }
+
+    def stub(a: str, b: str) -> int:
+        return 91 if b == "resultados" else 10
+
+    loader = loader_factory(
+        schema,
+        {
+            "tipo": "fuzzy_score",
+            "fuzzy": True,
+            "_force_fuzz_available": True,
+            "_fuzz_stub": stub,
+        },
+    )
+
+    match = loader.identify_section("Se presentan los principales resultados del estudio")
+
+    assert match is not None
+    assert match[1] == "fuzzy"
+    assert match[2] >= 86.0
