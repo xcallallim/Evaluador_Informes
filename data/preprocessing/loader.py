@@ -8,42 +8,13 @@
 # - Metadatos consistentes y listos para el pipeline
 # ------------------------------------------------------------
 
-import os, re, shutil, fitz, uuid
-from typing import List, Tuple, Optional, Dict, Any
+import os
+import re
+import shutil
+import uuid
+from typing import Any, Dict, List, Optional, Tuple
 
-from core.logger import log_info, log_warn, log_error
-from core.config import TESSERACT_PATH
-from core.utils import clean_spaces, ensure_dir
-from data.models.document import Document
-
-# No hacemos "from core.config import *" para mantener claridad.
-try:
-    from core.config import GHOSTSCRIPT_PATH
-except Exception:
-    GHOSTSCRIPT_PATH = None
-
-
-MEANINGFUL_TEXT_PATTERN = re.compile(r"[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]")
-
-
-class DocumentLoader:
-    def __init__(self):
-        # Extensiones soportadas
-        self.supported_extensions = [".pdf", ".docx", ".txt"]
-        # data/preprocessing/loader.py
-# ------------------------------------------------------------
-# DocumentLoader: Carga TXT, DOCX, PDF (digital + OCR)
-# - DOCX: extrae texto y tablas
-# - PDF digital: extrae texto con pdfplumber
-# - PDF escaneado: extrae texto con OCR (Tesseract + OpenCV)
-# - PDF tablas: extrae tablas con Camelot (opcional) y exporta a CSV
-# - Metadatos consistentes y listos para el pipeline
-# ------------------------------------------------------------
-
-import os, re, shutil
-from typing import List, Tuple, Optional, Dict, Any
-
-from core.logger import log_info, log_warn, log_error
+from core.logger import log_error, log_info, log_warn
 from core.config import TESSERACT_PATH
 from core.utils import clean_spaces, ensure_dir
 from data.models.document import Document
@@ -135,10 +106,12 @@ class DocumentLoader:
         self._last_pdf_was_ocr = False
         self._last_pdf_raw_text = ""
         self._issues = []
+
+        filepath = os.fspath(filepath)
         
         if not os.path.isfile(filepath):
             log_error(f"Archivo no encontrado: {filepath}")
-            raise FileNotFoundError(f"No existe el archivo: {filepath}")
+            raise FileNotFoundError(f"Archivo no encontrado: {filepath}")
 
         _, ext = os.path.splitext(filepath)
         ext = ext.lower()
@@ -167,6 +140,11 @@ class DocumentLoader:
 
         elif ext == ".pdf":
             content, pages = self._load_pdf(filepath)
+
+            # Cuando la extracción usa OCR debemos mantener ``content`` vacío.
+            # El texto reconocido se entrega únicamente en ``pages`` y metadata.
+            if self._last_pdf_was_ocr:
+                content = ""
 
             if extract_tables:
                 pdf_tables_meta = self._extract_pdf_tables(filepath)
@@ -627,6 +605,9 @@ class DocumentLoader:
                         log_info(f"OCR procesando página {i+1}/{total}")
 
                     page_text = ""
+                    image_path = ""
+                    text_path = ""
+                    pil_image: Optional[Image.Image] = None
                     try:
                         pix = page.get_pixmap(dpi=200)
                         img = np.frombuffer(
@@ -653,8 +634,7 @@ class DocumentLoader:
                         )
 
                         pil_image = Image.fromarray(thresh)
-                        image_path = ""
-                        text_path = ""
+
                         try:
                             # Guardamos la imagen en disco para evitar locks de Windows con NamedTemporaryFile.
                             base_name = os.path.join(
@@ -668,6 +648,7 @@ class DocumentLoader:
                             pytesseract.pytesseract.run_tesseract(
                                 image_path,
                                 base_name,
+                                extension="txt",
                                 lang="spa",
                                 config="--psm 4",
                             )
@@ -689,12 +670,12 @@ class DocumentLoader:
                             self._register_issue(
                                 f"OCR falló en la página {i+1}."
                             )
-                        finally:
-                            pil_image.close()
-                            _cleanup_tmp([image_path, text_path])
                     finally:
+                        if pil_image is not None:
                             pil_image.close()
-                            _cleanup_tmp([image_path, text_path])
+                        _cleanup_tmp([image_path, text_path])
+
+                    pages_text.append(page_text)
 
                 pdf_document.close()
 

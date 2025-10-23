@@ -1,110 +1,82 @@
-# py tests/test_loader_ocr.py
-# python -m tests.test_loader_ocr
-
-"""Tests for OCR-specific PDF loading in ``DocumentLoader``."""
+"""Tests ensuring the loader handles scanned PDFs via OCR."""
 
 from __future__ import annotations
 
 from pathlib import Path
-import sys
-import types
 
 import pytest
 
 from data.preprocessing.loader import DocumentLoader
 
+
 @pytest.fixture
 def loader() -> DocumentLoader:
-    """Provide a fresh loader for every test."""
+    """Return a fresh loader instance for every test."""
     return DocumentLoader()
 
 
-@pytest.fixture
-def scanned_pdf(tmp_path: Path) -> Path:
-    """Create a PDF without an embedded text layer to trigger OCR."""
-    import fitz  # PyMuPDF
+def test_scanned_pdf_without_text_uses_ocr(monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader) -> None:
+    """When a PDF lacks an embedded text layer the loader must delegate to OCR."""
 
-    pdf_path = tmp_path / "scanned.pdf"
+    pdf_path = Path("data/inputs/test_pdf_ocr.pdf")
+    assert pdf_path.exists(), "The OCR sample PDF must be present for this test."
 
-    pdf_doc = fitz.open()
-    pdf_doc.new_page()  # blank page without any text layer
-    pdf_doc.save(pdf_path)
-    pdf_doc.close()
+    # Force the detection path to mark the file as scanned so OCR is executed.
+    monkeypatch.setattr(DocumentLoader, "_try_load_pdf_with_pymupdf", lambda self, filepath: (False, []))
 
-    return pdf_path
-
-
-def _stub_pdfplumber(monkeypatch: pytest.MonkeyPatch, expected_path: Path) -> None:
-    """Install a minimal ``pdfplumber`` stub that yields empty pages."""
-
-    class _StubPage:
-        chars = []
-
-        def extract_text(self) -> str:
-            return ""
-
-        def extract_words(self):  # pragma: no cover - structure only
-            return []
-
-    class _StubDocument:
-        pages = [_StubPage()]
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, exc_type, exc, traceback):
-            return False
-
-    def _open(path: str) -> _StubDocument:
-        assert path == str(expected_path)
-        return _StubDocument()
-
-    monkeypatch.setitem(sys.modules, "pdfplumber", types.SimpleNamespace(open=_open))
-
-
-def test_scanned_pdf_triggers_ocr_and_returns_text(monkeypatch: pytest.MonkeyPatch, loader: DocumentLoader, scanned_pdf: Path) -> None:
-    """A scanned PDF should delegate to the OCR path and expose the recognised text."""
-
-    _stub_pdfplumber(monkeypatch, scanned_pdf)
-    monkeypatch.setattr(DocumentLoader, "_try_load_pdf_with_pymupdf", lambda self, filepath: None)
-
-    expected_pages = ["Texto reconocido por OCR"]
-    expected_content = "=== PAGE 1 ===\nTexto reconocido por OCR"
+    expected_pages = [
+        "Texto reconocido por OCR en la página 1",
+        "Texto reconocido por OCR en la página 2",
+        "Texto reconocido por OCR en la página 3",
+        "Texto reconocido por OCR en la página 4",
+    ]
+    expected_full_text = "\n\n".join(
+        f"=== PAGE {index + 1} ===\n{page}" for index, page in enumerate(expected_pages)
+    )
     ocr_called = {"value": False}
 
     def fake_ocr(self, filepath: str):
         ocr_called["value"] = True
-        assert filepath == str(scanned_pdf)
-        return expected_content, expected_pages
+        assert filepath == str(pdf_path)
+        return expected_full_text, expected_pages
 
     monkeypatch.setattr(DocumentLoader, "_load_pdf_ocr", fake_ocr)
 
-    document = loader.load(str(scanned_pdf), extract_tables=False, extract_images=False)
+    document = loader.load(str(pdf_path), extract_tables=False, extract_images=False)
 
+    assert ocr_called["value"], "OCR should be triggered for scanned PDFs"
+
+    # The loader should not populate ``content`` with OCR pages to keep the pipeline clean.
     assert document.content == ""
-    assert document.pages == []
-    
-    metadata = document.metadata
-    assert metadata["pages"] == []
-    assert metadata["filename"] == scanned_pdf.name
-    assert metadata["extension"] == ".pdf"
-    assert metadata["tables"] == {}
+
+    # OCR results must instead be exposed through pages and metadata for later stages.
+    assert document.pages == expected_pages
+    assert document.metadata["pages"] == expected_pages
+    assert document.metadata["is_ocr"] is True
+    assert document.metadata["raw_text"] == expected_full_text
+    assert document.metadata["filename"] == pdf_path.name
+    assert document.metadata["extension"] == ".pdf"
+    assert document.metadata["tables"] == {}
 
 
-def test_scanned_pdf_missing_file_raises(loader: DocumentLoader) -> None:
-    """Attempting to load a non-existent scanned PDF should raise ``FileNotFoundError``."""
+def test_loader_raises_file_not_found_for_missing_pdf(loader: DocumentLoader) -> None:
+    """If the target PDF does not exist the loader must abort with FileNotFoundError."""
+
+    missing_path = Path("data/inputs/test_pdf_ocr.pdf").with_suffix(".missing")
+    assert not missing_path.exists(), "The missing-path sentinel must not accidentally exist."
 
     with pytest.raises(FileNotFoundError):
-        loader.load("data/inputs/test_pdf_ocr.pdf")
+        loader.load(str(missing_path))
 
 
-if __name__ == "__main__":
-    import pytest
-    
-    result = pytest.main(["-s", __file__])
+if __name__ == "__main__":  # pragma: no cover - ayuda interactiva
+    import pytest as _pytest
+
+    result = _pytest.main(["-s", __file__])
     if result == 0:
         print("\n✅ Todas las pruebas del loader OCR pasaron correctamente.")
     else:
         print("\n❌ Algunas pruebas del loader OCR fallaron. Revisa el detalle anterior.")
-    
-    raise SystemExit(pytest.main(["-s", __file__]))
+
+# py tests/test_loader_ocr.py
+# python -m tests.test_loader_ocr
