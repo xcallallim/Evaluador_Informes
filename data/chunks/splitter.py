@@ -1,8 +1,10 @@
-# data/chunks/splitter.py
+"""Divisor de secciones en fragmentos compatibles con LangChain."""
 
 import importlib
 import importlib.util
 import warnings
+from dataclasses import dataclass, field
+from threading import Lock
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type
 from core.logger import log_info, log_warn
 
@@ -76,39 +78,93 @@ def _load_text_splitter() -> Type[Any]:
     )
 
 
-_LCDocumentClass, _LC_IMPORT_SOURCE = _load_lc_document()
-if _LC_IMPORT_SOURCE == "langchain.schema":
-    _suppress_schema_warnings()
-
-CharacterTextSplitter = _load_text_splitter()
-
-
 __all__ = ["Splitter"]
 
 if TYPE_CHECKING:
     from data.models.document import Document as InternalDocument
 
 
-_HAS_LOGGED_SCHEMA_WARNING = False
+@dataclass
+class _SplitterState:
+    """Thread-safe container for dynamic LangChain resources used by Splitter."""
+
+    _lock: Lock = field(default_factory=Lock)
+    _document_class: Optional[Type[Any]] = None
+    _import_source: Optional[str] = None
+    _splitter_cls: Optional[Type[Any]] = None
+    _has_logged_schema_warning: bool = False
+    _document_class_loaded: bool = False
+
+    def ensure_document_class(self) -> Tuple[Optional[Type[Any]], Optional[str]]:
+        """Resolve and cache the LangChain Document class in a thread-safe way."""
+
+        with self._lock:
+            if not self._document_class_loaded:
+                document_class, import_source = _load_lc_document()
+                self._document_class = document_class
+                self._import_source = import_source
+                self._document_class_loaded = True
+                if import_source == "langchain.schema":
+                    _suppress_schema_warnings()
+            return self._document_class, self._import_source
+
+    def should_log_schema_warning(self) -> bool:
+        """Ensure the schema warning is logged at most once."""
+
+        with self._lock:
+            if self._has_logged_schema_warning:
+                return False
+
+            self._has_logged_schema_warning = True
+            return True
+
+    def get_splitter_cls(self) -> Type[Any]:
+        """Resolve and cache the CharacterTextSplitter implementation safely."""
+
+        with self._lock:
+            if self._splitter_cls is None:
+                self._splitter_cls = _load_text_splitter()
+            return self._splitter_cls
+
+    def reset_for_testing(self) -> None:
+        """Reset cached state to facilitate deterministic testing."""
+
+        with self._lock:
+            self._document_class = None
+            self._import_source = None
+            self._splitter_cls = None
+            self._has_logged_schema_warning = False
+            self._document_class_loaded = False
+
+
+_SPLITTER_STATE = _SplitterState()
+
+
+def _reset_state_for_tests() -> None:
+    """Expose internal reset helper for unit tests."""
+
+    _SPLITTER_STATE.reset_for_testing()
 
 
 class Splitter:
     """Divide cada sección de un documento en fragmentos con solapamiento."""
 
     def __init__(self, chunk_size: int = 1500, chunk_overlap: int = 150):
-        if _LCDocumentClass is None:
+        document_class, import_source = _SPLITTER_STATE.ensure_document_class()
+        if document_class is None:
             raise ImportError(
                 "Splitter requiere LangChain instalado."
                 " Instala 'langchain-core>=0.1.0' o 'langchain>=0.1.0'."
             )
 
-        global _HAS_LOGGED_SCHEMA_WARNING
-        if _LC_IMPORT_SOURCE == "langchain.schema" and not _HAS_LOGGED_SCHEMA_WARNING:
+        if (
+            import_source == "langchain.schema"
+            and _SPLITTER_STATE.should_log_schema_warning()
+        ):
             log_warn(
                 "⚠️ LangChain en modo compatibilidad (langchain.schema). "
                 "Actualiza a langchain-core>=0.1.0 para evitar avisos deprecados."
             )
-            _HAS_LOGGED_SCHEMA_WARNING = True
 
         if chunk_size <= 0:
             raise ValueError("chunk_size debe ser mayor a cero")
@@ -119,7 +175,8 @@ class Splitter:
 
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
-        self.splitter = CharacterTextSplitter(
+        splitter_cls = _SPLITTER_STATE.get_splitter_cls()
+        self.splitter = splitter_cls(
             separator="\n",
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,

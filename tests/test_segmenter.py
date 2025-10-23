@@ -52,6 +52,8 @@ def make_segmenter(monkeypatch: pytest.MonkeyPatch) -> Callable[[bool], Segmente
                     "aplicacion_recomendaciones",
                     "conclusiones",
                     "anexos",
+                    "introduccion",
+                    "resultados",
                 ]
                 self.patterns = {
                     "resumen_ejecutivo": [
@@ -66,26 +68,85 @@ def make_segmenter(monkeypatch: pytest.MonkeyPatch) -> Callable[[bool], Segmente
                         re.compile(r"^\s*conclusiones\b", re.IGNORECASE)
                     ],
                     "anexos": [re.compile(r"^\s*anexos\b", re.IGNORECASE)],
+                    "introduccion": [
+                        re.compile(
+                            r"^\s*(?:\d+(?:\.\d+)*\s*[:\-\.]\s*)?introducci[oó]n\b",
+                            re.IGNORECASE,
+                        )
+                    ],
+                    "resultados": [
+                        re.compile(
+                            r"^\s*(?:\d+(?:\.\d+)*\s*[:\-\.]\s*)?resultados\b",
+                            re.IGNORECASE,
+                        )
+                    ],
                 }
                 self._fuzzy_enabled = fuzzy_flag
+                self.match_log = []
 
             def identify_section(self, line: str, **_: object):
                 stripped = (line or "").strip().lower()
-                if stripped.startswith("resumen ejecutivo"):
-                    return ("resumen_ejecutivo", "regex", 100.0, line)
-                if stripped.startswith("resumen general"):
-                    return ("resumen_ejecutivo", "alias", 95.0, line)
-                if stripped.startswith("aplicacion de recomendaciones"):
-                    return ("aplicacion_recomendaciones", "regex", 100.0, line)
+                normalized = (
+                    stripped.replace("á", "a")
+                    .replace("é", "e")
+                    .replace("í", "i")
+                    .replace("ó", "o")
+                    .replace("ú", "u")
+                )
+                normalized = re.sub(
+                    r"^(?:seccion\s*\d+\s*[:\-\.]\s*|\d+(?:\.\d+)*\s*[:\-\.]\s*)",
+                    "",
+                    normalized,
+                )
+                if normalized.startswith("resumen ejecutivo"):
+                    result = ("resumen_ejecutivo", "regex", 100.0, line)
+                    self.match_log.append(result)
+                    return result
+                if normalized.startswith("resumen general"):
+                    result = ("resumen_ejecutivo", "alias", 95.0, line)
+                    self.match_log.append(result)
+                    return result
+                if normalized.startswith("aplicacion de recomendaciones"):
+                    result = ("aplicacion_recomendaciones", "regex", 100.0, line)
+                    self.match_log.append(result)
+                    return result
                 if (
-                    stripped.startswith("aplicaciones de las recomendaciones")
+                    normalized.startswith("aplicaciones de las recomendaciones")
                     and self._fuzzy_enabled
                 ):
-                    return ("aplicacion_recomendaciones", "fuzzy", 92.0, line)
-                if stripped.startswith("conclusiones"):
-                    return ("conclusiones", "regex", 100.0, line)
-                if stripped.startswith("anexos"):
-                    return ("anexos", "regex", 100.0, line)
+                    result = ("aplicacion_recomendaciones", "fuzzy", 92.0, line)
+                    self.match_log.append(result)
+                    return result
+                if (
+                    normalized.startswith("aplicacion de las recomendaciones")
+                    and self._fuzzy_enabled
+                ):
+                    result = ("aplicacion_recomendaciones", "fuzzy", 91.0, line)
+                    self.match_log.append(result)
+                    return result
+                if (
+                    normalized.startswith("recomendaciones aplicadas")
+                    and self._fuzzy_enabled
+                ):
+                    result = ("aplicacion_recomendaciones", "fuzzy", 90.0, line)
+                    self.match_log.append(result)
+                    return result
+                if normalized.startswith("conclusiones"):
+                    result = ("conclusiones", "regex", 100.0, line)
+                    self.match_log.append(result)
+                    return result
+                if normalized.startswith("anexos"):
+                    result = ("anexos", "regex", 100.0, line)
+                    self.match_log.append(result)
+                    return result
+                if normalized.startswith("introduccion"):
+                    result = ("introduccion", "regex", 100.0, line)
+                    self.match_log.append(result)
+                    return result
+                if normalized.startswith("resultados"):
+                    result = ("resultados", "regex", 100.0, line)
+                    self.match_log.append(result)
+                    return result
                 return None
 
         monkeypatch.setattr(
@@ -224,8 +285,16 @@ def test_segmenter_detects_aliases_and_single_word_headings(
     assert segmented.sections["anexos"] == "Listado de anexos relevantes."
 
 
+@pytest.mark.parametrize(
+    "heading",
+    [
+        "Aplicaciones de las recomendaciones",
+        "Aplicación de las recomendaciones",
+        "Recomendaciones aplicadas",
+    ],
+)
 def test_segmenter_fuzzy_detects_lexical_variations(
-    make_segmenter: Callable[[bool], Segmenter]
+    make_segmenter: Callable[[bool], Segmenter], heading: str
 ) -> None:
     """Variaciones léxicas se reconocen cuando fuzzy está habilitado."""
 
@@ -234,7 +303,7 @@ def test_segmenter_fuzzy_detects_lexical_variations(
         [
             "Resumen General",
             "Síntesis ejecutiva del informe.",
-            "Aplicaciones de las recomendaciones",
+            heading,
             "Detalle de aplicación y seguimiento.",
             "Conclusiones",
             "Cierre del informe.",
@@ -259,7 +328,7 @@ def test_segmenter_without_fuzzy_skips_variations(
     content = "\n".join(
         [
             "Resumen Ejecutivo",
-            "Introducción inicial.",
+            "Primer bloque de contexto.",
             "Aplicaciones de las recomendaciones",
             "Detalle de aplicación y seguimiento.",
             "Conclusiones",
@@ -272,6 +341,34 @@ def test_segmenter_without_fuzzy_skips_variations(
 
     assert segmented.sections["aplicacion_recomendaciones"] == ""
     assert "Detalle de aplicación" in segmented.sections["resumen_ejecutivo"]
+
+
+def test_segmenter_handles_consecutive_inline_headings(
+    make_segmenter: Callable[[bool], Segmenter]
+) -> None:
+    """Encabezados inline consecutivos se separan respetando el contenido."""
+
+    segmenter = make_segmenter(fuzzy=True)
+    content = "\n".join(
+        [
+            "1. Introducción Este informe describe resultados preliminares.",
+            "2. Resultados Se observa una mejora sostenida.",
+            "Anexos Documentación adicional.",
+        ]
+    )
+    document = Document(content=content)
+
+    segmented = segmenter.segment_document(document)
+
+    assert (
+        segmented.sections["introduccion"]
+        == "Este informe describe resultados preliminares."
+    )
+    assert (
+        segmented.sections["resultados"]
+        == "Se observa una mejora sostenida."
+    )
+    assert segmented.sections["anexos"] == "Documentación adicional."
 
 
 def test_segmenter_provides_uncategorized_fallback(segmenter: Segmenter) -> None:
@@ -310,6 +407,32 @@ def test_segmenter_handles_objects_without_content(segmenter: Segmenter) -> None
     assert segmented.sections == {}
 
 
+def test_segmenter_assigns_text_outside_headings(
+    make_segmenter: Callable[[bool], Segmenter]
+) -> None:
+    """Texto intercalado sin encabezado se anexa al bloque previo o fallback."""
+
+    segmenter = make_segmenter(fuzzy=True)
+    content = "\n".join(
+        [
+            "Resumen Ejecutivo",
+            "El informe describe avances prioritarios.",
+            "Texto suelto que amplía sin encabezado.",
+            "Conclusiones",
+            "Se observa cumplimiento total.",
+            "Recomendaciones abiertas sin encabezado final.",
+        ]
+    )
+    document = Document(content=content)
+
+    segmented = segmenter.segment_document(document)
+
+    assert "Texto suelto" in segmented.sections["resumen_ejecutivo"]
+    assert segmented.sections["conclusiones"].endswith(
+        "Recomendaciones abiertas sin encabezado final."
+    )
+
+
 def test_segmenter_preserves_section_order(
     make_segmenter: Callable[[bool], Segmenter]
 ) -> None:
@@ -332,9 +455,28 @@ def test_segmenter_preserves_section_order(
 
     assert isinstance(segmented.sections, dict)
     ordered_keys = list(segmented.sections.keys())
-    assert ordered_keys[:3] == [
+    expected_sequence = [
         "resumen_ejecutivo",
         "aplicacion_recomendaciones",
         "conclusiones",
     ]
+    filtered = [key for key in ordered_keys if key in expected_sequence]
+    assert filtered[:3] == expected_sequence
     assert "anexos" in ordered_keys
+
+
+def test_segmenter_loader_reports_match_types(
+    make_segmenter: Callable[[bool], Segmenter]
+) -> None:
+    """El mock del loader expone el tipo de coincidencia para trazabilidad."""
+
+    segmenter = make_segmenter(fuzzy=True)
+    loader = segmenter.loader
+
+    regex_match = loader.identify_section("Resumen Ejecutivo")
+    alias_match = loader.identify_section("Resumen General")
+    fuzzy_match = loader.identify_section("Aplicaciones de las recomendaciones")
+
+    assert regex_match is not None and regex_match[1] == "regex"
+    assert alias_match is not None and alias_match[1] == "alias"
+    assert fuzzy_match is not None and fuzzy_match[1] == "fuzzy"

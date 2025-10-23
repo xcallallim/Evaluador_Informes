@@ -4,6 +4,8 @@ from __future__ import annotations
 import os
 import sys
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
+import threading
 from typing import Dict
 
 import pytest
@@ -13,6 +15,7 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if REPO_ROOT not in sys.path:
     sys.path.append(REPO_ROOT)
 
+from data.chunks import splitter as splitter_module
 from data.chunks.splitter import Splitter
 from data.models.document import Document
 from data.preprocessing.cleaner import Cleaner
@@ -206,6 +209,69 @@ def test_full_pipeline_generates_expected_chunks() -> None:
 
     # Ensure no chunk lost the base metadata propagated by the splitter.
     assert all("document_metadata" in chunk.metadata for chunk in document.chunks)
+
+
+def test_splitter_threadsafe_initialization(monkeypatch) -> None:
+    """Ensure concurrent instantiation does not duplicate initialization side-effects."""
+
+    splitter_module._reset_state_for_tests()
+
+    load_text_splitter_calls = 0
+    load_document_calls = 0
+    suppress_calls = 0
+    warning_messages = []
+    counter_lock = threading.Lock()
+
+    fake_document_class = type("FakeDocument", (), {})
+
+    def fake_load_text_splitter():
+        nonlocal load_text_splitter_calls
+        with counter_lock:
+            load_text_splitter_calls += 1
+
+        class DummySplitter:
+            def __init__(self, **kwargs):
+                self.kwargs = kwargs
+
+            def create_documents(self, texts, metadatas):  # pragma: no cover - stub
+                return []
+
+        return DummySplitter
+
+    def fake_load_document():
+        nonlocal load_document_calls
+        with counter_lock:
+            load_document_calls += 1
+        return fake_document_class, "langchain.schema"
+
+    def fake_log_warn(message: str) -> None:
+        with counter_lock:
+            warning_messages.append(message)
+
+    def fake_suppress() -> None:
+        nonlocal suppress_calls
+        with counter_lock:
+            suppress_calls += 1
+
+    monkeypatch.setattr(splitter_module, "_load_text_splitter", fake_load_text_splitter)
+    monkeypatch.setattr(splitter_module, "_load_lc_document", fake_load_document)
+    monkeypatch.setattr(splitter_module, "log_warn", fake_log_warn)
+    monkeypatch.setattr(splitter_module, "_suppress_schema_warnings", fake_suppress)
+
+    try:
+        def build_splitter(_: int) -> None:
+            Splitter(chunk_size=10, chunk_overlap=1)
+
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            list(executor.map(build_splitter, range(12)))
+    finally:
+        splitter_module._reset_state_for_tests()
+
+    assert load_text_splitter_calls == 1
+    assert load_document_calls == 1
+    assert suppress_calls == 1
+    assert len(warning_messages) == 1
+
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__]))
