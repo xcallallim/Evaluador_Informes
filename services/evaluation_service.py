@@ -66,7 +66,7 @@ class ServiceConfig:
     use_mock_ai: bool = True
     run_id: str = field(default_factory=lambda: uuid.uuid4().hex)
     document_id: Optional[str] = None
-    splitter_normalize_newlines: bool = False
+    extra_instructions: Optional[str] = None
     splitter_log_level: str = "info"
 
     def with_overrides(self, **overrides: Any) -> "ServiceConfig":
