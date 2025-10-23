@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 import re
-from typing import Any, Dict, List, Mapping, Optional, Set
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Set
 
 from data.models.evaluation import EvaluationResult
 
@@ -29,6 +29,9 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
     for section in evaluation.sections:
         for dimension in section.dimensions:
             for question in dimension.questions:
+                metadata_columns = {}
+                if isinstance(question.metadata, Mapping):
+                    metadata_columns = _flatten_mapping(question.metadata, prefix="metadata")
                 rows.append(
                     {
                         "document_id": evaluation.document_id,
@@ -45,9 +48,9 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                         "question_weight": question.weight,
                         "justification": question.justification,
                         "relevant_text": question.relevant_text,
-                        "metadata": question.metadata,
                         "chunk_results": [chunk.to_dict() for chunk in question.chunk_results],
                         "criteria_version": criteria_version,
+                        **metadata_columns,
                     }
                 )
     return rows
@@ -180,3 +183,26 @@ def _safe_sheet_name(name: str, existing: Set[str]) -> str:
         index += 1
     existing.add(candidate)
     return candidate
+
+
+def _flatten_mapping(mapping: Mapping[str, Any], *, prefix: str) -> Dict[str, Any]:
+    """Flatten a nested mapping into dotted keys prefixed with ``prefix``."""
+
+    flattened: Dict[str, Any] = {}
+
+    def _serialise_value(value: Any) -> Any:
+        if isinstance(value, (list, tuple, set)):
+            return json.dumps(list(value), ensure_ascii=False)
+        return value
+
+    def _visit(items: Mapping[str, Any], parents: Iterable[str]) -> None:
+        for key, value in items.items():
+            path = [*parents, str(key)]
+            if isinstance(value, Mapping):
+                _visit(value, path)
+            else:
+                dotted_key = ".".join([prefix, *path]) if prefix else ".".join(path)
+                flattened[dotted_key] = _serialise_value(value)
+
+    _visit(mapping, [])
+    return flattened

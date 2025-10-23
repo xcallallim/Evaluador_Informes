@@ -357,6 +357,63 @@ def test_load_missing_file_notifies_failure(
     }
 
 
+def test_strategy_failure_is_recorded_and_re_raised(
+    monkeypatch: pytest.MonkeyPatch,
+    loader: DocumentLoader,
+    event_recorder: RecordingEvents,
+    tmp_path: Path,
+) -> None:
+    """Errors bubbling up from strategies should be tracked before propagating."""
+
+    pdf_path = tmp_path / "broken.pdf"
+    pdf_path.write_bytes(b"%PDF-1.4")
+
+    boom = RuntimeError("explosión interna")
+
+    def failing_pdf_load(
+        filepath: str,
+        *,
+        extract_tables: bool,
+        extract_images: bool,
+        ghostscript_cmd: str,
+        issues: List[str],
+        detector,
+        ocr_loader,
+        resource_exporter,
+    ) -> Document:
+        raise boom
+
+    monkeypatch.setattr(pdf_loader, "load", failing_pdf_load)
+
+    with pytest.raises(RuntimeError) as excinfo:
+        loader.load(str(pdf_path))
+
+    assert excinfo.value is boom
+    assert event_recorder.started == [str(pdf_path)]
+    assert len(event_recorder.failures) == 1
+    failure_path, failure_error = event_recorder.failures[0]
+    assert failure_path == str(pdf_path)
+    assert failure_error is boom
+    assert loader.failures == 1
+    assert loader.failure_traces == [
+        {
+            "filepath": str(pdf_path),
+            "error_type": "RuntimeError",
+            "message": "explosión interna",
+        }
+    ]
+
+    leaked_trace = loader.failure_traces
+    leaked_trace.append({"filepath": "fake", "error_type": "Fake", "message": "Fake"})
+    assert loader.failure_traces == [
+        {
+            "filepath": str(pdf_path),
+            "error_type": "RuntimeError",
+            "message": "explosión interna",
+        }
+    ]
+
+
 def test_load_unsupported_extension_notifies_failure(
     loader: DocumentLoader, event_recorder: RecordingEvents, tmp_path: Path
 ) -> None:

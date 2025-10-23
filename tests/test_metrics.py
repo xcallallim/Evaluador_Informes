@@ -131,3 +131,5 @@ def test_metrics_performance_with_large_section_volume():
 
     assert summary["totals"]["sections_total"] == 1000
     assert duration < 0.1
+
+# pytest tests/test_metrics.py -v

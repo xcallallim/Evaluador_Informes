@@ -85,7 +85,15 @@ class LoggingLoaderEventHandler(NullLoaderEventHandler):
 
 
 class DocumentLoader:
-    """Fachada thread-safe que compone resultados de loaders especializados."""
+    """Fachada segura para subprocesos que compone los resultados de los cargadores especializados.
+    
+    El cargador normaliza los objetos parciales :class:`~data.models.document.Document`
+    devueltos por las estrategias especializadas (TXT, DOCX, PDF) para que todos
+    cumplan con el contrato de datos descrito en :mod:`data.models.document`.
+    Quienes llaman siempre deben interactuar con esta fachada en lugar de instanciar los 
+    cargadores directamente para garantizar que los campos de metadatos obligatorios 
+    (``source``, ``processed_with``, ``is_ocr``, etc.) estén presentes y sean consistentes.
+    """
 
     def __init__(
         self,
@@ -148,23 +156,17 @@ class DocumentLoader:
 
         self._events.on_load_started(filepath)
 
-        if not os.path.isfile(filepath):
-            log_error(f"Archivo no encontrado: {filepath}")
-            raise FileNotFoundError(f"Archivo no encontrado: {filepath}")
-            error = FileNotFoundError(f"Archivo no encontrado: {filepath}")
-            self._events.on_load_failed(filepath, error)
-            raise error
-
-        _, ext = os.path.splitext(filepath)
-        ext = ext.lower()
-
-        strategy = self._strategies.get(ext)
-        if strategy is None:
-            error = ValueError(f"Formato no soportado: {ext}")
-            self._events.on_load_failed(filepath, error)
-            raise error
-
         try:
+            if not os.path.isfile(filepath):
+                raise FileNotFoundError(f"Archivo no encontrado: {filepath}")
+
+            _, ext = os.path.splitext(filepath)
+            ext = ext.lower()
+
+            strategy = self._strategies.get(ext)
+            if strategy is None:
+                raise ValueError(f"Formato no soportado: {ext}")
+            
             partial = strategy(
                 filepath,
                 extract_tables=extract_tables,
@@ -177,7 +179,7 @@ class DocumentLoader:
                 include_images=extract_images,
             )
         except Exception as error:
-            self._events.on_load_failed(filepath, error)
+            self._record_failure(filepath, error)
             raise
 
         self._events.on_load_succeeded(

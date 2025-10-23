@@ -234,3 +234,5 @@ def test_export_without_permissions(monkeypatch, tmp_path: Path) -> None:
             output_path=output_path,
             output_format="json",
         )
+
+# pytest tests/test_repository.py -v

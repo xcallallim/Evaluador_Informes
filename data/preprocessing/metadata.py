@@ -96,7 +96,30 @@ def prepare_metadata(
     images_meta: Optional[List[Any]] = None,
     issues: Optional[Iterable[str]] = None,
 ) -> Dict[str, Any]:
-    """Genera el diccionario de metadatos completo para el ``Document`` final."""
+    """Genera el diccionario de metadatos completo para el ``Document`` final.
+    
+    Las claves base emitidas por este ayudante son parte del contrato de datos 
+    públicos:
+
+    ``source``
+        Ruta absoluta al archivo procesado.
+    ``filename``
+        Nombre base de la ruta de origen.
+    ``extension``
+        Extensión de archivo (minúscula, incluye el ``.`` inicial).
+    ``processed_with``
+        Nombre del componente orquestador (``DocumentLoader``).
+    ``pages``
+        Lista de cadenas de página devueltas por el cargador especializado.
+    ``tables``
+        Carga útil de la tabla específica del cargador agrupada bajo una 
+        clave de espacio de nombres (``pdf``, ``docx``...).
+
+    El argumento ``extra_metadata`` es el mecanismo utilizado por los 
+    cargadores especializados para inyectar claves adicionales (``is_ocr``, 
+    ``raw_text``, ``language``...) sin romper el contrato: cada entrada se 
+    copia tal cual en el diccionario resultante.
+    """
 
     filename = os.path.basename(filepath)
     metadata: Dict[str, Any] = {

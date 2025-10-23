@@ -87,7 +87,106 @@ def _coerce_list(value: Optional[Iterable[Any]]) -> List[Any]:
 @dataclass
 
 class Document:
-    """Representa un documento enriquecido con metadatos y chunks LangChain."""
+    """Entidad central que fluye a lo largo del pipeline de evaluación.
+
+    La clase de datos "Documento" es generada por los cargadores especializados
+    y se enriquece progresivamente en etapas posteriores (Limpiador, Segmentador, 
+    Divisor y Evaluador). Además del atributo "contenido", el objeto transporta 
+    datos estructurados que otros componentes utilizan para decidir cómo procesar 
+    el documento.
+
+    Metadata contract
+    -----------------
+    Se garantiza que la asignación de metadatos contenga las siguientes claves 
+    una vez que :class:`~data.preprocessing.loader.DocumentLoader` devuelva la 
+    instancia:
+
+    ``source`` (``str``)
+        Ruta absoluta al archivo ingerido. Utilizada por registradores y 
+        exportadores para rastrear el artefacto original.
+
+    ``filename`` (``str``)
+       Parte del nombre base de ``source``. Expuesto en informes e interfaces de 
+       usuario.
+
+    ``extension`` (``str``)
+        Extensión de archivo en minúsculas (incluido el punto inicial). Permite 
+        la gestión posterior de formatos específicos.
+
+    ``processed_with`` (``str``)
+        Identifica el cargador responsable de ensamblar el documento. El valor 
+        actual es «DocumentLoader» y actúa como protección de procedencia cuando 
+        coexisten varios sistemas.
+
+    ``pages`` (``List[str]``)
+        Representación textual de cada página (sin los marcadores ``=== PAGE``) 
+        tal como la extrajo el cargador. Los consumidores reutilizan estos datos 
+        al limpiar encabezados/pies de página repetidos o al reconstruir la 
+        paginación en las exportaciones.
+
+    ``tables`` (``Dict[str, Any]``)
+        Asignación del identificador del cargador a la colección de tablas 
+        detectadas.Cada cargador define su propia carga útil: los cargadores 
+        PDF devuelven diccionarios con pares página/ruta, mientras que los 
+        cargadores DOCX envían matrices de celdas sin procesar. El contrato 
+        solo garantiza el diccionario externo.
+
+    ``is_ocr`` (``bool``)
+        Indica si el texto se originó mediante un proceso de OCR. Se establece 
+        en "Verdadero" para archivos PDF escaneados y en "Falso" para fuentes 
+        digitales. El limpiador activa y desactiva la heurística difusa según 
+        este valor.
+
+    ``extraction_method`` (``str``)
+        Describe cómo se obtuvo el contenido textual. Los valores actuales son 
+        ``"ocr"``, ``"embedded_text"``, ``"docx"`` y ``"text"``. Al añadir un 
+        nuevo cargador, esta enumeración se ampliará según corresponda.
+
+    ``raw_text`` (``str``)
+        Carga textual sin procesar proporcionada por el cargador antes de 
+        cualquier limpieza. En el caso de los PDF con OCR, contiene el texto 
+        reconocido, mientras que en otros formatos puede reflejar el contenido 
+        o omitirse si no está disponible.
+
+    ``images`` (``List[Any]`` | missing)
+        Presente cuando el emisor solicitó la extracción de la imagen. Contiene 
+        referencias del exportador (normalmente rutas del sistema de archivos) 
+        generadas por el cargador de PDF.
+
+    ``issues`` (``List[str]`` | missing)
+        Recopilación desduplicada de advertencias reportadas durante la fase de 
+        carga.Las tuberías envían estas advertencias al usuario, pero continúan 
+        procesando el documento.
+
+    Las claves de metadatos adicionales añadidas por cargadores especializados 
+    (p. ej., ``language``, ``detected_encoding`` o ``source_hint``) se conservan 
+    textualmente para que los usuarios finales puedan confiar en ellas. Las 
+    entradas de contabilidad interna como ``loader_context`` **no deben** estar 
+    presentes una vez que la API pública genere el documento.
+
+    Atributos
+    ----------
+    content:
+        Representación en texto plano de todo el documento con marcadores de 
+        página cuando estén disponibles.
+    metadata:
+        Diccionario que cumple el contrato descrito anteriormente.
+    pages:
+        Lista de cadenas de páginas sin decoración, listas para ser 
+        posprocesadas con limpiadores o divisores.
+    tables:
+        Cargas útiles de tablas específicas del cargador. Vacío cuando no hay 
+        tablas disponibles.
+    images:
+        Referencias a imágenes extraídas. A menudo, rutas del sistema de archivos 
+        generadas por :class:`~data.preprocessing.pdf_loader.PDFResourceExporter`.
+    sections:
+        Mapeo opcional utilizado por etapas de nivel superior para anotar secciones 
+        lógicas (p. ej., resumen ejecutivo, anexos).
+    chunks:
+        Colección de instancias de ``langchain`` :class:`~langchain_core.documents.Document` 
+        generadas por la etapa divisora.
+    """
 
     content: str = ""
     metadata: Dict[str, Any] = field(default_factory=dict)
