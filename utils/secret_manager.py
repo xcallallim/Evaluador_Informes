@@ -101,6 +101,65 @@ def _derive_key(passphrase: str, salt: bytes) -> bytes:
     return base64.urlsafe_b64encode(kdf.derive(passphrase.encode("utf-8")))
 
 
+
+def seal_key(
+    api_key: str,
+    passphrase: str,
+    *,
+    output_file: Optional[Path] = None,
+) -> Path:
+    """Cifre y almacene la clave API de OpenAI en ``openai_api_key.enc``.
+
+    Parameters
+    ----------
+    api_key:
+        Clave API en texto plano que se desea proteger.
+    passphrase:
+        Passphrase utilizada para derivar la clave criptográfica.
+    output_file:
+        Ruta de destino para el archivo cifrado. Si no se proporciona se utiliza
+        :data:`ENCRYPTED_FILE`.
+
+    Returns
+    -------
+    pathlib.Path
+        Ruta del archivo cifrado generado.
+
+    Raises
+    ------
+    SecretManagerError
+        Si la clave API está vacía o la passphrase no cumple los requisitos.
+    """
+
+    if not api_key or not api_key.strip():
+        raise SecretManagerError("La clave API no puede estar vacía.")
+
+    passphrase = _validate_passphrase(passphrase)
+
+    salt = os.urandom(16)
+    key = _derive_key(passphrase, salt)
+
+    fernet = Fernet(key)
+    token = fernet.encrypt(api_key.strip().encode("utf-8"))
+
+    payload = {
+        "salt": base64.b64encode(salt).decode("utf-8"),
+        "token": token.decode("utf-8"),
+    }
+
+    destination = output_file or ENCRYPTED_FILE
+    destination.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        destination.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    except OSError as exc:  # pragma: no cover - unexpected filesystem errors.
+        raise SecretManagerError(
+            f"No se pudo escribir el archivo cifrado con la clave API: {exc}"
+        ) from exc
+
+    return destination
+
+
 def _load_from_encrypted_file() -> Optional[SecretSource]:
     if not ENCRYPTED_FILE.exists():
         return None

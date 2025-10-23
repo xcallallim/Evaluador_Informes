@@ -68,6 +68,7 @@ class ServiceConfig:
     document_id: Optional[str] = None
     extra_instructions: Optional[str] = None
     splitter_log_level: str = "info"
+    splitter_normalize_newlines: bool = True
 
     def with_overrides(self, **overrides: Any) -> "ServiceConfig":
         data = {f.name: getattr(self, f.name) for f in fields(ServiceConfig)}
