@@ -10,6 +10,9 @@ sistema de descifrado existente.
 
 from __future__ import annotations
 
+import argparse
+import logging
+import os
 import sys
 from getpass import getpass
 from pathlib import Path
@@ -28,6 +31,9 @@ except ImportError:  # pragma: no cover - executed when running as ``python util
 PLAIN_TEXT_FILE = secret_manager.PLAIN_TEXT_FILE
 ENCRYPTED_FILE = secret_manager.ENCRYPTED_FILE
 MIN_PASSPHRASE_LENGTH = secret_manager.MIN_PASSPHRASE_LENGTH
+PASSPHRASE_ENV_VAR = secret_manager.PASSPHRASE_ENV_VAR
+
+logger = logging.getLogger(__name__)
 
 
 def _read_api_key_from_file(path: Path) -> str:
@@ -93,6 +99,8 @@ def seal_api_key(
     passphrase: Optional[str] = None,
     plain_text_file: Optional[Path] = None,
     output_file: Optional[Path] = None,
+    non_interactive: bool = False,
+    passphrase_env_var: Optional[str] = None,
 ) -> Path:
     """Genere ``openai_api_key.enc`` interactuando con el usuario.
 
@@ -109,6 +117,14 @@ def seal_api_key(
     output_file:
         Ruta de salida para el archivo cifrado. Si es ``None`` se utiliza
         :data:`ENCRYPTED_FILE`.
+    non_interactive:
+        Si es ``True`` el proceso no solicitará datos por consola. Requiere que
+        la clave API esté disponible y que la passphrase se obtenga de una
+        variable de entorno.
+    passphrase_env_var:
+        Nombre de la variable de entorno de la que obtener la passphrase cuando
+        ``non_interactive`` es ``True``. Si es ``None`` se utiliza
+        :data:`PASSPHRASE_ENV_VAR`.
 
     Returns
     -------
@@ -116,31 +132,103 @@ def seal_api_key(
         Ruta del archivo cifrado generado.
     """
 
+    explicit_plain_text_file = plain_text_file is not None
     source_file = plain_text_file or PLAIN_TEXT_FILE
+    destination = output_file or ENCRYPTED_FILE
+    destination.parent.mkdir(parents=True, exist_ok=True)
+
     if api_key is None and source_file.exists():
-        if _prompt_yes_no(
+        if non_interactive or explicit_plain_text_file:
+            api_key = _read_api_key_from_file(source_file)
+        elif _prompt_yes_no(
             f"¿Deseas utilizar la clave almacenada en {source_file}? [s/N]: "
         ):
             api_key = _read_api_key_from_file(source_file)
 
     if api_key is None:
+        if non_interactive:
+            raise RuntimeError(
+                "En modo no interactivo se requiere proporcionar la clave API "
+                "mediante --api-key, --api-key-file o un archivo existente."
+            )
         api_key = _prompt_api_key()
 
     if passphrase is None:
-        passphrase = _prompt_passphrase()
+        if non_interactive:
+            env_var = passphrase_env_var or PASSPHRASE_ENV_VAR
+            passphrase = os.getenv(env_var) if env_var else None
+            if not passphrase:
+                raise RuntimeError(
+                    "En modo no interactivo se requiere definir la passphrase en la "
+                    f"variable de entorno {env_var}."
+                )
+        else:
+            passphrase = _prompt_passphrase()
 
     destination = secret_manager.seal_key(
         api_key,
         passphrase,
-        output_file=output_file or ENCRYPTED_FILE,
+        output_file=destination,
     )
+
+    logger.debug("Archivo cifrado creado en %s", destination)
 
     return destination
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Genera el archivo cifrado openai_api_key.enc para OpenAI."
+    )
+    parser.add_argument(
+        "--non-interactive",
+        action="store_true",
+        help=(
+            "Ejecuta el sellado sin solicitar datos por consola. Requiere que la "
+            "clave API esté disponible y que la passphrase se defina en la "
+            f"variable de entorno {PASSPHRASE_ENV_VAR}."
+        ),
+    )
+    parser.add_argument(
+        "--api-key",
+        help=(
+            "Clave API a cifrar. Úsese con precaución, puede quedar registrada en "
+            "el historial del shell."
+        ),
+    )
+    parser.add_argument(
+        "--api-key-file",
+        type=Path,
+        help="Ruta de un archivo desde el que leer la clave API en texto plano.",
+    )
+    parser.add_argument(
+        "--output-file",
+        type=Path,
+        help="Ruta del archivo cifrado a generar. Por defecto se usa secrets/openai_api_key.enc.",
+    )
+    parser.add_argument(
+        "--passphrase",
+        help="Passphrase para derivar la clave de cifrado.",
+    )
+    parser.add_argument(
+        "--passphrase-env-var",
+        help=(
+            "Variable de entorno de la que obtener la passphrase en modo no "
+            "interactivo. Por defecto se utiliza OPENAI_KEY_PASSPHRASE."
+        ),
+    )
+
+    args = parser.parse_args()
+
     try:
-        destination = seal_api_key()
+        destination = seal_api_key(
+            api_key=args.api_key,
+            passphrase=args.passphrase,
+            plain_text_file=args.api_key_file,
+            output_file=args.output_file,
+            non_interactive=args.non_interactive,
+            passphrase_env_var=args.passphrase_env_var,
+        )
     except secret_manager.SecretManagerError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         sys.exit(1)
@@ -155,6 +243,7 @@ def main() -> None:
             "La clave API se ha cifrado correctamente. Archivo generado en:"
             f" {destination}"
         )
+        print("Por seguridad, elimina openai_api_key.txt si existe.")
 
 
 if __name__ == "__main__":  # pragma: no cover - manual execution

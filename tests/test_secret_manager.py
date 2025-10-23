@@ -91,3 +91,5 @@ def test_get_api_key_without_sources(monkeypatch, tmp_path):
         match="No se pudo encontrar la clave API",
     ):
         secret_manager.get_openai_api_key()
+
+# pytest tests/test_secret_manager.py -v
