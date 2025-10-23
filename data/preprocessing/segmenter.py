@@ -1,7 +1,7 @@
 # data/preprocessing/segmenter.py
 
 import re
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from core.logger import log_info, log_warn
 from data.models.document import Document
 from data.criteria.section_loader import SectionLoader
@@ -47,30 +47,81 @@ class Segmenter:
         """
         Detecta títulos de secciones en el texto y separa el contenido.
         """
-        lines = [l.strip() for l in text.split("\n") if l.strip()]
-        matches: List[tuple] = []
+        stream = StringIO(text)
+        offset = 0
+        hits: List[Tuple[int, str, int, bool]] = []  # (heading_start, section_id, content_start, inline)
 
-        for i, line in enumerate(lines):
-            match = self.loader.identify_section(line)
-            if match:
-                sec_id, method, score, line_match = match
-                matches.append((i, sec_id))
+        while True:
+            raw_line = stream.readline()
+            if raw_line == "":
+                break
 
-        if not matches:
+            line_length = len(raw_line)
+            stripped = raw_line.strip()
+
+            if stripped:
+                match = self.loader.identify_section(stripped)
+                if match:
+                    sec_id = match[0]
+
+                    leading_ws = len(raw_line) - len(raw_line.lstrip())
+                    heading_start = offset + leading_ws
+
+                    heading_end = None
+                    match_end = None
+                    for pattern in self.loader.patterns.get(sec_id, []):
+                        found = pattern.search(stripped)
+                        if found:
+                            heading_end = heading_start + found.end()
+                            match_end = found.end()
+                            break
+
+                    if heading_end is None:
+                        heading_end = offset + line_length
+                        match_end = len(stripped)
+
+                    content_start = heading_end
+                    while (
+                        content_start < offset + line_length
+                        and text[content_start] not in "\r\n"
+                        and text[content_start] in " \t:-–—.•·"
+                    ):
+                        content_start += 1
+
+                    residual = stripped[match_end:].lstrip(" \t:-–—.•·") if match_end is not None else ""
+                    has_inline_content = bool(residual)
+
+                    hits.append((heading_start, sec_id, content_start, has_inline_content))
+
+            offset += line_length
+
+        if not hits:
             log_warn("No se detectaron secciones.")
             return {}
 
-        # Evitar duplicados → conservar última aparición
-        seen = {}
-        for idx, sec_id in matches:
-            seen[sec_id] = idx
-        ordered = sorted(seen.items(), key=lambda x: x[1])
+        candidates: Dict[str, List[int]] = {}
+        for idx, (_, sec_id, _, _) in enumerate(hits):
+            candidates.setdefault(sec_id, []).append(idx)
 
-        # Extraer segmentos
+        chosen_indices: List[int] = []
+        for indices in candidates.values():
+            pure = [i for i in indices if not hits[i][3]]
+            if pure:
+                chosen_indices.append(pure[-1])
+            else:
+                chosen_indices.append(indices[0])
+
+        ordered_indices = sorted(chosen_indices, key=lambda i: hits[i][0])
+
         segments: Dict[str, str] = {}
-        for i, (sec_id, start) in enumerate(ordered):
-            end = ordered[i + 1][1] if i + 1 < len(ordered) else len(lines)
-            section_text = "\n".join(lines[start + 1:end]).strip()
+        for pos, index in enumerate(ordered_indices):
+            heading_start, sec_id, content_start, _ = hits[index]
+            next_start = (
+                hits[ordered_indices[pos + 1]][0]
+                if pos + 1 < len(ordered_indices)
+                else len(text)
+            )
+            section_text = text[content_start:next_start].strip()
             segments[sec_id] = section_text
 
         # Asegurar que existan todas las secciones del JSON
