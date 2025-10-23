@@ -228,20 +228,41 @@ class Cleaner:
 
     def _collect_candidates(self, pages: List[str]) -> Tuple[List[str], List[str]]:
         """
-        Extrae primeras y últimas 3 líneas de cada página como posibles header/footer.
-        Normaliza eliminando números de página al inicio/fin para robustez.
+        Extrae posibles encabezados y pies de página y normaliza los números de página.
+
+        1. Usa las primeras y últimas líneas de cada página como candidatos naturales.
+        2. Refuerza con patrones definidos en ``CUSTOM_HEADERS`` y ``CUSTOM_FOOTERS``.
+        3. Normaliza los números de página tanto al inicio como al final de las líneas
+           para aumentar la probabilidad de coincidencia en `_cluster_repeated_lines`.
         """
         headers, footers = [], []
+
+        # 1. Candidatos naturales (primeras/últimas líneas de cada página)
         for p in pages:
             lines = [l.strip() for l in p.split("\n") if l.strip()]
             if not lines:
                 continue
-            # primeras 3 (encabezado) → quitar números al INICIO
-            for line in lines[:3]:
-                headers.append(self._strip_leading_page_num(line))
-            # últimas 3 (pie) → quitar números al FINAL
-            for line in lines[-3:]:
-                footers.append(self._strip_trailing_page_num(line))
+            headers.extend(
+                self._strip_leading_page_num(line) for line in lines[:3]
+            )
+            footers.extend(
+                self._strip_trailing_page_num(line) for line in lines[-3:]
+            )
+
+        # 2. Refuerzo: añadir patrones custom si están en el texto
+        if self.use_custom_headers:
+            for pattern in CUSTOM_HEADERS:
+                for p in pages:
+                    for line in p.split("\n")[:5]:
+                        if re.search(pattern, line, flags=re.IGNORECASE):
+                            headers.append(self._strip_leading_page_num(line.strip()))
+
+            for pattern in CUSTOM_FOOTERS:
+                for p in pages:
+                    for line in p.split("\n")[-5:]:
+                        if re.search(pattern, line, flags=re.IGNORECASE):
+                            footers.append(self._strip_trailing_page_num(line.strip()))
+
         return headers, footers
 
 
@@ -453,38 +474,6 @@ class Cleaner:
         # Colapsa múltiples líneas vacías
         text = re.sub(r"\n{3,}", "\n\n", text)
         return text
-    
-    def _collect_candidates(self, pages: List[str]) -> Tuple[List[str], List[str]]:
-        """
-        Extrae primeras y últimas líneas como candidatos de header/footer.
-        Además refuerza con patrones CUSTOM_HEADERS y CUSTOM_FOOTERS desde config.py.
-        """
-        headers, footers = [], []
-
-        # 1. Candidatos naturales (primeras/últimas líneas de cada página)
-        for p in pages:
-            lines = [l.strip() for l in p.split("\n") if l.strip()]
-            if not lines:
-                continue
-            headers.extend(lines[:3])
-            footers.extend(lines[-3:])
-
-        # 2. Refuerzo: añadir patrones custom si están en el texto
-        if self.use_custom_headers:
-            for pattern in CUSTOM_HEADERS:
-                for p in pages:
-                    for line in p.split("\n")[:5]:  # primeras líneas
-                        if re.search(pattern, line, flags=re.IGNORECASE):
-                            headers.append(line.strip())
-
-        if self.use_custom_headers:
-            for pattern in CUSTOM_FOOTERS:
-                for p in pages:
-                    for line in p.split("\n")[-5:]:  # últimas líneas
-                        if re.search(pattern, line, flags=re.IGNORECASE):
-                            footers.append(line.strip())
-
-        return headers, footers
     
     def _strip_trailing_page_num(self, s: str) -> str:
         """
