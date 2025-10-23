@@ -1,17 +1,15 @@
-"""Funciones de utilidad para recuperar de forma segura la clave de la API de OpenAI.
+"""Utility functions for securely retrieving the OpenAI API key.
 
-El módulo prueba varias fuentes en el siguiente orden:
-1. Variable de entorno ``OPENAI_API_KEY``.
-2. Archivo de texto sin formato ``secrets/openai_api_key.txt`` (diseñado solo para 
-desarrollo local).
-3. Archivo cifrado ``secrets/openai_api_key.enc``, que requiere la variable de entorno 
-``OPENAI_KEY_PASSPHRASE`` para descifrarlo.
+The module tries multiple sources in the following order:
+1. Environment variable ``OPENAI_API_KEY``.
+2. Plain text file ``secrets/openai_api_key.txt`` (intended for local development only).
+3. Encrypted file ``secrets/openai_api_key.enc`` which requires the ``OPENAI_KEY_PASSPHRASE``
+   environment variable to decrypt.
 
-Se espera que el archivo cifrado almacene una carga útil JSON con dos campos: ``salt`` 
-(bytes aleatorios codificados en base64 utilizados para obtener la clave) y ``token`` 
-(el token de Fernet).
+The encrypted file is expected to store a JSON payload with two fields:
+``salt`` (base64 encoded random bytes used to derive the key) and ``token`` (the Fernet token).
 
-Si ninguna de las fuentes proporciona una clave, se genera un error ``SecretManagerError``.
+If none of the sources provide a key, a ``SecretManagerError`` is raised.
 """
 
 from __future__ import annotations
@@ -30,12 +28,12 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 class SecretManagerError(RuntimeError):
-    """Se genera cuando no se puede recuperar la clave API de OpenAI."""
+    """Raised when the OpenAI API key cannot be retrieved."""
 
 
 @dataclass
 class SecretSource:
-    """Representa una posible fuente para la clave API de OpenAI."""
+    """Represents a possible source for the OpenAI API key."""
 
     name: str
     value: Optional[str] = None
@@ -152,18 +150,42 @@ def _load_from_encrypted_file() -> Optional[SecretSource]:
     return SecretSource(name="encrypted_file", value=value)
 
 
+def seal_key(api_key: str, passphrase: str, *, output_file: Path = ENCRYPTED_FILE) -> Path:
+    """Seal an API key into an encrypted file compatible with :func:`get_openai_api_key`."""
+
+    cleaned_key = (api_key or "").strip()
+    if not cleaned_key:
+        raise SecretManagerError("La clave API proporcionada es inválida o está vacía.")
+
+    cleaned_passphrase = _validate_passphrase((passphrase or "").strip())
+
+    salt = os.urandom(16)
+    key = _derive_key(cleaned_passphrase, salt)
+    fernet = Fernet(key)
+    token = fernet.encrypt(cleaned_key.encode("utf-8"))
+
+    payload = {
+        "salt": base64.b64encode(salt).decode("utf-8"),
+        "token": token.decode("utf-8"),
+    }
+
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    output_file.write_text(json.dumps(payload), encoding="utf-8")
+    return output_file
+
+
 def get_openai_api_key() -> str:
-    """Recupere la clave API de OpenAI de las fuentes disponibles.
+    """Retrieve the OpenAI API key from the available sources.
 
     Returns
     -------
     str
-        OpenAI API key.
+        The OpenAI API key.
 
     Raises
     ------
     SecretManagerError
-        Si no se puede encontrar la clave en ninguna de las ubicaciones admitidas.
+        If the key cannot be found in any of the supported locations.
     """
 
     for loader in (_load_from_env, _load_from_plain_text, _load_from_encrypted_file):
