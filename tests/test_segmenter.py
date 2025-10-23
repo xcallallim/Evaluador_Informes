@@ -1,31 +1,49 @@
-# py tests/test_segmenter.py
-# py -m tests.test_segmenter
+"""Unit tests for the Segmenter using synthetic cleaned documents."""
 
-import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from __future__ import annotations
 
-from data.preprocessing.loader import DocumentLoader
-from data.preprocessing.cleaner import Cleaner
-from data.criteria.section_loader import SectionLoader
+import pytest
+
+from data.models.document import Document
 from data.preprocessing.segmenter import Segmenter
 
-print("\n=== TEST: SEGMENTER ===")
 
-loader = DocumentLoader()
-cleaner = Cleaner()
-segmenter = Segmenter(tipo="institucional")
+@pytest.fixture
+def segmenter() -> Segmenter:
+    """Use the institutional segmentation rules without external files."""
 
-# Cargar y limpiar
-doc = loader.load("data/inputs/IEI 2023 - Gob. Regional de La Libertad.pdf")
-clean_doc, _ = cleaner.clean_document(doc, return_report=True)
+    return Segmenter(tipo="institucional", fuzzy=False)
 
-# Segmentar
-seg_doc = segmenter.segment_document(clean_doc)
 
-print("\n✅ SECCIONES DETECTADAS:")
-for sid, text in seg_doc.sections.items():
-    resumen = text[:150].replace("\n", " ") + ("..." if len(text) > 150 else "")
-    print(f"- {sid}: {len(text.split())} palabras | {resumen}")
+@pytest.fixture
+def cleaned_document() -> Document:
+    """Produce a minimal document that mimics the cleaner output."""
 
-print("\n=== FIN TEST SEGMENTER ===")
+    content = "\n".join(
+        [
+            "=== PAGE 1 ===",
+            "1. Resumen Ejecutivo",
+            "El informe resume avances.",
+            "",
+            "2. Prioridades de la política institucional",
+            "Las prioridades se enfocan en mejorar la gestión.",
+            "",
+            "Sección 4: Conclusiones",
+            "Se concluye que el plan fue efectivo.",
+        ]
+    )
+    return Document(content=content)
 
+
+def test_segmenter_populates_known_sections(segmenter: Segmenter, cleaned_document: Document) -> None:
+    """Segmenter assigns content to detected sections and leaves the rest empty."""
+
+    segmented = segmenter.segment_document(cleaned_document)
+
+    assert segmented.sections["resumen_ejecutivo"] == "El informe resume avances."
+    assert (
+        segmented.sections["prioridades_politica_institucional"]
+        == "Las prioridades se enfocan en mejorar la gestión."
+    )
+    assert segmented.sections["conclusiones"] == "Se concluye que el plan fue efectivo."
+    assert segmented.sections["anexos"] == ""
