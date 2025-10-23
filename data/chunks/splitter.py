@@ -124,6 +124,7 @@ class Splitter:
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
             length_function=len,
+            keep_separator=True,
         )
 
     def _split_content_map(
@@ -145,7 +146,7 @@ class Splitter:
                 continue
 
             text = raw_value if isinstance(raw_value, str) else str(raw_value)
-            text = text.replace("\n\n", "\n").strip()
+            text = text.strip()
             if not text:
                 continue
 

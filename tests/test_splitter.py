@@ -1,5 +1,4 @@
-# py tests/test_splitter.py
-# py -m tests.test_splitter
+"""Pruebas del pipeline de división en *chunks* del Evaluador de Informes."""
 
 from __future__ import annotations
 import os

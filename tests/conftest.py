@@ -1,3 +1,5 @@
+"""Configuración compartida para las pruebas del Evaluador de Informes."""
+
 import sys
 from pathlib import Path
 

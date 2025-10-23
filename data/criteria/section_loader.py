@@ -3,17 +3,18 @@
 import os
 import json
 import re
+from difflib import SequenceMatcher
 from typing import List, Dict, Optional, Tuple, Any
 
 from core.logger import log_info, log_warn, log_error
 from core.config import CRITERIA_DIR  # Ruta donde están los JSON
 
 try:
-    # Opcional: si no está instalado, seguimos con modo sin fuzzy
+    # Opcional: si no está instalado, seguimos con modo basado en SequenceMatcher
     from rapidfuzz import fuzz  # type: ignore
-    _HAS_FUZZ = True
+    _FUZZ_STRATEGY = "rapidfuzz"
 except Exception:
-    _HAS_FUZZ = False
+    _FUZZ_STRATEGY = "sequence"
 
 
 def _normalize(s: str) -> str:
@@ -58,21 +59,25 @@ class SectionLoader:
         self._fuzzy_index: Dict[str, List[str]] = self._build_fuzzy_index()
 
         self._fuzzy_enabled = False
+        self._fuzzy_strategy = None
         if self.fuzzy:
-            if not _HAS_FUZZ:
-                log_warn(
-                    "Modo fuzzy solicitado, pero rapidfuzz no está disponible. Se usará coincidencia exacta."
-                )
-            else:
+            if _FUZZ_STRATEGY == "rapidfuzz":
                 self._fuzzy_enabled = True
+                self._fuzzy_strategy = "rapidfuzz"
+            else:
+                log_warn(
+                    "Modo fuzzy activo con SequenceMatcher (rapidfuzz no disponible)."
+                )
+                self._fuzzy_enabled = True
+                self._fuzzy_strategy = "sequence"
 
         self._fuzzy_index: Dict[str, List[str]] = (
             self._build_fuzzy_index() if self._fuzzy_enabled else {}
         )
 
-        fuzzy_state = "ON" if self._fuzzy_enabled else "OFF"
-        if self.fuzzy and not self._fuzzy_enabled:
-            fuzzy_state += " (rapidfuzz no disponible)"
+        fuzzy_state = (
+            f"ON ({self._fuzzy_strategy})" if self._fuzzy_enabled else "OFF"
+        )
 
         log_info(
             f"SectionLoader listo. Tipo='{self.tipo}', secciones={len(self.sections)}, fuzzy={fuzzy_state}"
@@ -218,7 +223,10 @@ class SectionLoader:
             for key, candidates in self._fuzzy_index.items():
                 # mejor score contra cualquiera de los candidatos de esa sección
                 for cand in candidates:
-                    score = fuzz.token_set_ratio(norm_line, cand)
+                    if self._fuzzy_strategy == "rapidfuzz":
+                        score = fuzz.token_set_ratio(norm_line, cand)
+                    else:
+                        score = SequenceMatcher(None, norm_line, cand).ratio() * 100
                     if score > best_score:
                         best_score = score
                         best_key = key

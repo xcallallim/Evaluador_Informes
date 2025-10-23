@@ -1,6 +1,7 @@
-# data/preprocessing/segmenter.py
+"""Segmentador que detecta secciones de informe en texto preprocesado."""
 
 import re
+from io import StringIO
 from typing import Dict, List, Tuple
 from core.logger import log_info, log_warn
 from data.models.document import Document
@@ -15,7 +16,10 @@ class Segmenter:
     def __init__(self, tipo: str = "institucional", fuzzy: bool = True):
         self.tipo = tipo
         self.loader = SectionLoader(tipo=tipo, fuzzy=fuzzy)
-        log_info(f"Segmenter inicializado (tipo={tipo}, fuzzy={fuzzy})")
+        total_sections = len(getattr(self.loader, "sections", []) or [])
+        log_info(
+            f"Segmenter inicializado (tipo={tipo}, fuzzy={fuzzy}, secciones={total_sections})"
+        )
 
     # ----------------------------------------------------------
     # FUNCIÓN PRINCIPAL
@@ -25,13 +29,32 @@ class Segmenter:
         Divide el contenido limpio del documento en secciones.
         Devuelve un nuevo Document con atributo `sections` (dict ordenado según JSON).
         """
-        if not document or not document.content:
+        if document is None:
+            log_warn("Documento nulo recibido para segmentación.")
+            return Document()
+
+        if not getattr(document, "content", None):
             log_warn("Documento vacío recibido para segmentación.")
-            document.sections = {}
+            # Si no existe documento devolvemos un contenedor mínimo
+            empty = Document(content="")
+            empty.sections = {}
+            return empty
+
+        content = getattr(document, "content", "")
+        if not isinstance(content, str):
+            content = str(content or "")
+
+        if not content.strip():
+            log_warn("Documento sin contenido recibido para segmentación.")
+            setattr(document, "sections", {})
             return document
 
-        text = document.content
+        text = document
         sections = self._segment_text(text)
+
+        if not sections:
+            fallback = text.strip()
+            sections = {"sin_clasificar": fallback}
 
         # Guardar las secciones dentro del documento
         document.sections = sections
@@ -49,7 +72,11 @@ class Segmenter:
         """
         stream = StringIO(text)
         offset = 0
-        hits: List[Tuple[int, str, int, bool]] = []  # (heading_start, section_id, content_start, inline)
+        hits: List[Tuple[int, str, int, bool, str]] = []  # (..., residual)
+
+        patterns_map = getattr(self.loader, "patterns", {})
+        if not isinstance(patterns_map, dict):
+            patterns_map = {}
 
         while True:
             raw_line = stream.readline()
@@ -69,7 +96,9 @@ class Segmenter:
 
                     heading_end = None
                     match_end = None
-                    for pattern in self.loader.patterns.get(sec_id, []):
+                    for pattern in patterns_map.get(sec_id, []):
+                        if not hasattr(pattern, "search"):
+                            continue
                         found = pattern.search(stripped)
                         if found:
                             heading_end = heading_start + found.end()
@@ -88,19 +117,23 @@ class Segmenter:
                     ):
                         content_start += 1
 
-                    residual = stripped[match_end:].lstrip(" \t:-–—.•·") if match_end is not None else ""
+                    residual = (
+                        stripped[match_end:].lstrip(" \t:-–—.•·")
+                        if match_end is not None
+                        else ""
+                    )
                     has_inline_content = bool(residual)
 
-                    hits.append((heading_start, sec_id, content_start, has_inline_content))
+                    hits.append((heading_start, sec_id, content_start, has_inline_content, residual))
 
             offset += line_length
 
         if not hits:
             log_warn("No se detectaron secciones.")
-            return {}
+            return {"sin_clasificar": text.strip()}
 
         candidates: Dict[str, List[int]] = {}
-        for idx, (_, sec_id, _, _) in enumerate(hits):
+        for idx, (_, sec_id, _, _, _) in enumerate(hits):
             candidates.setdefault(sec_id, []).append(idx)
 
         chosen_indices: List[int] = []
@@ -115,17 +148,25 @@ class Segmenter:
 
         segments: Dict[str, str] = {}
         for pos, index in enumerate(ordered_indices):
-            heading_start, sec_id, content_start, _ = hits[index]
+            heading_start, sec_id, content_start, _, residual = hits[index]
             next_start = (
                 hits[ordered_indices[pos + 1]][0]
                 if pos + 1 < len(ordered_indices)
                 else len(text)
             )
             section_text = text[content_start:next_start].strip()
+            if residual and section_text.startswith(residual):
+                residual = ""
+            if residual:
+                section_text = (
+                    f"{residual}\n{section_text}".strip()
+                    if section_text
+                    else residual
+                )
             segments[sec_id] = section_text
 
         # Asegurar que existan todas las secciones del JSON
-        for sid in self.loader.sections:
+        for sid in getattr(self.loader, "sections", []) or []:
             if sid not in segments:
                 segments[sid] = ""
 
