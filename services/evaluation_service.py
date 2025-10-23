@@ -358,19 +358,23 @@ class EvaluationService:
             export_metadata["filters"] = filters.to_dict()
 
         export_path = output_path
-        effective_format = output_format or "json"
+        format_mapping = {"xls": "xlsx", "excel": "xlsx"}
+        requested_format = (output_format or "").lower()
+        effective_format = format_mapping.get(
+            requested_format, requested_format or "json"
+        )
         if export_path is None:
-            if output_format in (None, "json"):
+            if not requested_format or requested_format == "json":
                 effective_format = "xlsx"
             target_dir = Path(input_path).parent if input_path else Path.cwd()
             extension = effective_format.lower()
-            if extension not in {"json", "csv", "xlsx"}:
+            if extension not in {"json", "csv", "xlsx", "parquet"}:
                 extension = "xlsx"
                 effective_format = "xlsx"
             export_path = target_dir / f"resultados_{document_id}_{config.run_id}.{extension}"
         elif not effective_format:
-            suffix = Path(export_path).suffix.lstrip(".")
-            effective_format = suffix or "json"
+            suffix = Path(export_path).suffix.lstrip(".").lower()
+            effective_format = format_mapping.get(suffix, suffix or "json")
 
         self.repository.export(
             evaluation,
@@ -379,6 +383,8 @@ class EvaluationService:
             output_format=effective_format,
             extra_metadata=export_metadata,
         )
+
+        print(f"[💾] Exportado: {Path(export_path)}")
 
         duration_seconds = time.time() - start_time
         question_counts = self._question_counts(evaluation)

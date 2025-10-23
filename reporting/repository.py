@@ -1,9 +1,12 @@
+"""Persistence helpers for exporting evaluation results to tabular formats."""
+
 from __future__ import annotations
 
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional
+import re
+from typing import Any, Dict, List, Mapping, Optional, Set
 
 from data.models.evaluation import EvaluationResult
 
@@ -20,6 +23,9 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
     """Return a list of rows (one per question) ready to serialise."""
 
     rows: List[Dict[str, Any]] = []
+    criteria_version = None
+    if isinstance(evaluation.metadata, Mapping):
+        criteria_version = evaluation.metadata.get("criteria_version")
     for section in evaluation.sections:
         for dimension in section.dimensions:
             for question in dimension.questions:
@@ -41,6 +47,7 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                         "relevant_text": question.relevant_text,
                         "metadata": question.metadata,
                         "chunk_results": [chunk.to_dict() for chunk in question.chunk_results],
+                        "criteria_version": criteria_version,
                     }
                 )
     return rows
@@ -67,7 +74,9 @@ class EvaluationRepository:
                 f"La carpeta destino '{output_path.parent}' no existe."
             )
 
-        output_format = output_format.lower()
+        output_format = (output_format or "json").lower()
+        normalised_format = _normalise_format(output_format)
+        _validate_format(normalised_format)
         rows = flatten_evaluation(evaluation)
         metadata = {
             "evaluation": evaluation.to_dict(),
@@ -76,7 +85,7 @@ class EvaluationRepository:
         if extra_metadata:
             metadata["extra"] = dict(extra_metadata)
 
-        if output_format == "json":
+        if normalised_format == "json":
             output_path.write_text(
                 json.dumps(metadata, ensure_ascii=False, indent=2),
                 encoding="utf-8",
@@ -90,19 +99,84 @@ class EvaluationRepository:
 
         df = pd.DataFrame(rows)  # type: ignore[arg-type]
         summary_df = pd.DataFrame(metrics_summary.get("sections", []))  # type: ignore[arg-type]
-        header_df = pd.DataFrame([metrics_summary.get("global", {})])  # type: ignore[arg-type]
+        evaluation_metadata: Mapping[str, Any] = (
+            evaluation.metadata if isinstance(evaluation.metadata, Mapping) else {}
+        )
+        header_df = pd.DataFrame(
+            [
+                {
+                    **metrics_summary.get("global", {}),
+                    "run_id": evaluation_metadata.get("run_id"),
+                    "model_name": evaluation_metadata.get("model_name"),
+                    "tipo_informe": evaluation_metadata.get("tipo_informe", evaluation.document_type),
+                    "criteria_version": evaluation_metadata.get("criteria_version"),
+                }
+            ]
+        )  # type: ignore[arg-type]
 
-        if output_format == "csv":
+        if normalised_format == "csv":
             df.to_csv(output_path, index=False, encoding=self.encoding)
             return output_path
 
-        if output_format in {"xlsx", "xls", "excel"}:
+        if normalised_format == "parquet":
+            df.to_parquet(output_path, index=False)
+            return output_path
+
+        if normalised_format == "xlsx":
             with pd.ExcelWriter(output_path, engine="openpyxl") as writer:  # type: ignore[arg-type]
-                df.to_excel(writer, sheet_name="preguntas", index=False)
-                summary_df.to_excel(writer, sheet_name="resumen", index=False)
-                header_df.to_excel(writer, sheet_name="indice_global", index=False)
+                used_names: Set[str] = set()
+                df.to_excel(
+                    writer,
+                    sheet_name=_safe_sheet_name("preguntas", used_names),
+                    index=False,
+                )
+                summary_df.to_excel(
+                    writer,
+                    sheet_name=_safe_sheet_name("resumen", used_names),
+                    index=False,
+                )
+                header_df.to_excel(
+                    writer,
+                    sheet_name=_safe_sheet_name("indice_global", used_names),
+                    index=False,
+                )
             return output_path
 
         raise ValueError(
-            f"Formato de salida no soportado: '{output_format}'. Usa json, csv o xlsx."
+            f"Formato de salida no soportado: '{output_format}'. Usa json, csv, xlsx o parquet."
         )
+
+
+def _normalise_format(fmt: str) -> str:
+    mapping = {
+        "xls": "xlsx",
+        "excel": "xlsx",
+    }
+    return mapping.get(fmt, fmt)
+
+
+def _validate_format(fmt: str) -> None:
+    supported = {"json", "csv", "xlsx", "parquet"}
+    if fmt not in supported:
+        raise ValueError(
+            f"Formato de salida no soportado: '{fmt}'. Usa uno de: {', '.join(sorted(supported))}."
+        )
+
+
+def _safe_sheet_name(name: str, existing: Set[str]) -> str:
+    """Return an Excel-compatible sheet name ensuring uniqueness."""
+
+    sanitized = re.sub(r"[:\\/?*\[\]]", "_", name).strip()
+    if not sanitized:
+        sanitized = "sheet"
+    sanitized = sanitized[:31]
+    candidate = sanitized
+    index = 1
+    used_lower = {value.lower() for value in existing}
+    while candidate.lower() in used_lower:
+        suffix = f"_{index}"
+        base_length = max(0, 31 - len(suffix))
+        candidate = f"{sanitized[:base_length]}{suffix}" if base_length else suffix[-31:]
+        index += 1
+    existing.add(candidate)
+    return candidate

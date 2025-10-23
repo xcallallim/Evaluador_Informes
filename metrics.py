@@ -48,6 +48,21 @@ def _normalise(
     return target_min + ratio * (target_max - target_min)
 
 
+def _resolve_tipo_informe(evaluation: EvaluationResult) -> Optional[str]:
+    """Extract the report type from ``evaluation`` when available."""
+
+    if hasattr(evaluation, "tipo_informe"):
+        tipo = getattr(evaluation, "tipo_informe")  # type: ignore[attr-defined]
+        if isinstance(tipo, str) and tipo.strip():
+            return tipo
+    if isinstance(evaluation.document_type, str) and evaluation.document_type.strip():
+        return evaluation.document_type
+    tipo = evaluation.metadata.get("tipo_informe")
+    if isinstance(tipo, str) and tipo.strip():
+        return tipo
+    return None
+
+
 def _section_summaries(
     evaluation: EvaluationResult,
     *,
@@ -57,6 +72,7 @@ def _section_summaries(
 ) -> list[Dict[str, Any]]:
     summaries: list[Dict[str, Any]] = []
     target_min, target_max = target_range
+    tipo_informe = _resolve_tipo_informe(evaluation)
     for section in evaluation.sections:
         summaries.append(
             {
@@ -64,6 +80,7 @@ def _section_summaries(
                 "title": section.title,
                 "weight": section.weight,
                 "score": section.score,
+                "tipo_informe": tipo_informe,
                 "normalized_score": _normalise(
                     section.score,
                     min_value=min_value,
