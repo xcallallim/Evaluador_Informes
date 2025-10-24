@@ -12,13 +12,28 @@ def test_mock_ai_service_respects_model_name_and_metadata() -> None:
     assert set(result.keys()) == {"score", "justification", "relevant_text", "metadata"}
     assert result["metadata"]["mock"] is True
     assert result["metadata"]["model"] == "mockito"
-    assert set(result["metadata"].keys()) == {"model", "mock"}
     metadata = result["metadata"]
+    metadata_keys = set(metadata.keys())
+    assert {"model", "mock"}.issubset(metadata_keys)
     assert metadata["mock"] is True
     assert metadata["model"] == "mockito"
     assert metadata["provider"] == "mock"
     assert metadata["duration_ms"] == 0.0
-    assert set(metadata.keys()) == {"model", "mock", "provider", "duration_ms"}
+    expected_keys = {
+        "model",
+        "mock",
+        "provider",
+        "duration_ms",
+        "client_mode",
+        "request_id",
+        "timestamp",
+        "report_type",
+        "allowed_levels",
+        "enforced_discrete",
+        "raw_score",
+        "adjusted_score",
+    }
+    assert expected_keys.issubset(metadata_keys)
     assert isinstance(result["score"], float)
     assert 0.0 <= result["score"] <= 2.5
     assert isinstance(result["justification"], str)
