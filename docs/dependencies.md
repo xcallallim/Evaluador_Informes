@@ -56,3 +56,8 @@ bibliotecas gráficas adicionales. Si aún así encuentras un error mencionando
 
 Al centralizar las rutas en variables de entorno, puedes trabajar en entornos sin
 `sudo` manteniendo las funcionalidades principales del pipeline.
+## Gestión de la clave de OpenAI
+
+El acceso a la clave de OpenAI está centralizado en `utils.secret_manager.get_openai_api_key()`,
+que abstrae las fuentes permitidas y aplica el principio de acceso controlado. Ningún otro
+módulo debe leer directamente archivos o variables de entorno con la credencial.

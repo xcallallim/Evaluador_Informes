@@ -31,6 +31,7 @@ from data.chunks.splitter import Splitter
 
 from metrics import calculate_metrics
 from reporting.repository import EvaluationRepository
+from services.ai_service import MockAIService
 
 SERVICE_VERSION = "0.1.0"
 
@@ -123,41 +124,6 @@ class EvaluationFilters:
             "block_ids": list(self.block_ids) if self.block_ids else [],
             "question_ids": list(self.question_ids) if self.question_ids else [],
             "only_missing": self.only_missing,
-        }
-
-
-class MockAIService:
-    """Simple heuristic-based AI service used for local development."""
-
-    def __init__(self, model_name: str = "mock-model") -> None:
-        self.model_name = model_name
-
-    def evaluate(self, prompt: str, **kwargs: Any) -> Mapping[str, Any]:
-        question = kwargs.get("question") or {}
-        levels = question.get("niveles", [])
-        max_score = 4.0
-        if isinstance(levels, Sequence):
-            numeric_levels: List[float] = []
-            for level in levels:
-                if isinstance(level, Mapping) and "valor" in level:
-                    try:
-                        numeric_levels.append(float(level["valor"]))
-                    except (TypeError, ValueError):
-                        continue
-            if numeric_levels:
-                max_score = max(numeric_levels)
-        base_value = abs(hash(prompt)) % 1000 / 1000
-        score = round(base_value * max_score, 2)
-        return {
-            "score": score,
-            "justification": (
-                "Respuesta generada por MockAIService a partir del contenido del fragmento."
-            ),
-            "relevant_text": None,
-            "metadata": {
-                "model": self.model_name,
-                "mock": True,
-            },
         }
 
 
