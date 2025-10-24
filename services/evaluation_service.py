@@ -10,14 +10,16 @@ import sys
 import time
 import unicodedata
 import uuid
+from statistics import pstdev
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence
 
 from data.models.document import Document
 from data.models.evaluation import (
+    ChunkResult,
     DimensionResult,
     EvaluationResult,
     QuestionResult,
@@ -32,8 +34,11 @@ from data.chunks.splitter import Splitter
 from metrics import calculate_metrics
 from reporting.repository import EvaluationRepository
 from services.ai_service import MockAIService
+from services.prompt_builder import PromptFactory
+from utils.prompt_validator import PromptValidationResult, PromptValidator
 
 SERVICE_VERSION = "0.1.0"
+PROMPT_QUALITY_THRESHOLD = 0.7
 
 __all__ = [
     "EvaluationFilters",
@@ -64,7 +69,7 @@ class ServiceConfig:
     prompt_batch_size: int = 1
     log_level: str = "INFO"
     log_file: Optional[Path] = None
-    use_mock_ai: bool = True
+    ai_provider: str = "mock"
     run_id: str = field(default_factory=lambda: uuid.uuid4().hex)
     document_id: Optional[str] = None
     extra_instructions: Optional[str] = None
@@ -87,6 +92,9 @@ class ServiceConfig:
         if payload.get("log_file") is not None:
             payload["log_file"] = str(payload["log_file"])
         return payload
+    
+
+AIProviderFactory = Callable[[ServiceConfig], Any]
 
 
 @dataclass(slots=True)
@@ -128,7 +136,7 @@ class EvaluationFilters:
 
 
 class RetryingAIService:
-    """Wrapper that retries AI calls and enforces a timeout."""
+    """Wrapper that retries AI calls, supports batching and enforces a timeout."""
 
     def __init__(
         self,
@@ -146,16 +154,53 @@ class RetryingAIService:
         self.logger = logger
 
     def evaluate(self, prompt: str, **kwargs: Any) -> Any:
+        response, _ = self._call_with_retry(prompt, kwargs)
+        return response
+
+    def evaluate_many(
+        self,
+        items: Iterable[tuple[str, Mapping[str, Any]]],
+        *,
+        parallelism: Optional[int] = None,
+    ) -> List[Dict[str, Any]]:
+        """Evalúa múltiples prompts reutilizando los mecanismos de reintento."""
+
+        tasks = [(prompt, dict(kwargs)) for prompt, kwargs in items]
+        if not tasks:
+            return []
+
+        max_workers = parallelism if parallelism and parallelism > 0 else len(tasks)
+        max_workers = max(1, min(max_workers, len(tasks)))
+
+        def _runner(task: tuple[str, Mapping[str, Any]]) -> Dict[str, Any]:
+            prompt, call_kwargs = task
+            response, latency_ms = self._call_with_retry(prompt, call_kwargs)
+            return {"response": response, "latency_ms": latency_ms}
+
+        if max_workers == 1:
+            return [_runner(task) for task in tasks]
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            return list(executor.map(_runner, tasks))
+
+    def _call_with_retry(
+        self, prompt: str, kwargs: Mapping[str, Any]
+    ) -> tuple[Any, float]:
         attempt = 0
         delay = 1.0
         last_exception: Optional[Exception] = None
+        start_total = time.perf_counter()
         while attempt <= self.retries:
             try:
                 if self.timeout is None:
-                    return self.inner.evaluate(prompt, **kwargs)
+                    result = self.inner.evaluate(prompt, **kwargs)
+                    elapsed_ms = (time.perf_counter() - start_total) * 1000
+                    return result, elapsed_ms
                 with ThreadPoolExecutor(max_workers=1) as executor:
                     future = executor.submit(self.inner.evaluate, prompt, **kwargs)
-                    return future.result(timeout=self.timeout)
+                    result = future.result(timeout=self.timeout)
+                    elapsed_ms = (time.perf_counter() - start_total) * 1000
+                    return result, elapsed_ms
             except FuturesTimeoutError as exc:
                 self.logger.warning(
                     "Timeout al invocar el servicio de IA (intento %s/%s)",
@@ -178,14 +223,512 @@ class RetryingAIService:
             delay *= self.backoff
 
         self.logger.error("Fallo permanente del servicio de IA tras %s intentos", attempt)
+        elapsed_ms = (time.perf_counter() - start_total) * 1000
         return {
-            "score": None,
+            "score": 0,
             "justification": f"No fue posible obtener respuesta de la IA: {last_exception}",
             "metadata": {
                 "error": True,
                 "exception_type": type(last_exception).__name__ if last_exception else None,
+                "score_imputed": True,
             },
+        }, elapsed_ms
+
+
+class ValidatingEvaluator(Evaluator):
+    """Extiende :class:`Evaluator` incorporando validación previa de prompts."""
+
+    def __init__(
+        self,
+        *args: Any,
+        prompt_validator: PromptValidator,
+        prompt_quality_threshold: float,
+        prompt_batch_size: int = 1,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(*args, **kwargs)
+        self.prompt_validator = prompt_validator
+        self.prompt_quality_threshold = max(0.0, min(1.0, prompt_quality_threshold))
+        self.prompt_batch_size = max(1, int(prompt_batch_size))
+
+    def _validate_prompt(
+        self,
+        prompt: str,
+        *,
+        criteria: Mapping[str, Any],
+        section: Mapping[str, Any],
+        dimension: Mapping[str, Any],
+        question: Mapping[str, Any],
+        chunk_index: int,
+        chunk_metadata: Mapping[str, Any],
+    ) -> PromptValidationResult:
+        context: Dict[str, Any] = {
+            "report_type": criteria.get("tipo_informe"),
+            "section_id": section.get("id") or section.get("id_segmenter"),
+            "dimension_id": dimension.get("id"),
+            "dimension_name": dimension.get("nombre"),
+            "question_id": question.get("id"),
+            "question_type": question.get("tipo"),
+            "chunk_index": chunk_index,
         }
+        if dimension.get("tipo_escala"):
+            context["expected_scale_label"] = dimension.get("tipo_escala")
+        expected_scale = question.get("escala") or question.get("valores_escala")
+        if expected_scale:
+            context["expected_scale_values"] = expected_scale
+        if "was_truncated" in chunk_metadata:
+            context["was_truncated"] = bool(chunk_metadata.get("was_truncated"))
+        if chunk_metadata.get("truncation_marker"):
+            context["truncation_marker"] = chunk_metadata.get("truncation_marker")
+
+        filtered_context = {key: value for key, value in context.items() if value is not None}
+
+        try:
+            return self.prompt_validator.validate(prompt, context=filtered_context)
+        except Exception as exc:  # pragma: no cover - robustez ante validaciones
+            logging.getLogger("evaluation_service").exception(
+                "Error validando prompt para la pregunta %s (chunk %s)",
+                question.get("id") or question.get("texto"),
+                chunk_index,
+            )
+            return PromptValidationResult(
+                is_valid=False,
+                quality_score=0.0,
+                alerts=[f"Error durante la validación del prompt: {exc}"],
+                metadata={"error": True, "exception_type": type(exc).__name__},
+            )
+
+    def _evaluate_question(
+        self,
+        document: Document,
+        criteria: Mapping[str, Any],
+        section_data: Mapping[str, Any],
+        dimension_data: Mapping[str, Any],
+        question_data: Mapping[str, Any],
+    ) -> QuestionResult:
+        chunk_results: List[ChunkResult] = []
+        validation_records: List[Dict[str, Any]] = []
+        prepared_chunks: List[Dict[str, Any]] = []
+        for index, chunk in self._iter_chunks(document):
+            chunk_text = getattr(chunk, "page_content", None)
+            if chunk_text is None:
+                chunk_text = str(chunk)
+            chunk_metadata = getattr(chunk, "metadata", {}) or {}
+            chunk_metadata_dict = dict(chunk_metadata)
+            prompt = self.prompt_builder(
+                document=document,
+                criteria=criteria,
+                section=section_data,
+                dimension=dimension_data,
+                question=question_data,
+                chunk_text=chunk_text,
+                chunk_metadata=chunk_metadata,
+                extra_instructions=self.extra_instructions,
+            )
+
+            validation = self._validate_prompt(
+                prompt,
+                criteria=criteria,
+                section=section_data,
+                dimension=dimension_data,
+                question=question_data,
+                chunk_index=index,
+                chunk_metadata=chunk_metadata_dict,
+            )
+
+            validation_records.append(
+                {
+                    "chunk_index": index,
+                    "quality_score": validation.quality_score,
+                    "alerts": list(validation.alerts),
+                    "was_valid": validation.is_valid,
+                }
+            )
+
+            if validation.is_valid and validation.quality_score >= self.prompt_quality_threshold:
+                prepared_chunks.append(
+                    {
+                        "index": index,
+                        "prompt": prompt,
+                        "chunk_metadata": chunk_metadata,
+                        "chunk_metadata_dict": chunk_metadata_dict,
+                        "validation": validation,
+                        "request_kwargs": {
+                            "question": question_data,
+                            "section": section_data,
+                            "dimension": dimension_data,
+                            "chunk_index": index,
+                            "chunk_metadata": chunk_metadata,
+                            "criteria": criteria,
+                        },
+                        "needs_ai": True,
+                    }
+                )
+            else:
+                prepared_chunks.append(
+                    {
+                        "index": index,
+                        "chunk_metadata": chunk_metadata,
+                        "chunk_metadata_dict": chunk_metadata_dict,
+                        "validation": validation,
+                        "needs_ai": False,
+                        "response": {
+                            "score": 0,
+                            "justification": (
+                                "Evaluación omitida por calidad insuficiente del prompt "
+                                f"({validation.quality_score:.2f})."
+                            ),
+                            "metadata": {
+                                "error": True,
+                                "prompt_rejected": True,
+                                "score_imputed": True,
+                            },
+                        },
+                        "ai_latency_ms": 0.0,
+                    }
+                )
+
+        service_logger = logging.getLogger("evaluation_service")
+
+        def _append_chunk_result(entry: Dict[str, Any]) -> None:
+            response = entry.get("response", {})
+            validation = entry["validation"]
+            chunk_metadata_dict = entry.get("chunk_metadata_dict", {})
+            model_response = self._normalise_response(response)
+            response_metadata = dict(model_response.metadata)
+            if chunk_metadata_dict:
+                response_metadata.setdefault("chunk_metadata", chunk_metadata_dict)
+            response_metadata["ai_latency_ms"] = entry.get("ai_latency_ms", 0.0)
+            response_metadata["prompt_quality_score"] = validation.quality_score
+            response_metadata["prompt_validation_alerts"] = list(validation.alerts)
+            if validation.metadata:
+                response_metadata["prompt_validation_metadata"] = dict(validation.metadata)
+            response_metadata["prompt_was_valid"] = validation.is_valid
+            response_metadata["prompt_quality_threshold"] = self.prompt_quality_threshold
+            if not (
+                validation.is_valid and validation.quality_score >= self.prompt_quality_threshold
+            ):
+                response_metadata["prompt_rejected"] = True
+
+            chunk_weight = self._resolve_chunk_weight(response_metadata)
+            if chunk_weight is not None:
+                response_metadata.setdefault("weight", chunk_weight)
+
+            chunk_results.append(
+                ChunkResult(
+                    index=entry["index"],
+                    score=model_response.score,
+                    justification=model_response.justification,
+                    relevant_text=model_response.relevant_text,
+                    metadata=response_metadata,
+                )
+            )
+
+        pending_entries = [entry for entry in prepared_chunks if entry.get("needs_ai")]
+
+        def _evaluate_sequentially(entry: Dict[str, Any]) -> None:
+            start_time = time.perf_counter()
+            try:
+                response = self.ai_service.evaluate(
+                    entry["prompt"],
+                    **entry["request_kwargs"],
+                )
+            except Exception as exc:  # pragma: no cover - robustez adicional
+                service_logger.exception(
+                    "Error invocando la IA para la pregunta %s (chunk %s)",
+                    question_data.get("id") or question_data.get("texto"),
+                    entry["index"],
+                )
+                response = {
+                    "score": 0,
+                    "justification": str(exc),
+                    "metadata": {
+                        "error": True,
+                        "exception_type": type(exc).__name__,
+                        "score_imputed": True,
+                    },
+                }
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
+            entry["response"] = response
+            entry["ai_latency_ms"] = elapsed_ms
+            entry["needs_ai"] = False
+
+        if pending_entries:
+            supports_batch = hasattr(self.ai_service, "evaluate_many")
+            batch_size = self.prompt_batch_size if supports_batch else 1
+
+            if supports_batch and batch_size > 1:
+                for start in range(0, len(pending_entries), batch_size):
+                    batch = pending_entries[start : start + batch_size]
+                    tasks = [
+                        (
+                            entry["prompt"],
+                            entry["request_kwargs"],
+                        )
+                        for entry in batch
+                    ]
+                    try:
+                        outcomes = self.ai_service.evaluate_many(
+                            tasks,
+                            parallelism=min(batch_size, len(batch)),
+                        )
+                    except Exception as exc:  # pragma: no cover - fallback si falla el lote
+                        service_logger.warning(
+                            "Fallo la evaluación en lote, se usará modo secuencial: %s",
+                            exc,
+                        )
+                        for entry in batch:
+                            _evaluate_sequentially(entry)
+                        continue
+
+                    for entry, outcome in zip(batch, outcomes):
+                        response = outcome.get("response") if isinstance(outcome, Mapping) else outcome
+                        latency_ms = 0.0
+                        if isinstance(outcome, Mapping) and "latency_ms" in outcome:
+                            try:
+                                latency_ms = float(outcome.get("latency_ms") or 0.0)
+                            except (TypeError, ValueError):
+                                latency_ms = 0.0
+                        entry["response"] = response
+                        entry["ai_latency_ms"] = latency_ms
+                        entry["needs_ai"] = False
+            else:
+                for entry in pending_entries:
+                    _evaluate_sequentially(entry)
+
+        for entry in prepared_chunks:
+            if entry.get("needs_ai"):
+                _evaluate_sequentially(entry)
+            _append_chunk_result(entry)
+
+        score = self._aggregate_chunk_scores(chunk_results)
+        justification, relevant_text = self._select_justification(chunk_results)
+        question_result = QuestionResult(
+            question_id=str(question_data.get("id") or question_data.get("texto", "")),
+            text=question_data.get("texto", ""),
+            weight=question_data.get("ponderacion"),
+            score=score,
+            justification=justification,
+            relevant_text=relevant_text,
+            chunk_results=chunk_results,
+            metadata={
+                key: question_data[key]
+                for key in ("tipo", "descripcion")
+                if key in question_data
+            },
+        )
+        question_result.metadata.setdefault("prompt_quality_minimum", self.prompt_quality_threshold)
+        question_result.metadata.setdefault(
+            "prompt_validation",
+            {
+                "threshold": self.prompt_quality_threshold,
+                "records": validation_records,
+            },
+        )
+        return question_result
+
+
+class ValidatingEvaluator(Evaluator):
+    """Extiende :class:`Evaluator` incorporando validación previa de prompts."""
+
+    def __init__(
+        self,
+        *args: Any,
+        prompt_validator: PromptValidator,
+        prompt_quality_threshold: float,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(*args, **kwargs)
+        self.prompt_validator = prompt_validator
+        self.prompt_quality_threshold = max(0.0, min(1.0, prompt_quality_threshold))
+
+    def _validate_prompt(
+        self,
+        prompt: str,
+        *,
+        criteria: Mapping[str, Any],
+        section: Mapping[str, Any],
+        dimension: Mapping[str, Any],
+        question: Mapping[str, Any],
+        chunk_index: int,
+        chunk_metadata: Mapping[str, Any],
+    ) -> PromptValidationResult:
+        context: Dict[str, Any] = {
+            "report_type": criteria.get("tipo_informe"),
+            "section_id": section.get("id") or section.get("id_segmenter"),
+            "dimension_id": dimension.get("id"),
+            "dimension_name": dimension.get("nombre"),
+            "question_id": question.get("id"),
+            "question_type": question.get("tipo"),
+            "chunk_index": chunk_index,
+        }
+        if dimension.get("tipo_escala"):
+            context["expected_scale_label"] = dimension.get("tipo_escala")
+        expected_scale = question.get("escala") or question.get("valores_escala")
+        if expected_scale:
+            context["expected_scale_values"] = expected_scale
+        if "was_truncated" in chunk_metadata:
+            context["was_truncated"] = bool(chunk_metadata.get("was_truncated"))
+        if chunk_metadata.get("truncation_marker"):
+            context["truncation_marker"] = chunk_metadata.get("truncation_marker")
+
+        filtered_context = {key: value for key, value in context.items() if value is not None}
+
+        try:
+            return self.prompt_validator.validate(prompt, context=filtered_context)
+        except Exception as exc:  # pragma: no cover - robustez ante validaciones
+            logging.getLogger("evaluation_service").exception(
+                "Error validando prompt para la pregunta %s (chunk %s)",
+                question.get("id") or question.get("texto"),
+                chunk_index,
+            )
+            return PromptValidationResult(
+                is_valid=False,
+                quality_score=0.0,
+                alerts=[f"Error durante la validación del prompt: {exc}"],
+                metadata={"error": True, "exception_type": type(exc).__name__},
+            )
+
+    def _evaluate_question(
+        self,
+        document: Document,
+        criteria: Mapping[str, Any],
+        section_data: Mapping[str, Any],
+        dimension_data: Mapping[str, Any],
+        question_data: Mapping[str, Any],
+    ) -> QuestionResult:
+        chunk_results: List[ChunkResult] = []
+        validation_records: List[Dict[str, Any]] = []
+        for index, chunk in self._iter_chunks(document):
+            chunk_text = getattr(chunk, "page_content", None)
+            if chunk_text is None:
+                chunk_text = str(chunk)
+            chunk_metadata = getattr(chunk, "metadata", {}) or {}
+            chunk_metadata_dict = dict(chunk_metadata)
+            prompt = self.prompt_builder(
+                document=document,
+                criteria=criteria,
+                section=section_data,
+                dimension=dimension_data,
+                question=question_data,
+                chunk_text=chunk_text,
+                chunk_metadata=chunk_metadata,
+                extra_instructions=self.extra_instructions,
+            )
+
+            validation = self._validate_prompt(
+                prompt,
+                criteria=criteria,
+                section=section_data,
+                dimension=dimension_data,
+                question=question_data,
+                chunk_index=index,
+                chunk_metadata=chunk_metadata_dict,
+            )
+
+            start_time = time.perf_counter()
+            if validation.is_valid and validation.quality_score >= self.prompt_quality_threshold:
+                try:
+                    response = self.ai_service.evaluate(
+                        prompt,
+                        question=question_data,
+                        section=section_data,
+                        dimension=dimension_data,
+                        chunk_index=index,
+                        chunk_metadata=chunk_metadata,
+                        criteria=criteria,
+                    )
+                except Exception as exc:  # pragma: no cover - robustez adicional
+                    logging.getLogger("evaluation_service").exception(
+                        "Error invocando la IA para la pregunta %s (chunk %s)",
+                        question_data.get("id") or question_data.get("texto"),
+                        index,
+                    )
+                    response = {
+                        "score": None,
+                        "justification": str(exc),
+                        "metadata": {
+                            "error": True,
+                            "exception_type": type(exc).__name__,
+                        },
+                    }
+                elapsed_ms = (time.perf_counter() - start_time) * 1000
+            else:
+                elapsed_ms = (time.perf_counter() - start_time) * 1000
+                response = {
+                    "score": None,
+                    "justification": (
+                        "Evaluación omitida por calidad insuficiente del prompt "
+                        f"({validation.quality_score:.2f})."
+                    ),
+                    "metadata": {
+                        "error": True,
+                        "prompt_rejected": True,
+                    },
+                }
+
+            model_response = self._normalise_response(response)
+            response_metadata = dict(model_response.metadata)
+            if chunk_metadata_dict:
+                response_metadata.setdefault("chunk_metadata", chunk_metadata_dict)
+            response_metadata["ai_latency_ms"] = elapsed_ms
+            response_metadata["prompt_quality_score"] = validation.quality_score
+            response_metadata["prompt_validation_alerts"] = list(validation.alerts)
+            if validation.metadata:
+                response_metadata["prompt_validation_metadata"] = dict(validation.metadata)
+            response_metadata["prompt_was_valid"] = validation.is_valid
+            response_metadata["prompt_quality_threshold"] = self.prompt_quality_threshold
+            if not (validation.is_valid and validation.quality_score >= self.prompt_quality_threshold):
+                response_metadata["prompt_rejected"] = True
+
+            chunk_weight = self._resolve_chunk_weight(response_metadata)
+            if chunk_weight is not None:
+                response_metadata.setdefault("weight", chunk_weight)
+
+            chunk_results.append(
+                ChunkResult(
+                    index=index,
+                    score=model_response.score,
+                    justification=model_response.justification,
+                    relevant_text=model_response.relevant_text,
+                    metadata=response_metadata,
+                )
+            )
+
+            validation_records.append(
+                {
+                    "chunk_index": index,
+                    "quality_score": validation.quality_score,
+                    "alerts": list(validation.alerts),
+                    "was_valid": validation.is_valid,
+                }
+            )
+
+        score = self._aggregate_chunk_scores(chunk_results)
+        justification, relevant_text = self._select_justification(chunk_results)
+        question_result = QuestionResult(
+            question_id=str(question_data.get("id") or question_data.get("texto", "")),
+            text=question_data.get("texto", ""),
+            weight=question_data.get("ponderacion"),
+            score=score,
+            justification=justification,
+            relevant_text=relevant_text,
+            chunk_results=chunk_results,
+            metadata={
+                key: question_data[key]
+                for key in ("tipo", "descripcion")
+                if key in question_data
+            },
+        )
+        question_result.metadata.setdefault("prompt_quality_minimum", self.prompt_quality_threshold)
+        question_result.metadata.setdefault(
+            "prompt_validation",
+            {
+                "threshold": self.prompt_quality_threshold,
+                "records": validation_records,
+            },
+        )
+        return question_result
 
 
 class EvaluationService:
@@ -199,8 +742,10 @@ class EvaluationService:
         cleaner: Optional[Cleaner] = None,
         splitter: Optional[Splitter] = None,
         repository: Optional[EvaluationRepository] = None,
+        ai_provider_factories: Optional[Mapping[str, AIProviderFactory]] = None,
         ai_service_factory: Optional[Any] = None,
         prompt_builder: Optional[PromptBuilder] = None,
+        prompt_validator: Optional[PromptValidator] = None,
     ) -> None:
         self.config = config or ServiceConfig()
         self.loader = loader or DocumentLoader()
@@ -209,6 +754,7 @@ class EvaluationService:
         self.repository = repository or EvaluationRepository()
         self.ai_service_factory = ai_service_factory
         self.prompt_builder = prompt_builder
+        self.prompt_validator = prompt_validator or PromptValidator()
 
         self.logger = logging.getLogger("evaluation_service")
         if not self.logger.handlers:
@@ -219,9 +765,13 @@ class EvaluationService:
             self.logger.addHandler(handler)
         self.logger.setLevel(logging.INFO)
         self.logger.propagate = False
+        self.ai_provider_factories = self._initialise_ai_provider_factories(
+            ai_provider_factories
+        )
 
     # ------------------------------------------------------------------
-    # Public API
+    # API Pública
+    # ------------------------------------------------------------------
     def run(
         self,
         *,
@@ -272,9 +822,20 @@ class EvaluationService:
         )
 
         ai_service = self._resolve_ai_service(config)
-        evaluator = Evaluator(
-            ai_service,
-            prompt_builder=prompt_builder or self.prompt_builder,
+        builder_override = prompt_builder or self.prompt_builder
+        if isinstance(builder_override, PromptFactory):
+            builder_callable = builder_override.for_criteria(criteria_for_run)
+        elif builder_override is not None:
+            builder_callable = builder_override
+        else:
+            factory = PromptFactory()
+            builder_callable = factory.for_criteria(criteria_for_run)
+
+        evaluator = ValidatingEvaluator(
+            prompt_validator=self.prompt_validator,
+            prompt_quality_threshold=PROMPT_QUALITY_THRESHOLD,
+            prompt_batch_size=config.prompt_batch_size,
+            prompt_builder=builder_callable,
             extra_instructions=config.extra_instructions,
         )
         evaluation = evaluator.evaluate(
@@ -283,6 +844,14 @@ class EvaluationService:
             document_id=document_id,
         )
 
+        prompt_validation_summary = self._summarise_prompt_validation(evaluation)
+        evaluation.metadata["prompt_validation"] = prompt_validation_summary
+        self._log_prompt_validation_summary(prompt_validation_summary)
+
+        evaluation.metadata["validator_version"] = getattr(
+            PromptValidator, "VERSION", "unknown"
+        )
+        evaluation.metadata["builder_version"] = type(builder_callable).__name__
         evaluation.metadata.setdefault("criteria_version", raw_criteria.get("version"))
         evaluation.metadata["model_name"] = config.model_name
         evaluation.metadata["run_id"] = config.run_id
@@ -531,7 +1100,7 @@ class EvaluationService:
             dimensions = []
             for dimension in new_section.get("dimensiones", []):
                 new_dimension = copy.deepcopy(dict(dimension))
-                questions = []
+                questions: List[Dict[str, Any]] = []
                 for question in new_dimension.get("preguntas", []):
                     question_id = _normalise_identifier(
                         question.get("id") or question.get("texto")
@@ -539,13 +1108,12 @@ class EvaluationService:
                     if question_targets and question_id not in question_targets:
                         continue
                     questions.append(copy.deepcopy(dict(question)))
-                if questions or not question_targets:
-                    new_dimension["preguntas"] = (
-                        questions if questions else new_dimension.get("preguntas", [])
-                    )
-                    dimensions.append(new_dimension)
-            if dimensions or not question_targets:
-                new_section["dimensiones"] = dimensions if dimensions else new_section.get("dimensiones", [])
+                if not questions:
+                    continue
+                new_dimension["preguntas"] = questions
+                dimensions.append(new_dimension)
+            if dimensions:
+                new_section["dimensiones"] = dimensions
                 filtered_sections.append(new_section)
         return filtered_sections
 
@@ -578,12 +1146,62 @@ class EvaluationService:
                 if question_targets and question_id not in question_targets:
                     continue
                 questions.append(copy.deepcopy(dict(question)))
-            if questions or not question_targets:
-                new_block["preguntas"] = (
-                    questions if questions else new_block.get("preguntas", [])
-                )
-                filtered_blocks.append(new_block)
+            if not questions:
+                continue
+            new_block["preguntas"] = questions
+            filtered_blocks.append(new_block)
         return filtered_blocks
+    
+    # ------------------------------------------------------------------
+    # AI service resolution helpers
+    # ------------------------------------------------------------------
+    def _initialise_ai_provider_factories(
+        self,
+        overrides: Optional[Mapping[str, AIProviderFactory]],
+    ) -> Dict[str, AIProviderFactory]:
+        factories: Dict[str, AIProviderFactory] = {}
+        if overrides:
+            factories.update({key.strip().lower(): value for key, value in overrides.items()})
+        for key, factory in self._default_ai_provider_factories().items():
+            factories.setdefault(key, factory)
+        return factories
+
+    def _default_ai_provider_factories(self) -> Dict[str, AIProviderFactory]:
+        return {
+            "mock": self._create_mock_ai_service,
+            "openai": self._create_openai_ai_service,
+        }
+
+    def _create_mock_ai_service(self, config: ServiceConfig) -> Any:
+        return MockAIService(
+            model_name=config.model_name,
+            logger=self.logger.getChild("ai.mock"),
+        )
+
+    def _create_openai_ai_service(self, config: ServiceConfig) -> Any:
+        from services.ai_service import OpenAIService
+
+        return OpenAIService(
+            model_name=config.model_name,
+            logger=self.logger.getChild("ai.openai"),
+        )
+
+    def _create_ai_service_from_provider(self, config: ServiceConfig) -> Any:
+        provider = (config.ai_provider or "mock").strip().lower()
+        if not provider:
+            provider = "mock"
+        factory = self.ai_provider_factories.get(provider)
+        if factory is not None:
+            return factory(config)
+        if provider == "local":
+            raise RuntimeError(
+                "El proveedor 'local' requiere una factory personalizada. "
+                "Pasa 'ai_service_factory' al instanciar EvaluationService o registra el proveedor en "
+                "'ai_provider_factories'."
+            )
+        raise ValueError(
+            f"Proveedor de IA desconocido '{config.ai_provider}'. Registra una factory personalizada para usarlo."
+        )
 
     def _collect_missing_questions(
         self, evaluation: EvaluationResult
@@ -599,15 +1217,8 @@ class EvaluationService:
     def _resolve_ai_service(self, config: ServiceConfig) -> RetryingAIService:
         if self.ai_service_factory is not None:
             inner = self.ai_service_factory(config)
-        elif config.use_mock_ai:
-            inner = MockAIService(model_name=config.model_name)
         else:
-            raise RuntimeError(
-                "No se proporcionó un AIService real. Define 'ai_service_factory' al instanciar "
-                "EvaluationService (por ejemplo, EvaluationService(ai_service_factory=mi_factory)) "
-                "o ajusta tu config.py para registrar la factory correspondiente."
-            )
-        # TODO: Integrar aquí el envío en lote/paralelo cuando se implemente batching de prompts.
+            inner = self._create_ai_service_from_provider(config)
         return RetryingAIService(
             inner,
             retries=config.retries,
@@ -764,6 +1375,177 @@ class EvaluationService:
                 }
             )
         return items
+    
+    def _summarise_prompt_validation(
+        self, evaluation: EvaluationResult
+    ) -> Dict[str, Any]:
+        total = 0
+        rejected = 0
+        scores: List[float] = []
+        latencies: List[float] = []
+        issues: List[Dict[str, Any]] = []
+        section_stats: Dict[str, Dict[str, Any]] = {}
+        for section_index, section in enumerate(evaluation.sections, start=1):
+            section_identifier = section.section_id or section.title or f"section-{section_index}"
+            section_key = _normalise_identifier(section_identifier) or f"section-{section_index}"
+            section_label = section.title or section.section_id or f"Sección {section_index}"
+            stats = section_stats.setdefault(
+                section_key,
+                {
+                    "section_key": section_key,
+                    "label": section_label,
+                    "total": 0,
+                    "rejected": 0,
+                    "scores": [],
+                    "latencies": [],
+                },
+            )
+            for dimension in section.dimensions:
+                for question in dimension.questions:
+                    question_id = question.question_id
+                    for chunk in question.chunk_results:
+                        metadata = chunk.metadata or {}
+                        if "prompt_quality_score" not in metadata:
+                            continue
+                        total += 1
+                        stats["total"] += 1
+                        score = metadata.get("prompt_quality_score")
+                        try:
+                            if score is not None:
+                                score_value = float(score)
+                                scores.append(score_value)
+                                stats["scores"].append(score_value)
+                        except (TypeError, ValueError):
+                            pass
+                        latency_value = metadata.get("ai_latency_ms")
+                        try:
+                            if latency_value is not None:
+                                latency_float = float(latency_value)
+                                latencies.append(latency_float)
+                                stats["latencies"].append(latency_float)
+                        except (TypeError, ValueError):
+                            pass
+                        if metadata.get("prompt_rejected"):
+                            rejected += 1
+                            stats["rejected"] += 1
+                        alerts = metadata.get("prompt_validation_alerts")
+                        if alerts:
+                            issues.append(
+                                {
+                                    "question_id": question_id,
+                                    "chunk_index": chunk.index,
+                                    "alerts": list(alerts),
+                                }
+                            )
+        average_quality = sum(scores) / len(scores) if scores else None
+        sections_summary: List[Dict[str, Any]] = []
+        for stats in section_stats.values():
+            section_scores: List[float] = stats.get("scores", [])
+            section_average = (
+                sum(section_scores) / len(section_scores)
+                if section_scores
+                else None
+            )
+            section_latencies: List[float] = stats.get("latencies", [])
+            if section_latencies:
+                section_latency_avg = sum(section_latencies) / len(section_latencies)
+                section_latency_std = (
+                    pstdev(section_latencies)
+                    if len(section_latencies) > 1
+                    else 0.0
+                )
+            else:
+                section_latency_avg = None
+                section_latency_std = None
+            sections_summary.append(
+                {
+                    "section_key": stats["section_key"],
+                    "label": stats["label"],
+                    "total_prompts": stats["total"],
+                    "rejected_prompts": stats["rejected"],
+                    "average_quality": section_average,
+                    "average_latency_ms": section_latency_avg,
+                    "latency_std_ms": section_latency_std,
+                }
+            )
+        if latencies:
+            average_latency = sum(latencies) / len(latencies)
+            latency_std = pstdev(latencies) if len(latencies) > 1 else 0.0
+        else:
+            average_latency = None
+            latency_std = None
+        return {
+            "threshold": PROMPT_QUALITY_THRESHOLD,
+            "total_prompts": total,
+            "rejected_prompts": rejected,
+            "average_quality": average_quality,
+            "average_latency_ms": average_latency,
+            "latency_std_ms": latency_std,
+            "issues": issues,
+            "sections": sections_summary,
+        }
+
+    def _log_prompt_validation_summary(self, summary: Mapping[str, Any]) -> None:
+        total = summary.get("total_prompts") or 0
+        rejected = summary.get("rejected_prompts") or 0
+        average = summary.get("average_quality")
+        rejected_ratio = (rejected / total) * 100 if total else 0.0
+        avg_latency = summary.get("average_latency_ms")
+        latency_std = summary.get("latency_std_ms")
+        if average is None:
+            average_display = "N/D"
+        else:
+            average_display = f"{average:.2f}"
+        if avg_latency is None:
+            avg_latency_display = "N/D"
+        else:
+            avg_latency_display = f"{avg_latency:.1f} ms"
+        if latency_std is None:
+            latency_std_display = "N/D"
+        else:
+            latency_std_display = f"{latency_std:.1f} ms"
+        self.logger.info(
+            "Calidad global de prompts: promedio=%s, rechazados=%s/%s (%.1f%%), latencia promedio=%s, desviación=%s",
+            average_display,
+            rejected,
+            total,
+            rejected_ratio,
+            avg_latency_display,
+            latency_std_display,
+        )
+
+        for section in summary.get("sections", []):
+            section_total = section.get("total_prompts") or 0
+            section_rejected = section.get("rejected_prompts") or 0
+            section_average = section.get("average_quality")
+            section_ratio = (
+                (section_rejected / section_total) * 100 if section_total else 0.0
+            )
+            section_avg_latency = section.get("average_latency_ms")
+            section_latency_std = section.get("latency_std_ms")
+            if section_average is None:
+                section_average_display = "N/D"
+            else:
+                section_average_display = f"{section_average:.2f}"
+            if section_avg_latency is None:
+                section_latency_display = "N/D"
+            else:
+                section_latency_display = f"{section_avg_latency:.1f} ms"
+            if section_latency_std is None:
+                section_latency_std_display = "N/D"
+            else:
+                section_latency_std_display = f"{section_latency_std:.1f} ms"
+            label = section.get("label") or section.get("section_key") or "Sección"
+            self.logger.info(
+                "Sección %s: prompts rechazados=%.1f%% (%s/%s), calidad promedio=%s, latencia promedio=%s, desviación=%s",
+                label,
+                section_ratio,
+                section_rejected,
+                section_total,
+                section_average_display,
+                section_latency_display,
+                section_latency_std_display,
+            )
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -796,7 +1578,12 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--retries", dest="retries", type=int, help="Número máximo de reintentos ante errores de IA.")
     parser.add_argument("--backoff", dest="backoff", type=float, help="Factor de backoff entre reintentos.")
     parser.add_argument("--timeout", dest="timeout", type=float, help="Timeout por llamada al servicio de IA en segundos.")
-    parser.add_argument("--batch-size", dest="batch_size", type=int, help="Tamaño de lote para prompts (reservado para batching futuro).")
+    parser.add_argument(
+        "--batch-size",
+        dest="batch_size",
+        type=int,
+        help="Tamaño de lote para prompts (habilita evaluaciones paralelas cuando sea posible).",
+    )
     parser.add_argument("--log-file", dest="log_file", type=Path, help="Archivo donde guardar logs.")
     parser.add_argument("--log-level", dest="log_level", help="Nivel de log (INFO/DEBUG/WARN...).")
     parser.add_argument("--run-id", dest="run_id", help="Identificador único de ejecución.")
@@ -806,10 +1593,26 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--solo-bloque", dest="solo_bloque", action="append", help="Identificadores de bloques a evaluar (modo parcial/política).")
     parser.add_argument("--solo-criterio", dest="solo_criterio", action="append", help="Identificadores de preguntas a evaluar.")
     parser.add_argument("--previous-result", dest="previous_result", type=Path, help="Resultado previo (JSON) para re-evaluación.")
-    parser.add_argument("--reintentar-nulos", dest="reintentar_nulos", action="store_true", help="En reevaluación, volver a ejecutar preguntas sin puntaje.")
-    parser.add_argument("--mock-ai", dest="mock_ai", action="store_true", help="Usar servicio de IA simulado (por defecto).")
-    parser.add_argument("--real-ai", dest="mock_ai", action="store_false", help="Usar servicio de IA real configurado mediante factory.")
-    parser.set_defaults(mock_ai=True)
+    parser.add_argument(
+        "--ai-provider",
+        choices=["mock", "openai", "local"],
+        default="mock",
+        help="Proveedor de IA a utilizar (mock | openai | local).",
+    )
+    parser.add_argument(
+        "--mock-ai",
+        dest="ai_provider",
+        action="store_const",
+        const="mock",
+        help="Alias compatible para seleccionar el proveedor 'mock'.",
+    )
+    parser.add_argument(
+        "--real-ai",
+        dest="ai_provider",
+        action="store_const",
+        const="openai",
+        help="Alias compatible para seleccionar el proveedor 'openai'.",
+    )
     return parser.parse_args(argv)
 
 
@@ -876,7 +1679,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "run_id": args.run_id,
         "document_id": args.document_id,
         "extra_instructions": args.extra_instructions,
-        "use_mock_ai": args.mock_ai,
+        "ai_provider": args.ai_provider,
     }
     try:
         service.run(

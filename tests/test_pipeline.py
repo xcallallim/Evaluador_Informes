@@ -127,7 +127,7 @@ def test_full_pipeline_execution(tmp_path: Path) -> None:
     criteria = _write_criteria(criteria_path)
 
     config = ServiceConfig(
-        use_mock_ai=True,
+        ai_provider="mock",
         run_id="pipeline-integration",
         model_name="mock-integration",
         prompt_batch_size=1,

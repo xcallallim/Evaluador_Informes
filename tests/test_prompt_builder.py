@@ -347,3 +347,5 @@ def test_build_prompt_uses_factory_selection() -> None:
     )
 
     assert prompt_only == prompt
+
+# pytest tests/test_prompt_builder.py -v

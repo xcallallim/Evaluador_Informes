@@ -102,6 +102,8 @@ class PromptValidator:
         utilizarán valores por defecto que suman ``1.0``.
     """
 
+    VERSION: str = "1.0.0"
+
     DEFAULT_WEIGHTS: Mapping[str, float] = {
         "length": 0.20,
         "structure": 0.15,
