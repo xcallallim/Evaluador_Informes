@@ -9,6 +9,7 @@ from services.prompt_builder import (
     PromptContext,
     PromptFactory,
     build_prompt,
+    build_prompt_with_meta,
     build_prompt_from_context,
 )
 
@@ -65,13 +66,23 @@ def test_institutional_prompt_contains_expected_sections() -> None:
         chunk_metadata={"page": 2},
     )
 
+    assert "Actúa como especialista CEPLAN" in prompt
     assert "Escala de valoración (0 a 4" in prompt
     assert "Pregunta orientadora" in prompt
     assert "<<<INICIO_FRAGMENTO>>>" in prompt and "<<<FIN_FRAGMENTO>>>" in prompt
     assert "justificación técnica" in prompt
+    assert 'Valores permitidos para "score": [0, 1, 2, 3, 4]' in prompt
+    assert "Evalúa solo el criterio o dimensión indicada" in prompt
     metadata = builder.last_quality_metadata
     assert metadata is not None
     assert metadata["report_type"].lower() == "institucional"
+    assert metadata["chars_prompt"] == len(prompt)
+    assert metadata["chars_text"] == len("El resumen describe resultados y recomendaciones prioritarias.")
+    assert metadata["chunk_metadata_present"] is True
+    assert metadata["contains_metadata_block"] is False
+    assert metadata["language_suspect"] is False
+    assert metadata["builder_type"] == "InstitutionalPromptBuilder"
+    assert metadata["scale_levels_count"] == len(builder.scale_levels)
 
 
 def test_policy_prompt_includes_half_point_guidance() -> None:
@@ -88,20 +99,24 @@ def test_policy_prompt_includes_half_point_guidance() -> None:
 
     assert "0.5" in prompt
     assert "incrementos de 0.5" in prompt
+    assert 'valores permitidos [0, 0.5, 1, 1.5, 2]' in prompt
+    assert "Evalúa solo el criterio o dimensión indicada" in prompt
 
 
-def test_language_validation_requires_spanish() -> None:
+def test_language_validation_marks_warning() -> None:
     builder = InstitutionalPromptBuilder()
-    with pytest.raises(ValueError):
-        builder(
-            document=_build_document(),
-            criteria=_institutional_criteria(),
-            section=_base_section(),
-            dimension=_base_dimension(),
-            question=_base_question(),
-            chunk_text="This fragment is written entirely in English without Spanish words.",
-            chunk_metadata=None,
-        )
+    builder(
+        document=_build_document(),
+        criteria=_institutional_criteria(),
+        section=_base_section(),
+        dimension=_base_dimension(),
+        question=_base_question(),
+        chunk_text="This fragment is written entirely in English without Spanish words.",
+        chunk_metadata=None,
+    )
+
+    metadata = builder.last_quality_metadata or {}
+    assert metadata.get("language_suspect") is True
 
 
 def test_dynamic_scale_from_json() -> None:
@@ -136,11 +151,98 @@ def test_langchain_payload_contains_template_and_metadata() -> None:
     assert isinstance(payload.get("metadata"), dict)
 
 
+def test_langchain_template_falls_back_without_dependency() -> None:
+    builder = InstitutionalPromptBuilder()
+    context = PromptContext(
+        document=_build_document(),
+        criteria=_institutional_criteria(),
+        section=_base_section(),
+        dimension=_base_dimension(),
+        question=_base_question(),
+        chunk_text="El fragmento contiene datos relevantes.",
+        chunk_metadata=None,
+    )
+
+    template_or_payload = builder.as_langchain_template(context)
+
+    if isinstance(template_or_payload, dict):
+        assert template_or_payload["template"]
+    else:
+        try:
+            from langchain_core.prompts import ChatPromptTemplate  # type: ignore
+        except ImportError:  # pragma: no cover - defensive guard
+            pytest.skip("LangChain no disponible en el entorno de pruebas")
+        assert isinstance(template_or_payload, ChatPromptTemplate)
+        rendered = template_or_payload.format()
+        assert "Evaluación institucional CEPLAN" in rendered
+
+
 def test_factory_selects_policy_builder() -> None:
     factory = PromptFactory()
     factory.register("politica", PolicyPromptBuilder())
     builder = factory.for_criteria({"tipo_informe": "POLITICA_NACIONAL"})
     assert isinstance(builder, PolicyPromptBuilder)
+
+
+def test_factory_prioritises_exact_match_over_substring() -> None:
+    factory = PromptFactory(default_builder=InstitutionalPromptBuilder())
+    exact_builder = PolicyPromptBuilder()
+    substring_builder = PolicyPromptBuilder()
+    factory.register("pol", substring_builder)
+    factory.register("politica", exact_builder)
+
+    builder = factory.for_type("politica")
+    assert builder is exact_builder
+
+    prefixed = factory.for_type("politica-sectorial")
+    assert prefixed is exact_builder
+
+    fallback = factory.for_type("plan-pol-interno")
+    assert fallback is substring_builder
+
+
+def test_builder_can_embed_chunk_metadata_when_enabled() -> None:
+    builder = InstitutionalPromptBuilder(include_chunk_metadata_in_prompt=True)
+    prompt = builder(
+        document=_build_document(),
+        criteria=_institutional_criteria(),
+        section=_base_section(),
+        dimension=_base_dimension(),
+        question=_base_question(),
+        chunk_text="Contenido evaluable.",
+        chunk_metadata={"page": 5, "paragraph": 3},
+    )
+
+    assert "Metadatos del fragmento" in prompt
+    metadata = builder.last_quality_metadata or {}
+    assert metadata.get("contains_metadata_block") is True
+    assert metadata.get("chunk_metadata_present") is True
+
+
+def test_prompt_sanitises_smart_quotes_in_question() -> None:
+    builder = InstitutionalPromptBuilder()
+    prompt = builder(
+        document=_build_document(),
+        criteria=_institutional_criteria(),
+        section=_base_section(),
+        dimension=_base_dimension(),
+        question={"texto": "“La sección responde al criterio?”"},
+        chunk_text="Contenido con suficiente longitud para validar.",
+        chunk_metadata=None,
+    )
+
+    assert "“" not in prompt
+    assert '"La sección responde al criterio?"' in prompt
+
+
+def test_factory_preserves_metadata_flag_when_injecting_scale() -> None:
+    factory = PromptFactory()
+    builder = InstitutionalPromptBuilder(include_chunk_metadata_in_prompt=True)
+    factory.register("institucional", builder)
+    criteria = {"tipo_informe": "institucional", "niveles": [{"valor": 0}, {"valor": 1}]}
+    selected = factory.for_criteria(criteria)
+    assert isinstance(selected, InstitutionalPromptBuilder)
+    assert selected.include_chunk_metadata_in_prompt is True
 
 
 def test_chunk_truncation_is_noted_in_prompt() -> None:
@@ -157,6 +259,23 @@ def test_chunk_truncation_is_noted_in_prompt() -> None:
 
     assert "… [texto truncado]" in prompt
     assert "se truncó a 30 caracteres" in prompt
+
+
+def test_chunk_truncation_keeps_tail_segment() -> None:
+    builder = InstitutionalPromptBuilder(max_chunk_chars=60)
+    chunk = "Inicio del fragmento con contenido relevante y cierre significativo al final."
+    prompt = builder(
+        document=_build_document(),
+        criteria=_institutional_criteria(),
+        section=_base_section(),
+        dimension=_base_dimension(),
+        question=_base_question(),
+        chunk_text=chunk,
+        chunk_metadata=None,
+    )
+
+    assert "Inicio del fragmento" in prompt
+    assert "final." in prompt
 
 
 def test_empty_chunk_raises_value_error() -> None:
@@ -204,7 +323,7 @@ def test_build_prompt_from_context_uses_extra_instructions() -> None:
 
 
 def test_build_prompt_uses_factory_selection() -> None:
-    prompt = build_prompt(
+    prompt, metadata = build_prompt_with_meta(
         document=_build_document(),
         criteria=_policy_criteria(),
         section=_base_section(),
@@ -215,7 +334,16 @@ def test_build_prompt_uses_factory_selection() -> None:
     )
 
     assert "0 a 2 (pasos de 0.5)" in prompt
-    assert "<!-- prompt_quality:" in prompt
-    metadata_json = prompt.split("<!-- prompt_quality: ", 1)[1].rsplit(" -->", 1)[0]
-    metadata = json.loads(metadata_json)
     assert metadata["report_type"].lower() == "politica_nacional"
+
+    prompt_only = build_prompt(
+        document=_build_document(),
+        criteria=_policy_criteria(),
+        section=_base_section(),
+        dimension=_base_dimension(),
+        question=_base_question(),
+        chunk_text="La sección presenta compromisos estratégicos y fuentes de verificación.",
+        chunk_metadata={},
+    )
+
+    assert prompt_only == prompt
