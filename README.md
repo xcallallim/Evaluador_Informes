@@ -103,6 +103,22 @@ python -m utils.criteria_validator data/criteria/*.json
 El comando informa problemas de esquema y retorna un código de salida distinto
 de cero si detecta errores.
 
+## Reportes y métricas
+
+- `metrics.py` contiene funciones reutilizables para calcular promedios
+  ponderados, escalas numéricas y agregados por bloque.
+- `reporting/repository.py` implementa `EvaluationRepository`, responsable de
+  materializar resultados en JSON, CSV, XLSX o Parquet a partir del objeto de
+  dominio.
+- `data/models/evaluation.py` define las clases de datos (`SectionResult`,
+  `QuestionResult`, etc.) utilizadas por el repositorio y expone métodos
+  `to_dict()` para serializar sin pérdida de información.
+
+Cuando ejecutes la evaluación con `--output resultado.xlsx`, el archivo incluirá
+hojas separadas para métricas generales, criterios y comentarios de IA. Al usar
+`--output resultado.json`, se preservan los metadatos completos, incluyendo los
+identificadores de fragmento y referencias cruzadas.
+
 ### Sellado de la clave de OpenAI
 
 ```bash
@@ -112,6 +128,56 @@ python -m utils.seal_key
 El asistente solicita la passphrase y crea el archivo cifrado en `secrets/`. Se
 puede ejecutar en modo no interactivo con `--non-interactive` y variables de
 entorno para integraciones CI/CD.
+
+## Flujo de procesamiento
+
+1. **Ingesta y normalización.** `data.preprocessing.loader.DocumentLoader`
+   detecta automáticamente el tipo de archivo y construye un
+   `data.models.document.Document` con texto plano, páginas desagregadas y
+   metadatos. Los extractores especializados agregan tablas, imágenes y
+   advertencias en `metadata["issues"]`.
+2. **Limpieza contextual.** `data.preprocessing.cleaner.Cleaner` aplica reglas
+   específicas según `metadata["extraction_method"]` para eliminar encabezados
+   repetidos, reconstruir tablas a texto y marcar las secciones con OCR.
+3. **Segmentación semántica.** `data.preprocessing.segmenter.Segmenter` y
+   `data.chunks.splitter.Splitter` generan fragmentos consistentes, respetando
+   límites de tokens y etiquetas definidas en `core/config.py`.
+4. **Construcción de prompts.** `services.prompt_builder` (invocado desde
+   `EvaluationService`) combina los criterios JSON con el contenido del
+   documento, aplicando plantillas según el tipo de informe.
+5. **Evaluación y métricas.** `services.evaluation_service.EvaluationService`
+   coordina la ejecución del modelo (real o simulado), agrega métricas con
+   `metrics.collect_metrics` y consolida un Excel/JSON trazable en `reporting/`.
+
+Cada etapa registra *artifacts* intermedios en `reporting/workdir/` cuando se
+habilita el modo detallado (`--modo completo --guardar-pasos`). Esto facilita la
+auditoría de decisiones y el ajuste fino de reglas.
+
+## Integración desde Python
+
+Además del CLI, puedes orquestar la evaluación desde tu propio código:
+
+```python
+from services.evaluation_service import EvaluationService
+from utils.secret_manager import get_openai_api_key
+
+service = EvaluationService(
+    api_key=get_openai_api_key(),
+    use_mock_model=True,  # Cambia a False para invocar el modelo real
+)
+
+resultado = service.evaluate_document(
+    input_path="data/inputs/ejemplo.pdf",
+    criteria_path="data/criteria/metodologia_institucional.json",
+    report_type="institucional",
+)
+
+print(resultado.summary.score)
+```
+
+El objeto de respuesta expone el puntaje consolidado (`summary.score`), las
+métricas por criterio (`criteria`) y el detalle por fragmento (`chunks`). Puedes
+serializarlo mediante `resultado.to_dict()` para integrarlo con otros sistemas.
 
 ## Ejecución de pruebas
 
@@ -131,6 +197,15 @@ IA.
 - `docs/dependencies.md`: guías para dependencias con restricciones de
   instalación.
 - `docs/security_config.md`: instrucciones completas de seguridad y cifrado.
+
+## Buenas prácticas operativas
+
+- Reutiliza `utils.prompt_validator.validate_prompt()` desde un REPL o script
+  para revisar la calidad de los prompts antes de enviar evaluaciones reales.
+- Habilita `OPENAI_KEY_PASSPHRASE` únicamente en el entorno donde se descifrará
+  la credencial; evita compartirla en texto plano.
+- Versiona los criterios JSON junto con el código que depende de ellos para
+  asegurar reproducciones históricas.
 
 ## Contribuciones
 
