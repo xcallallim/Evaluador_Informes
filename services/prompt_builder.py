@@ -490,10 +490,9 @@ class BasePromptBuilder(ABC):
         if constraints:
             constraint_text = " (" + "; ".join(constraints) + ")"
         return (
-            "{" "\"score\": <numero permitido"
-            f"{constraint_text}>, "
+            '{"score": <numero permitido'
+            f'{constraint_text}>, '
             '"justification": "<justificación técnica concisa>", '
-            '"relevant_text": "<cita opcional>"}'
             '"relevant_text": "<cita opcional>"}'
         )
 
@@ -512,11 +511,13 @@ class BasePromptBuilder(ABC):
 
     # ------------------------------------------------------------------
     # Utility helpers
+    # ------------------------------------------------------------------
     def _clean_chunk_text(self, text: Any) -> tuple[str, bool]:
         cleaned = self._clean_str(text)
         if not cleaned:
             raise ValueError("'chunk_text' debe contener información para evaluar.")
         original_length = len(cleaned)
+        truncated = False
         if len(cleaned) > self.max_chunk_chars:
             separator = f"\n{self.truncation_suffix}\n"
             available = self.max_chunk_chars - len(separator)
