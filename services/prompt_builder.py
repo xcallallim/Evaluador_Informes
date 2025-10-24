@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import json
+import logging
+import re
 from abc import ABC, abstractmethod
 from collections.abc import Mapping as MappingABC
 from dataclasses import dataclass
-from typing import Any, Dict, Mapping, Optional, Protocol, Sequence
+from typing import Any, Dict, Iterable, Mapping, Optional, Protocol, Sequence
 
 from data.models.document import Document
 
@@ -94,11 +96,32 @@ class BasePromptBuilder(ABC):
     fragment_end_marker = "<<<FIN_FRAGMENTO>>>"
     truncation_suffix = "… [texto truncado]"
     default_max_chunk_chars = 12_000
+    _spanish_markers = {
+        " el ",
+        " la ",
+        " los ",
+        " las ",
+        " que ",
+        " de ",
+        " del ",
+        " en ",
+        " para ",
+        " con ",
+    }
 
-    def __init__(self, *, max_chunk_chars: int = default_max_chunk_chars) -> None:
+    def __init__(
+        self,
+        *,
+        max_chunk_chars: int = default_max_chunk_chars,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
         if max_chunk_chars <= len(self.truncation_suffix):
             raise ValueError("max_chunk_chars debe ser mayor que la longitud del sufijo de truncamiento.")
         self.max_chunk_chars = max_chunk_chars
+        self._last_quality_metadata: Optional[Dict[str, Any]] = None
+        logger_name = f"{__name__}.{self.__class__.__name__}"
+        self.logger = logger or logging.getLogger(logger_name)
+        self.logger.debug("logger_initialized", extra={"event": "logger_initialized", "logger_name": logger_name})
 
     def __call__(
         self,
@@ -127,8 +150,62 @@ class BasePromptBuilder(ABC):
     def build_from_context(self, context: PromptContext) -> str:
         """Generate a prompt using a validated :class:`PromptContext`."""
 
+        self.logger.info(
+            "build_prompt_start",
+            extra={
+                "event": "build_prompt_start",
+                "report_type": self._clean_str(context.criteria.get("tipo_informe")),
+            },
+        )
+        self.validate_context(context)
         data = self._normalise_context(context)
-        return self._compose_prompt(data)
+        prompt = self._compose_prompt(data)
+        prompt = self._compact_prompt(prompt)
+        self._last_quality_metadata = self._build_quality_metadata(data, prompt)
+        self.logger.info(
+            "build_prompt_complete",
+            extra={
+                "event": "build_prompt_complete",
+                "prompt_length": len(prompt),
+                "was_truncated": data.was_truncated,
+            },
+        )
+        return prompt
+
+    def validate_context(self, context: PromptContext) -> None:
+        """Ensure the incoming context includes the required evaluation data."""
+
+        if not isinstance(context.document, Document):
+            raise TypeError("'document' debe ser una instancia de data.models.document.Document.")
+        if not isinstance(context.criteria, MappingABC):
+            raise TypeError("'criteria' debe ser un mapeo.")
+        if not isinstance(context.section, MappingABC):
+            raise TypeError("'section' debe ser un mapeo.")
+        if context.dimension is not None and not isinstance(context.dimension, MappingABC):
+            raise TypeError("'dimension' debe ser un mapeo cuando se proporciona.")
+        if context.question is not None and not isinstance(context.question, MappingABC):
+            raise TypeError("'question' debe ser un mapeo cuando se proporciona.")
+        if context.chunk_metadata is not None and not isinstance(context.chunk_metadata, MappingABC):
+            raise TypeError("'chunk_metadata' debe ser un mapeo cuando se proporciona.")
+
+        cleaned_chunk = self._clean_str(context.chunk_text)
+        if not cleaned_chunk:
+            raise ValueError("'chunk_text' debe contener información para evaluar.")
+        self._validate_language(cleaned_chunk)
+
+        if context.question is not None and context.dimension is None:
+            raise ValueError("Debe proporcionar 'dimension' cuando se especifica una 'question'.")
+
+        methodology = self._clean_str(
+            context.criteria.get("metodologia") or context.criteria.get("tipo_metodologia")
+        )
+        methodology_version = self._clean_str(
+            context.criteria.get("version") or context.criteria.get("criteria_source")
+        )
+        if methodology_version and not methodology:
+            raise ValueError(
+                "Los criterios indican una versión metodológica pero no especifican la metodología aplicada."
+            )
 
     # ------------------------------------------------------------------
     # Template methods implemented by subclasses
@@ -161,25 +238,30 @@ class BasePromptBuilder(ABC):
     # ------------------------------------------------------------------
     # Helpers for subclasses
     def _normalise_context(self, context: PromptContext) -> _PromptData:
-        if not isinstance(context.document, Document):
-            raise TypeError("'document' debe ser una instancia de data.models.document.Document.")
-        if not isinstance(context.criteria, MappingABC):
-            raise TypeError("'criteria' debe ser un mapeo.")
-        if not isinstance(context.section, MappingABC):
-            raise TypeError("'section' debe ser un mapeo.")
-        if context.dimension is not None and not isinstance(context.dimension, MappingABC):
-            raise TypeError("'dimension' debe ser un mapeo cuando se proporciona.")
-        if context.question is not None and not isinstance(context.question, MappingABC):
-            raise TypeError("'question' debe ser un mapeo cuando se proporciona.")
-
+        chunk_text, truncated, extra_instructions = self._prepare_chunk_payload(context)
+        metadata = self._prepare_chunk_metadata(context)
+        return self._assemble_prompt_data(context, chunk_text, truncated, metadata, extra_instructions)
+    
+    def _prepare_chunk_payload(self, context: PromptContext) -> tuple[str, bool, Optional[str]]:
         chunk_text, truncated = self._clean_chunk_text(context.chunk_text)
+        extra = self._clean_str(context.extra_instructions)
+        return chunk_text, truncated, extra or None
+
+    def _prepare_chunk_metadata(self, context: PromptContext) -> Dict[str, Any]:
         metadata: Dict[str, Any] = {}
         if context.chunk_metadata:
             for key, value in context.chunk_metadata.items():
                 metadata[str(key)] = value
+        return metadata
 
-        extra = self._clean_str(context.extra_instructions)
-        extra_instructions = extra if extra else None
+    def _assemble_prompt_data(
+        self,
+        context: PromptContext,
+        chunk_text: str,
+        truncated: bool,
+        metadata: Mapping[str, Any],
+        extra_instructions: Optional[str],
+    ) -> _PromptData:
 
         criteria = context.criteria
         section = context.section
@@ -237,7 +319,7 @@ class BasePromptBuilder(ABC):
 
     def _compose_prompt(self, data: _PromptData) -> str:
         header_lines = [
-            "Rol asignado: Especialista en seguimiento y evaluación del CEPLAN.",
+            self._header_intro(data),
             f"Documento evaluado: {data.document_title}",
             f"Tipo de informe: {data.report_type}",
         ]
@@ -277,6 +359,25 @@ class BasePromptBuilder(ABC):
         if data.extra_instructions:
             parts.append(data.extra_instructions)
         return "\n\n".join(part for part in parts if part)
+    
+    def _header_intro(self, data: _PromptData) -> str:
+        return "Rol asignado: Especialista en seguimiento y evaluación del CEPLAN."
+
+    def _build_quality_metadata(self, data: _PromptData, prompt: str) -> Dict[str, Any]:
+        return {
+            "prompt_length": len(prompt),
+            "chunk_length": len(data.chunk_text),
+            "was_truncated": data.was_truncated,
+            "report_type": data.report_type,
+            "scale_label": self.scale_label,
+            "has_extra_instructions": bool(data.extra_instructions),
+        }
+
+    @property
+    def last_quality_metadata(self) -> Optional[Mapping[str, Any]]:
+        """Expose the metrics computed for the most recent prompt build."""
+
+        return self._last_quality_metadata
 
     def _render_scale_block(self) -> str:
         lines = [f"Escala de valoración ({self.scale_label}):"]
@@ -297,6 +398,12 @@ class BasePromptBuilder(ABC):
             self.fragment_end_marker,
         ]
         return "\n".join(lines)
+    
+    def _response_json_format(self) -> str:
+        return (
+            '{"score": <numero>, "justification": "<justificación técnica concisa>", '
+            '"relevant_text": "<cita opcional>"}'
+        )
 
     def _render_response_block(self) -> str:
         lines = [
@@ -306,7 +413,7 @@ class BasePromptBuilder(ABC):
             "3. No inventes información que no esté presente en el texto analizado.",
             self._response_guidance(),
             "Formato de salida (JSON válido, sin texto adicional):",
-            '{"score": <numero>, "justification": "<justificación técnica concisa>", "relevant_text": "<cita opcional>"}',
+            self._response_json_format(),
         ]
         return "\n".join(lines)
 
@@ -344,18 +451,84 @@ class BasePromptBuilder(ABC):
         if float(value).is_integer():
             return str(int(value))
         return ("{:.1f}".format(value)).rstrip("0").rstrip(".")
+    
+    def _compact_prompt(self, prompt: str) -> str:
+        """Collapse repeated whitespace and trim surrounding blank lines."""
+
+        collapsed = "\n".join(line.rstrip() for line in prompt.splitlines())
+        collapsed = re.sub(r"\n{3,}", "\n\n", collapsed)
+        collapsed = re.sub(r"[ \t]{2,}", " ", collapsed)
+        return collapsed.strip()
+
+    def _validate_language(self, text: str) -> None:
+        sample = f" {text.lower()} "
+        if any(marker in sample for marker in self._spanish_markers):
+            return
+        self.logger.warning("language_validation_failed", extra={"event": "language_validation_failed"})
+        raise ValueError("El fragmento debe estar redactado en español para su evaluación.")
+
+    def to_langchain_prompt(self, context: PromptContext) -> Dict[str, Any]:
+        """Return a LangChain-compatible prompt payload."""
+
+        prompt = self.build_from_context(context)
+        return {
+            "type": "prompt",
+            "template": prompt,
+            "metadata": dict(self.last_quality_metadata or {}),
+        }
+
+    @staticmethod
+    def _build_scale_from_config(scale_config: Iterable[Mapping[str, Any]]) -> tuple[ScaleLevel, ...]:
+        levels: list[ScaleLevel] = []
+        for entry in scale_config:
+            value = float(entry["value"])
+            description = BasePromptBuilder._clean_str(entry.get("description"))
+            label = BasePromptBuilder._clean_str(entry.get("label")) or None
+            levels.append(
+                ScaleLevel(
+                    value=value,
+                    description=description,
+                    label=label,
+                )
+            )
+        return tuple(levels)
+
+    def _resolve_scale_config(
+        self,
+        scale_config: Optional[Sequence[Mapping[str, Any]] | str],
+        *,
+        default: Sequence[ScaleLevel],
+    ) -> tuple[ScaleLevel, ...]:
+        if not scale_config:
+            return tuple(default)
+        parsed_config: Iterable[Mapping[str, Any]]
+        if isinstance(scale_config, str):
+            parsed_config = json.loads(scale_config)
+        else:
+            parsed_config = scale_config
+        return self._build_scale_from_config(parsed_config)
 
 
 class InstitutionalPromptBuilder(BasePromptBuilder):
     """Prompt builder for institutional reports using the 0–4 CEPLAN scale."""
 
-    _scale_levels = (
+    _default_scale_levels = (
         ScaleLevel(0, "La sección no aborda el criterio o presenta información contradictoria.", "No cumple"),
         ScaleLevel(1, "Menciones muy generales; evidencia insuficiente o poco pertinente.", "Cumple muy poco"),
         ScaleLevel(2, "Cubre parcialmente el criterio con vacíos relevantes o poca claridad.", "Cumple parcialmente"),
         ScaleLevel(3, "Desarrolla la mayoría de aspectos con claridad aceptable y evidencia pertinente.", "Cumple bastante"),
         ScaleLevel(4, "Responde integralmente al criterio con evidencia sólida, clara y pertinente.", "Cumple totalmente"),
     )
+
+    def __init__(
+        self,
+        *,
+        max_chunk_chars: int = BasePromptBuilder.default_max_chunk_chars,
+        scale_config: Optional[Sequence[Mapping[str, Any]] | str] = None,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
+        super().__init__(max_chunk_chars=max_chunk_chars, logger=logger)
+        self._scale_levels = self._resolve_scale_config(scale_config, default=self._default_scale_levels)
 
     @property
     def scale_label(self) -> str:  # pragma: no cover - simple property
@@ -371,18 +544,32 @@ class InstitutionalPromptBuilder(BasePromptBuilder):
             "Evalúa la sección considerando los criterios de estructura, claridad y pertinencia establecidos por CEPLAN."
         )
         return lines
-
+    
+    def _header_intro(self, data: _PromptData) -> str:
+        return (
+            "Evaluación institucional CEPLAN: especialista analiza el fragmento y califica con la escala 0-4."
+        )
 
 class PolicyPromptBuilder(BasePromptBuilder):
     """Prompt builder for national policies using the 0–2 scale with half points."""
 
-    _scale_levels = (
+    _default_scale_levels = (
         ScaleLevel(0.0, "La respuesta es inexistente o contradice el criterio evaluado.", "No evidencia"),
         ScaleLevel(0.5, "Existe referencia mínima sin desarrollo o sin relación directa con el criterio.", "Evidencia incipiente"),
         ScaleLevel(1.0, "Aborda parcialmente el criterio con evidencias limitadas o poco articuladas.", "Cumplimiento parcial"),
         ScaleLevel(1.5, "Cubre la mayor parte del criterio con argumentación razonable pero perfectible.", "Cumplimiento alto"),
         ScaleLevel(2.0, "Responde completamente el criterio con evidencia clara, articulada y pertinente.", "Cumplimiento pleno"),
     )
+
+    def __init__(
+        self,
+        *,
+        max_chunk_chars: int = BasePromptBuilder.default_max_chunk_chars,
+        scale_config: Optional[Sequence[Mapping[str, Any]] | str] = None,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
+        super().__init__(max_chunk_chars=max_chunk_chars, logger=logger)
+        self._scale_levels = self._resolve_scale_config(scale_config, default=self._default_scale_levels)
 
     @property
     def scale_label(self) -> str:  # pragma: no cover - simple property
@@ -401,7 +588,16 @@ class PolicyPromptBuilder(BasePromptBuilder):
 
     def _response_guidance(self) -> str:
         return "Selecciona puntajes en incrementos de 0.5 dentro del rango 0 a 2, según la evidencia disponible."
-
+    
+    def __init__(
+        self,
+        *,
+        max_chunk_chars: int = BasePromptBuilder.default_max_chunk_chars,
+        scale_config: Optional[Sequence[Mapping[str, Any]] | str] = None,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
+        super().__init__(max_chunk_chars=max_chunk_chars, logger=logger)
+        self._scale_levels = self._resolve_scale_config(scale_config, default=self._default_scale_levels)
 
 class PromptFactory:
     """Factory that selects the appropriate builder based on report type."""
@@ -461,7 +657,7 @@ def build_prompt(
     """Create a detailed prompt guiding the language model evaluation."""
 
     builder = _DEFAULT_FACTORY.for_criteria(criteria)
-    return builder(
+    prompt = builder(
         document=document,
         criteria=criteria,
         section=section,
@@ -471,6 +667,11 @@ def build_prompt(
         chunk_metadata=chunk_metadata,
         extra_instructions=extra_instructions,
     )
+    metadata = getattr(builder, "last_quality_metadata", None)
+    if metadata:
+        quality_block = json.dumps(metadata, ensure_ascii=False, sort_keys=True)
+        prompt = f"{prompt}\n\n<!-- prompt_quality: {quality_block} -->"
+    return prompt
 
 
 def build_prompt_from_context(context: PromptContext) -> str:
