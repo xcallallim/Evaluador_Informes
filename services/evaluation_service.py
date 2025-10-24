@@ -901,14 +901,22 @@ class EvaluationService:
             requested_format, requested_format or "json"
         )
         if export_path is None:
-            if not requested_format or requested_format == "json":
+            if requested_format:
+                effective_format = format_mapping.get(
+                    requested_format, requested_format
+                ) or "json"
+            else:
                 effective_format = "xlsx"
             target_dir = Path(input_path).parent if input_path else Path.cwd()
-            extension = effective_format.lower()
+            extension = (effective_format or "xlsx").lower()
             if extension not in {"json", "csv", "xlsx", "parquet"}:
                 extension = "xlsx"
                 effective_format = "xlsx"
-            export_path = target_dir / f"resultados_{document_id}_{config.run_id}.{extension}"
+            if requested_format and extension in {"json", "csv"}:
+                filename = f"resultado.{extension}"
+            else:
+                filename = f"resultados_{document_id}_{config.run_id}.{extension}"
+            export_path = target_dir / filename
         elif not effective_format:
             suffix = Path(export_path).suffix.lstrip(".").lower()
             effective_format = format_mapping.get(suffix, suffix or "json")
@@ -1004,6 +1012,10 @@ class EvaluationService:
         cleaned.metadata.setdefault("cleaning_report", cleaning_report)
         segmenter = Segmenter(tipo=self._segmenter_tipo(tipo_informe))
         segmented = segmenter.segment_document(cleaned)
+        if not getattr(segmented, "sections", None):
+            self.logger.info(
+                "Segmenter no identificó secciones; se utilizará el modo fallback de chunking."
+            )
         if populate_chunks:
             return self.splitter.split_document(segmented)
         return segmented

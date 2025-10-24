@@ -258,6 +258,16 @@ class Splitter:
             else:
                 log_info(message)
 
+        def _resolve_strategy_label(source: str, origin_name: str) -> str:
+            base = str(source or origin_name or "").strip() or origin_name
+            if origin_name == "section":
+                return "section"
+            if origin_name == "page":
+                return "page_fallback"
+            if origin_name == "document" and base == "content":
+                return "content_fallback"
+            return base or "section"
+
         def _chunk_iterator() -> Iterator["LCDocumentType"]:
             _log_progress(
                 f"✂️ Iniciando división de {origin}s en chunks con LangChain..."
@@ -285,6 +295,7 @@ class Splitter:
                             "source_type": origin,
                             "chunk_overlap": self.chunk_overlap,
                             "source_strategy": strategy,
+                            "strategy": _resolve_strategy_label(strategy, origin),
                         }
                     ],
                 )
@@ -341,10 +352,16 @@ class Splitter:
             if document_metadata.get("id"):
                 base_metadata["document_id"] = document_metadata["id"]
         
+
         shared_metadata = dict(base_metadata or {})
+        document_metadata = getattr(document, "metadata", {}) or {}
+        segmenter_missing = bool(document_metadata.get("segmenter_missing_sections"))
+        if segmenter_missing:
+            shared_metadata.setdefault("segmenter_missing_sections", True)
         produced_any = False
 
-        sections = getattr(document, "sections", None) or {}
+        raw_sections = getattr(document, "sections", None)
+        sections = raw_sections or {}
         if sections:
             for chunk in self._split_content_map(
                 sections,
@@ -376,10 +393,13 @@ class Splitter:
 
             page_sections[f"page_{idx}"] = page_text
 
-        if page_sections:
+        sections_detected = bool(raw_sections)
+
+        if page_sections and (sections_detected or not segmenter_missing):
             log_warn(
                 "⚠️ No se generaron chunks por secciones. Usando páginas como fallback."
             )
+            content_sections = {"sin_clasificar": content_text}
             for chunk in self._split_content_map(
                 page_sections,
                 origin="page",
@@ -405,7 +425,7 @@ class Splitter:
                 "⚠️ No se generaron chunks por secciones ni páginas. Dividiendo el contenido completo."
             )
             for chunk in self._split_content_map(
-                {"document": content_text},
+                content_sections,
                 origin="document",
                 base_metadata=shared_metadata,
                 stream=True,

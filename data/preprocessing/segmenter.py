@@ -53,8 +53,13 @@ class Segmenter:
         sections = self._segment_text(text)
 
         if not sections:
-            fallback = text.strip()
-            sections = {"sin_clasificar": fallback}
+            log_warn(
+                "Segmenter no detectó encabezados; devolviendo secciones vacías para activar el fallback."
+            )
+            sections = {}
+            metadata = getattr(document, "metadata", None)
+            if isinstance(metadata, dict):
+                metadata["segmenter_missing_sections"] = True
 
         # Guardar las secciones dentro del documento
         document.sections = sections
@@ -130,7 +135,7 @@ class Segmenter:
 
         if not hits:
             log_warn("No se detectaron secciones.")
-            return {"sin_clasificar": text.strip()}
+            return{}
 
         candidates: Dict[str, List[int]] = {}
         for idx, (_, sec_id, _, _, _) in enumerate(hits):
