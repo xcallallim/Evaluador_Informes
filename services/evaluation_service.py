@@ -58,6 +58,35 @@ def _normalise_identifier(value: Any) -> str:
     return "".join(ch for ch in normalized if not unicodedata.combining(ch))
 
 
+def _extract_expected_scale_values(question: Mapping[str, Any]) -> Optional[Any]:
+    expected_scale: Any = question.get("escala") or question.get("valores_escala")
+    if isinstance(expected_scale, Mapping):
+        potential_levels = expected_scale.get("niveles")
+        if isinstance(potential_levels, (list, tuple, set)):
+            extracted = [
+                level.get("valor") if isinstance(level, Mapping) and "valor" in level else level
+                for level in potential_levels
+            ]
+            if extracted:
+                return extracted
+        if expected_scale:
+            return expected_scale
+
+    if expected_scale:
+        return expected_scale
+
+    potential_levels = question.get("niveles")
+    if isinstance(potential_levels, (list, tuple, set)):
+        extracted_direct = [
+            level.get("valor") if isinstance(level, Mapping) and "valor" in level else level
+            for level in potential_levels
+        ]
+        if extracted_direct:
+            return extracted_direct
+
+    return None
+
+
 @dataclass(slots=True)
 class ServiceConfig:
     """Runtime configuration for :class:`EvaluationService`."""
@@ -247,11 +276,12 @@ class ValidatingEvaluator(Evaluator):
         **kwargs: Any,
     ) -> None:
         kwargs.pop("prompt_batch_size", None)
-        kwargs.pop("extra_instructions", None)
-        super().__init__(*args, **kwargs)
+        extra_instructions = kwargs.pop("extra_instructions", None)
+        super().__init__(*args, extra_instructions=extra_instructions, **kwargs)
         self.prompt_validator = prompt_validator
         self.prompt_quality_threshold = max(0.0, min(1.0, prompt_quality_threshold))
         self.prompt_batch_size = max(1, int(prompt_batch_size))
+        self.extra_instructions = extra_instructions
 
     def _validate_prompt(
         self,
@@ -275,8 +305,8 @@ class ValidatingEvaluator(Evaluator):
         }
         if dimension.get("tipo_escala"):
             context["expected_scale_label"] = dimension.get("tipo_escala")
-        expected_scale = question.get("escala") or question.get("valores_escala")
-        if expected_scale:
+        expected_scale = _extract_expected_scale_values(question)
+        if expected_scale is not None:
             context["expected_scale_values"] = expected_scale
         if "was_truncated" in chunk_metadata:
             context["was_truncated"] = bool(chunk_metadata.get("was_truncated"))
@@ -538,13 +568,16 @@ class ValidatingEvaluator(Evaluator):
         *args: Any,
         prompt_validator: PromptValidator,
         prompt_quality_threshold: float,
+        prompt_batch_size: int = 1,
         **kwargs: Any,
     ) -> None:
         kwargs.pop("prompt_batch_size", None)
-        kwargs.pop("extra_instructions", None)
-        super().__init__(*args, **kwargs)
+        extra_instructions = kwargs.pop("extra_instructions", None)
+        super().__init__(*args, extra_instructions=extra_instructions, **kwargs)
         self.prompt_validator = prompt_validator
         self.prompt_quality_threshold = max(0.0, min(1.0, prompt_quality_threshold))
+        self.prompt_batch_size = max(1, int(prompt_batch_size))
+        self.extra_instructions = extra_instructions
 
     def _validate_prompt(
         self,
@@ -568,8 +601,8 @@ class ValidatingEvaluator(Evaluator):
         }
         if dimension.get("tipo_escala"):
             context["expected_scale_label"] = dimension.get("tipo_escala")
-        expected_scale = question.get("escala") or question.get("valores_escala")
-        if expected_scale:
+        expected_scale = _extract_expected_scale_values(question)
+        if expected_scale is not None:
             context["expected_scale_values"] = expected_scale
         if "was_truncated" in chunk_metadata:
             context["was_truncated"] = bool(chunk_metadata.get("was_truncated"))
@@ -836,6 +869,7 @@ class EvaluationService:
             builder_callable = factory.for_criteria(criteria_for_run)
 
         evaluator = ValidatingEvaluator(
+            ai_service=ai_service,
             prompt_validator=self.prompt_validator,
             prompt_quality_threshold=PROMPT_QUALITY_THRESHOLD,
             prompt_batch_size=config.prompt_batch_size,
@@ -860,6 +894,7 @@ class EvaluationService:
         evaluation.metadata["model_name"] = config.model_name
         evaluation.metadata["run_id"] = config.run_id
         evaluation.metadata["prompt_batch_size"] = config.prompt_batch_size
+        evaluation.metadata["pipeline_version"] = SERVICE_VERSION
         evaluation.metadata["retries"] = config.retries
         evaluation.metadata["timeout_seconds"] = config.timeout_seconds
         evaluation.metadata["mode"] = mode
@@ -892,6 +927,7 @@ class EvaluationService:
             "config": config.dump(),
             "tipo_informe": resolved_tipo,
             "criteria_version": raw_criteria.get("version"),
+            "pipeline_version": SERVICE_VERSION,
         }
         if extra_metadata:
             export_metadata.update(extra_metadata)

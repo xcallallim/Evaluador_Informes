@@ -54,9 +54,9 @@ class Segmenter:
 
         if not sections:
             log_warn(
-                "Segmenter no detectó encabezados; devolviendo secciones vacías para activar el fallback."
+                "Segmenter no detectó encabezados; generando sección sin clasificar como respaldo."
             )
-            sections = {}
+            sections = {"sin_clasificar": text}
             metadata = getattr(document, "metadata", None)
             if isinstance(metadata, dict):
                 metadata["segmenter_missing_sections"] = True
