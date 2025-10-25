@@ -246,6 +246,8 @@ class ValidatingEvaluator(Evaluator):
         prompt_batch_size: int = 1,
         **kwargs: Any,
     ) -> None:
+        kwargs.pop("prompt_batch_size", None)
+        kwargs.pop("extra_instructions", None)
         super().__init__(*args, **kwargs)
         self.prompt_validator = prompt_validator
         self.prompt_quality_threshold = max(0.0, min(1.0, prompt_quality_threshold))
@@ -538,6 +540,8 @@ class ValidatingEvaluator(Evaluator):
         prompt_quality_threshold: float,
         **kwargs: Any,
     ) -> None:
+        kwargs.pop("prompt_batch_size", None)
+        kwargs.pop("extra_instructions", None)
         super().__init__(*args, **kwargs)
         self.prompt_validator = prompt_validator
         self.prompt_quality_threshold = max(0.0, min(1.0, prompt_quality_threshold))
