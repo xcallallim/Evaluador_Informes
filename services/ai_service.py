@@ -129,6 +129,17 @@ class BaseAIService(ABC):
     def evaluate(self, prompt: Optional[str] = None, **kwargs: Any) -> Mapping[str, Any]:
         """Send the prompt to the model and return a mapping with the evaluation."""
 
+    def evaluate_text(self, prompt: Optional[str] = None, **kwargs: Any) -> Mapping[str, Any]:
+        """Backward compatible alias for :meth:`evaluate`.
+
+        Some legacy call sites still rely on :code:`evaluate_text`. Keeping this
+        thin wrapper prevents ``AttributeError`` exceptions without changing the
+        core signature. The method simply forwards all arguments to
+        :meth:`evaluate`.
+        """
+
+        return self.evaluate(prompt, **kwargs)
+
     # ------------------------------------------------------------------
     # Shared helpers
     def _resolve_prompt(self, prompt: Optional[str], **kwargs: Any) -> str:

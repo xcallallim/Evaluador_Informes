@@ -20,6 +20,9 @@ IA para producir reportes consistentes y trazables.
 - **Seguridad de credenciales integrada**: el acceso a la clave de OpenAI está
   centralizado en `utils.secret_manager.get_openai_api_key()`, que evalúa fuentes
   autorizadas y aplica cifrado basado en passphrase.
+  **Exportación multiformato**: `reporting.EvaluationRepository` serializa los
+  resultados en JSON, CSV, XLSX y Parquet, incorporando metadatos, métricas y
+  trazabilidad por fragmento.
 - **Pruebas automatizadas**: el directorio `tests/` cubre la ingesta, limpieza,
   segmentación, métrica y servicios de evaluación para facilitar refactorizaciones
   seguras.
@@ -42,9 +45,15 @@ Evaluador_Informes/
 ## Requisitos previos
 
 - Python 3.10 o superior.
-- Dependencias listadas en `requirements.txt`; incluye bibliotecas para OCR
-  (Tesseract), extracción de tablas (Camelot/Ghostscript) y componentes de
-  LangChain.
+- Dependencias listadas en `requirements.txt`, agrupadas por categoría:
+  - **OCR y preprocesamiento**: `pdfplumber`, `PyMuPDF`, `pytesseract`,
+    `opencv-python-headless`, `Pillow`, `python-docx`, `camelot-py`.
+  - **IA y orquestación**: `langchain`, `langchain-core`, `langchain-community`,
+    `langchain-text-splitters`, `openai`, `tenacity`.
+  - **Utilidades y análisis**: `pandas`, `numpy`, `rapidfuzz`, `scikit-learn`,
+    `tabulate`, `tqdm`.
+  - **Seguridad y exportación**: `cryptography` para el sellado de claves,
+    `openpyxl` y `pyarrow` para los reportes tabulares.
 - Acceso a una clave de OpenAI cuando se utilice el servicio real (`--real-ai`).
 
 ## Instalación
@@ -103,7 +112,7 @@ python -m utils.criteria_validator data/criteria/*.json
 El comando informa problemas de esquema y retorna un código de salida distinto
 de cero si detecta errores.
 
-## Reportes y métricas
+## Reportes y exportación
 
 - `metrics.py` contiene funciones reutilizables para calcular promedios
   ponderados, escalas numéricas y agregados por bloque.
@@ -114,10 +123,29 @@ de cero si detecta errores.
   `QuestionResult`, etc.) utilizadas por el repositorio y expone métodos
   `to_dict()` para serializar sin pérdida de información.
 
-Cuando ejecutes la evaluación con `--output resultado.xlsx`, el archivo incluirá
-hojas separadas para métricas generales, criterios y comentarios de IA. Al usar
-`--output resultado.json`, se preservan los metadatos completos, incluyendo los
-identificadores de fragmento y referencias cruzadas.
+Ejemplo de exportación directa desde Python:
+
+```python
+import json
+from pathlib import Path
+
+from metrics import calculate_metrics
+from reporting.repository import EvaluationRepository
+
+# "resultado" es un EvaluationResult devuelto por EvaluationService.
+criteria = json.loads(Path("data/criteria/metodologia_institucional.json").read_text())
+repository = EvaluationRepository()
+repository.export(
+    evaluation=resultado,
+    metrics_summary=calculate_metrics(resultado, criteria).to_dict(),
+    output_path=Path("data/outputs/resultado.parquet"),
+    output_format="parquet",
+)
+```
+
+Los formatos tabulares (`csv`, `xlsx`, `parquet`) requieren tener instalados
+`pandas`, `openpyxl` y `pyarrow`. El método añade metadatos globales, métricas
+por sección y los fragmentos relevantes por pregunta para facilitar auditorías.
 
 ### Sellado de la clave de OpenAI
 
@@ -147,7 +175,7 @@ entorno para integraciones CI/CD.
    documento, aplicando plantillas según el tipo de informe.
 5. **Evaluación y métricas.** `services.evaluation_service.EvaluationService`
    coordina la ejecución del modelo (real o simulado), agrega métricas con
-   `metrics.collect_metrics` y consolida un Excel/JSON trazable en `reporting/`.
+   `metrics.calculate_metrics` y consolida un Excel/JSON trazable en `reporting/`.
 
 Cada etapa registra *artifacts* intermedios en `reporting/workdir/` cuando se
 habilita el modo detallado (`--modo completo --guardar-pasos`). Esto facilita la
