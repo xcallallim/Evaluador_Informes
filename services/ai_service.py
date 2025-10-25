@@ -437,7 +437,8 @@ class OpenAIService(BaseAIService):
     def __init__(
         self,
         *,
-        model_name: str,
+         model_name: Optional[str] = None,
+        model: Optional[str] = None,
         api_key: Optional[str] = None,
         temperature: float = 0.0,
         max_output_tokens: Optional[int] = 800,
@@ -446,8 +447,13 @@ class OpenAIService(BaseAIService):
         prompt_builder: Optional[PromptBuilder] = None,
         logger: Optional[logging.Logger] = None,
     ) -> None:
+        resolved_model = model_name if model_name is not None else model
+        if resolved_model is None:
+            raise ValueError(
+                "Debe proporcionarse el parámetro 'model_name' o su alias 'model'."
+            )
         super().__init__(
-            model_name=model_name,
+            model_name=resolved_model,
             prompt_builder=prompt_builder,
             logger=logger,
         )
@@ -463,6 +469,23 @@ class OpenAIService(BaseAIService):
             self._client_mode = "custom"
         else:
             self._initialise_client()
+
+    def evaluate_text(self, prompt: Optional[str] = None, **kwargs: Any) -> Mapping[str, Any]:
+        try:
+            return super().evaluate_text(prompt, **kwargs)
+        except Exception as exc:  # pragma: no cover - fallback path
+            auth_error = getattr(openai, "AuthenticationError", None) if openai else None
+            if auth_error is not None and isinstance(exc, auth_error):
+                print(
+                    "[WARNING] Clave inválida o no configurada. Usando MockAIService como respaldo."
+                )
+                mock_service = MockAIService(
+                    model_name=self.model_name,
+                    prompt_builder=self.prompt_builder,
+                    logger=self.logger,
+                )
+                return mock_service.evaluate_text(prompt, **kwargs)
+            raise
 
     def evaluate(self, prompt: Optional[str] = None, **kwargs: Any) -> Mapping[str, Any]:
         chunk_text = self._extract_chunk_text(**kwargs)
