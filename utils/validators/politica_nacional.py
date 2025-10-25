@@ -30,6 +30,11 @@ def _validate_niveles(
 
     valores: List[float] = []
     for nivel in niveles:
+        if not isinstance(nivel, dict):
+            result.errors.append(
+                f"Cada nivel de la pregunta '{pregunta_id}' en el bloque '{bloque_nombre}' debe ser un objeto con 'valor' y 'descripcion'."
+            )
+            return
         if "valor" not in nivel or "descripcion" not in nivel:
             result.errors.append(
                 f"Cada nivel de la pregunta '{pregunta_id}' en el bloque '{bloque_nombre}' debe tener 'valor' y 'descripcion'."
