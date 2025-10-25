@@ -391,3 +391,4 @@ def test_evaluation_result_generated_at_traces_timestamp() -> None:
     assert abs((reconstructed.generated_at - result.generated_at).total_seconds()) < 1
 
 # pytest tests/test_evaluator_institucional.py -v
+# python utils/criteria_validator.py data/criteria/metodologia_institucional.json

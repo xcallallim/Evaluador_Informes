@@ -17,6 +17,39 @@ def _require_keys(
             result.errors.append(f"Falta la clave obligatoria '{key}' en {context}.")
 
 
+def _collect_dict_items(
+    value: Any,
+    *,
+    context: str,
+    item_label: str,
+    empty_message: str,
+    result: ValidationResult,
+) -> List[Dict[str, Any]]:
+    """Return a list of dictionaries, recording schema errors when the structure is invalid."""
+
+    if not isinstance(value, list):
+        result.errors.append(f"{context} debe ser una lista de {item_label}.")
+        return []
+
+    if not value:
+        result.errors.append(empty_message)
+        return []
+
+    items: List[Dict[str, Any]] = []
+    for index, element in enumerate(value, start=1):
+        if not isinstance(element, dict):
+            result.errors.append(
+                f"El elemento #{index} en {context} debe ser un objeto JSON con la estructura esperada."
+            )
+            continue
+        items.append(element)
+
+    if not items:
+        result.errors.append(empty_message)
+
+    return items
+
+
 @dataclass
 class LikertScaleInfo:
     """Container with metadata extracted from a Likert scale definition."""
@@ -261,7 +294,16 @@ def _validate_level_two(data: Dict[str, Any], result: ValidationResult) -> None:
                 f"{total_dimensiones:.6f} (deben sumar 1.0)."
             )
     
-    secciones: List[Dict[str, Any]] = data.get("secciones", [])
+    secciones = _collect_dict_items(
+        data.get("secciones"),
+        context="'secciones'",
+        item_label="secciones",
+        empty_message="'secciones' debe ser una lista con al menos una sección.",
+        result=result,
+    )
+    if not secciones:
+        return
+    
     total_secciones = sum_ponderaciones(secciones, "ponderacion")
     if not almost_equal(total_secciones, 1.0):
         result.errors.append(
@@ -286,9 +328,14 @@ def _validate_level_two(data: Dict[str, Any], result: ValidationResult) -> None:
 
     for seccion in secciones:
         nombre_seccion = seccion.get("titulo") or seccion.get("id_segmenter") or "<sin_nombre>"
-        dimensiones = seccion.get("dimensiones", [])
+        dimensiones = _collect_dict_items(
+            seccion.get("dimensiones"),
+            context=f"las 'dimensiones' de la sección '{nombre_seccion}'",
+            item_label="dimensiones",
+            empty_message=f"La sección '{nombre_seccion}' no tiene dimensiones definidas.",
+            result=result,
+        )
         if not dimensiones:
-            result.errors.append(f"La sección '{nombre_seccion}' no tiene dimensiones definidas.")
             continue
 
         total_dim = sum_ponderaciones(dimensiones, "ponderacion")
@@ -300,12 +347,16 @@ def _validate_level_two(data: Dict[str, Any], result: ValidationResult) -> None:
 
         for dimension in dimensiones:
             dim_name = dimension.get("nombre", "<sin_nombre>")
-            preguntas = dimension.get("preguntas", [])
-            if not preguntas:
-                result.errors.append(
+            preguntas = _collect_dict_items(
+                dimension.get("preguntas"),
+                context=f"las 'preguntas' de la dimensión '{dim_name}' en la sección '{nombre_seccion}'",
+                item_label="preguntas",
+                empty_message=(
                     f"La dimensión '{dim_name}' en la sección '{nombre_seccion}' no tiene preguntas configuradas."
-                )
-            else:
+                ),
+                result=result,
+            )
+            if preguntas:
                 total_preguntas = sum_ponderaciones(preguntas, "ponderacion")
                 if not almost_equal(total_preguntas, 1.0):
                     result.errors.append(
@@ -349,18 +400,37 @@ def _validate_level_two(data: Dict[str, Any], result: ValidationResult) -> None:
 
 def _validate_level_three(data: Dict[str, Any], result: ValidationResult) -> None:
     """Validación contextual: redacción y completitud de los reactivos."""
-    secciones: List[Dict[str, Any]] = data.get("secciones", [])
-    for seccion in secciones:
+    secciones_value = data.get("secciones")
+    if not isinstance(secciones_value, list):
+        return
+
+    for seccion in secciones_value:
+        if not isinstance(seccion, dict):
+            continue
+
         nombre_seccion = seccion.get("titulo") or seccion.get("id_segmenter") or "<sin_nombre>"
-        for dimension in seccion.get("dimensiones", []):
+        dimensiones_value = seccion.get("dimensiones")
+        if not isinstance(dimensiones_value, list):
+            continue
+
+        for dimension in dimensiones_value:
+            if not isinstance(dimension, dict):
+                continue
+
+
             dim_name = dimension.get("nombre", "<sin_nombre>")
-            preguntas = dimension.get("preguntas", [])
-            if not preguntas:
+            preguntas_value = dimension.get("preguntas")
+            if not isinstance(preguntas_value, list) or not preguntas_value:
                 result.errors.append(
                     f"La dimensión '{dim_name}' en la sección '{nombre_seccion}' no tiene preguntas configuradas."
                 )
                 continue
-            for pregunta in preguntas:
+            for pregunta in preguntas_value:
+                if not isinstance(pregunta, dict):
+                    result.errors.append(
+                        f"La dimensión '{dim_name}' en la sección '{nombre_seccion}' contiene preguntas con formato inválido."
+                    )
+                    continue
                 pregunta_id = pregunta.get("id", "<sin_id>")
                 texto = pregunta.get("texto")
                 if isinstance(texto, str):

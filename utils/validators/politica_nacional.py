@@ -8,6 +8,39 @@ from . import register_validator
 from .base import ValidationResult, almost_equal, sum_ponderaciones
 
 
+def _collect_dict_items(
+    value: Any,
+    *,
+    context: str,
+    item_label: str,
+    empty_message: str,
+    result: ValidationResult,
+) -> List[Dict[str, Any]]:
+    """Return list of dicts while recording structural errors for invalid inputs."""
+
+    if not isinstance(value, list):
+        result.errors.append(f"{context} debe ser una lista de {item_label}.")
+        return []
+
+    if not value:
+        result.errors.append(empty_message)
+        return []
+
+    items: List[Dict[str, Any]] = []
+    for index, element in enumerate(value, start=1):
+        if not isinstance(element, dict):
+            result.errors.append(
+                f"El elemento #{index} en {context} debe ser un objeto JSON con la estructura esperada."
+            )
+            continue
+        items.append(element)
+
+    if not items:
+        result.errors.append(empty_message)
+
+    return items
+
+
 def _validate_niveles(
     *,
     niveles: Any,
@@ -30,11 +63,6 @@ def _validate_niveles(
 
     valores: List[float] = []
     for nivel in niveles:
-        if not isinstance(nivel, dict):
-            result.errors.append(
-                f"Cada nivel de la pregunta '{pregunta_id}' en el bloque '{bloque_nombre}' debe ser un objeto con 'valor' y 'descripcion'."
-            )
-            return
         if "valor" not in nivel or "descripcion" not in nivel:
             result.errors.append(
                 f"Cada nivel de la pregunta '{pregunta_id}' en el bloque '{bloque_nombre}' debe tener 'valor' y 'descripcion'."
@@ -62,11 +90,18 @@ def validate_politica_nacional_schema(data: Dict[str, Any]) -> ValidationResult:
 
     result = ValidationResult()
 
-    escala = data.get("escala", {})
-    if not escala:
+    escala_value = data.get("escala")
+    if escala_value is None:
+        result.errors.append("Falta la definición de 'escala'.")
+        escala_min = escala_max = None
+    elif not isinstance(escala_value, dict):
+        result.errors.append("'escala' debe ser un objeto JSON con la configuración de la escala.")
+        escala_min = escala_max = None
+    elif not escala_value:
         result.errors.append("Falta la definición de 'escala'.")
         escala_min = escala_max = None
     else:
+        escala = escala_value
         escala_min = escala.get("min")
         escala_max = escala.get("max")
         for clave in ("tipo", "tipo_valores", "min", "max"):
@@ -76,9 +111,14 @@ def validate_politica_nacional_schema(data: Dict[str, Any]) -> ValidationResult:
         if escala_min is not None and escala_max is not None and escala_min >= escala_max:
             result.errors.append("El rango de la 'escala' es inválido: 'min' debe ser menor que 'max'.")
 
-    bloques = data.get("bloques", [])
+    bloques = _collect_dict_items(
+        data.get("bloques"),
+        context="los 'bloques' del esquema",
+        item_label="bloques",
+        empty_message="No se encontraron bloques de preguntas en el archivo.",
+        result=result,
+    )
     if not bloques:
-        result.errors.append("No se encontraron bloques de preguntas en el archivo.")
         return result
 
     total_bloques = sum_ponderaciones(bloques, "ponderacion")
@@ -89,9 +129,14 @@ def validate_politica_nacional_schema(data: Dict[str, Any]) -> ValidationResult:
 
     for bloque in bloques:
         bloque_nombre = bloque.get("titulo") or bloque.get("id_segmenter") or "<sin_nombre>"
-        preguntas = bloque.get("preguntas", [])
+        preguntas = _collect_dict_items(
+            bloque.get("preguntas"),
+            context=f"las 'preguntas' del bloque '{bloque_nombre}'",
+            item_label="preguntas",
+            empty_message=f"El bloque '{bloque_nombre}' no tiene preguntas configuradas.",
+            result=result,
+        )
         if not preguntas:
-            result.errors.append(f"El bloque '{bloque_nombre}' no tiene preguntas configuradas.")
             continue
 
         total_preguntas = sum_ponderaciones(preguntas, "ponderacion")

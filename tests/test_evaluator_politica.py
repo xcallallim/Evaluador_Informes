@@ -269,3 +269,4 @@ def test_politica_nacional_handles_incomplete_ai_responses() -> None:
     assert result.score <= 2.0
 
 # pytest tests/test_evaluator_politica.py -v
+# python utils/criteria_validator.py data/criteria/metodologia_politica_nacional.json
