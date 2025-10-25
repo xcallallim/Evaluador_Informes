@@ -370,7 +370,7 @@ def test_dimension_weighting_with_sparse_questions() -> None:
     section.recompute_score()
     assert len(section.dimensions) == 3
     assert section.dimensions[2].score is None
-    # Weighted average: ((2*1.0) + (1*5.0)) / (2+1) = 7/3
+    # Promedio ponderado: ((2*1.0) + (1*5.0)) / (2+1) = 7/3
     assert section.score == pytest.approx(7 / 3)
 
 

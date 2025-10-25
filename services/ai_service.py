@@ -1,4 +1,4 @@
-"""Core abstractions to communicate with AI providers."""
+"""Abstracciones principales para comunicarse con proveedores de IA."""
 
 from __future__ import annotations
 
@@ -27,14 +27,14 @@ from tenacity import (
     before_sleep_log,
 )
 
-try:  # pragma: no cover - optional dependency
+try:  # pragma: no cover - dependencia opcional
     from openai import OpenAI
-except ImportError:  # pragma: no cover - compatibility with legacy client
+except ImportError:  # pragma: no cover - compatibilidad con el cliente legado
     OpenAI = None  # type: ignore
 
-try:  # pragma: no cover - optional dependency
+try:  # pragma: no cover - dependencia opcional
     import openai  # type: ignore
-except ImportError:  # pragma: no cover - optional dependency
+except ImportError:  # pragma: no cover - dependencia opcional
     openai = None  # type: ignore
 
 
@@ -71,7 +71,7 @@ _RETRYABLE_EXCEPTIONS = _collect_retry_exceptions()
 
 @dataclass(slots=True)
 class AIResponse:
-    """Structured representation of an AI answer."""
+    """Representación estructurada de una respuesta de la IA."""
 
     score: float
     justification: str
@@ -80,7 +80,7 @@ class AIResponse:
 
 
 class InvalidAIResponseError(RuntimeError):
-    """Raised when the AI output cannot be parsed as JSON."""
+    """Se lanza cuando la salida de la IA no puede interpretarse como JSON."""
 
     def __init__(
         self,
@@ -95,7 +95,7 @@ class InvalidAIResponseError(RuntimeError):
 
 
 class BaseAIService(ABC):
-    """Base contract for AI services used within the evaluator."""
+    """Contrato base para los servicios de IA utilizados en el evaluador."""
 
     def __init__(
         self,
@@ -104,19 +104,19 @@ class BaseAIService(ABC):
         prompt_builder: Callable[..., str] | None = None,
         logger: Optional[logging.Logger] = None,
     ) -> None:
-        """Instantiate the service with the shared configuration.
+        """Instancia el servicio con la configuración compartida.
 
-        Parameters
+        Parámetros
         ----------
         model_name:
-            Identifier of the model used by the provider.
+            Identificador del modelo utilizado por el proveedor.
         prompt_builder:
-            Callable that must accept the following keyword-only arguments and
-            return a string prompt: ``document``, ``criteria``, ``section``,
-            ``dimension``, ``question``, ``chunk_text``, ``chunk_metadata`` and
-            the optional ``extra_instructions``.
+            Función que acepta los argumentos nombrados ``document``,
+            ``criteria``, ``section``, ``dimension``, ``question``, ``chunk_text``
+            y ``chunk_metadata``, además de las ``extra_instructions`` opcionales,
+            y devuelve un *prompt* en texto.
         logger:
-            Optional logger instance used for structured tracing.
+            Instancia opcional de logger para trazabilidad estructurada.
         """
         self.model_name = model_name
         self.prompt_builder = prompt_builder or build_prompt
@@ -127,38 +127,40 @@ class BaseAIService(ABC):
 
     @abstractmethod
     def evaluate(self, prompt: Optional[str] = None, **kwargs: Any) -> Mapping[str, Any]:
-        """Send the prompt to the model and return a mapping with the evaluation."""
+        """Envía el *prompt* al modelo y devuelve un mapeo con la evaluación."""""
 
     def evaluate_text(self, prompt: Optional[str] = None, **kwargs: Any) -> Mapping[str, Any]:
-        """Backward compatible alias for :meth:`evaluate`.
+        """Alias retrocompatible de :meth:`evaluate`.
 
-        Some legacy call sites still rely on :code:`evaluate_text`. Keeping this
-        thin wrapper prevents ``AttributeError`` exceptions without changing the
-        core signature. The method simply forwards all arguments to
+        Algunos llamados heredados aún utilizan :code:`evaluate_text`. Mantener
+        este contenedor evita excepciones ``AttributeError`` sin modificar la
+        firma principal. El método reenvía todos los argumentos a
         :meth:`evaluate`.
         """
 
         return self.evaluate(prompt, **kwargs)
 
     # ------------------------------------------------------------------
-    # Shared helpers
+    # Helpers compartidos
+    # ------------------------------------------------------------------
     def _resolve_prompt(self, prompt: Optional[str], **kwargs: Any) -> str:
-        """Return the final prompt text for the evaluation request.
+        """Obtiene el texto final del *prompt* para la solicitud de evaluación.
 
-        The method supports two data modes:
+        El método admite dos modos de datos:
 
-        * **Global (sección completa)** – requires ``document``, ``criteria``,
-          ``section`` and ``chunk_text`` in ``kwargs`` (or encapsulated inside a
-          :class:`~services.prompt_builder.PromptContext`). ``dimension`` and
-          ``question`` can be absent or ``None``.
-        * **Parcial (criterio/pregunta)** – uses the same mandatory fields and
-          additionally expects ``dimension`` and ``question`` detailing the
-          criterion under evaluation.
+        * **Global (sección completa)**: requiere ``document``, ``criteria``,
+          ``section`` y ``chunk_text`` en ``kwargs`` (o encapsulados en un
+          :class:`~services.prompt_builder.PromptContext`). ``dimension`` y
+          ``question`` pueden omitirse.
+        * **Parcial (criterio/pregunta)**: usa los mismos campos obligatorios y
+          adicionalmente espera ``dimension`` y ``question`` que describan el
+          criterio evaluado.
 
-        ``chunk_metadata`` remains optional in both modes for traceability.
+        ``chunk_metadata`` sigue siendo opcional en ambos modos para fines de
+        trazabilidad.
 
-        If a :class:`~services.prompt_builder.PromptContext` is provided it takes
-        precedence and is passed verbatim to the configured prompt builder.
+        Si se proporciona un :class:`~services.prompt_builder.PromptContext`,
+        este tiene prioridad y se envía directamente al generador configurado.
         """
 
         if prompt:
@@ -423,7 +425,7 @@ class MockAIService(BaseAIService):
 
 
 class OpenAIService(BaseAIService):
-    """Real implementation using the OpenAI API."""
+    """Implementación real basada en la API de OpenAI."""
 
     DEFAULT_SYSTEM_PROMPT = (
         "Eres un evaluador experto. Analiza el fragmento del informe siguiendo los criterios "
@@ -638,7 +640,8 @@ class OpenAIService(BaseAIService):
         return result
 
     # ------------------------------------------------------------------
-    # Internal helpers
+    # Helpers internos
+    # ------------------------------------------------------------------
     def _initialise_client(self) -> None:
         api_key = self._api_key
         if not api_key:
@@ -648,7 +651,7 @@ class OpenAIService(BaseAIService):
                 raise RuntimeError("No se pudo obtener la clave API de OpenAI") from exc
         self._api_key = api_key
 
-        if OpenAI is not None:  # pragma: no cover - depends on library availability
+        if OpenAI is not None:  # pragma: no cover - depende de la disponibilidad de la librería
             self._client = OpenAI(api_key=api_key)
             self._client_mode = "chat_client"
             return
@@ -667,7 +670,7 @@ class OpenAIService(BaseAIService):
             raise RuntimeError("El cliente de OpenAI no está inicializado")
 
         json_mode = {"type": "json_object"}
-        if self._client_mode in {"chat_client", "chat"}:  # pragma: no cover - depends on env
+        if self._client_mode in {"chat_client", "chat"}:  # pragma: no cover - depende del entorno
             messages = []
             if self.system_prompt:
                 messages.append({"role": "system", "content": self.system_prompt})
@@ -699,7 +702,7 @@ class OpenAIService(BaseAIService):
 
             try:
                 return self._client.create(**params)  # type: ignore[call-arg]
-            except TypeError:  # pragma: no cover - fallback for legacy clients
+            except TypeError:  # pragma: no cover - fallback para clientes legados
                 params.pop("response_format", None)
                 return self._client.create(**params)  # type: ignore[call-arg]
 
@@ -710,7 +713,7 @@ class OpenAIService(BaseAIService):
                     system_prompt=self.system_prompt,
                     response_format=json_mode,
                 )
-            except TypeError:  # pragma: no cover - compatibility with user-provided clients
+            except TypeError:  # pragma: no cover - compatibilidad con clientes provistos por el usuario
                 return self._client(prompt=prompt, system_prompt=self.system_prompt)
 
         raise RuntimeError(f"Modo de cliente desconocido: {self._client_mode}")
@@ -778,7 +781,7 @@ class OpenAIService(BaseAIService):
         if raw is None:
             return ""
         text_blocks: list[str] = []
-        if hasattr(raw, "output"):  # responses API
+        if hasattr(raw, "output"):  # API de respuestas
             output = getattr(raw, "output")
             for item in output or []:
                 content = getattr(item, "content", [])

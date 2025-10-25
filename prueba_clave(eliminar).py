@@ -1,5 +1,8 @@
-from services.ai_service import MockAIService
+from services.evaluation_service import EvaluationService
 
-ai = MockAIService()
-response = ai.evaluate("Texto de ejemplo institucional.")
-print(response)
+service = EvaluationService()
+result = service.run(
+    input_path="data/input/test_loader.txt",
+    tipo_informe="institucional",
+    mode="global"
+)

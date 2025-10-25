@@ -1,4 +1,4 @@
-"""Prompt composition utilities aligned with the CEPLAN evaluation methodology."""
+"""Utilidades para componer *prompts* alineadas con la metodología CEPLAN."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from data.models.document import Document
 
 
 class PromptBuilder(Protocol):
-    """Protocol describing callables able to craft prompts for the AI."""
+    """Protocolo que describe las funciones capaces de elaborar *prompts* para la AI."""
 
     def __call__(
         self,
@@ -45,19 +45,19 @@ class PromptBuilder(Protocol):
 
 @dataclass(slots=True)
 class PromptContext:
-    """Container with the ingredients required to build a prompt.
+    """Contenedor con los insumos necesarios para construir un *prompt*.
 
-    The evaluator supports two primary modes when requesting an evaluation:
+    El evaluador soporta dos modos principales al solicitar una evaluación:
 
-    * **Global (sección completa)** – requires ``document``, ``criteria``,
-      ``section`` and ``chunk_text``. ``dimension`` and ``question`` may be
-      omitted (``None``) to signal that the AI should assess the whole section.
-    * **Parcial (criterio/pregunta)** – uses the same core fields as the global
-      mode and additionally expects ``dimension`` and ``question`` describing the
-      specific criterion or guiding question under review.
+    * **Global (sección completa)**: requiere ``document``, ``criteria``,
+      ``section`` y ``chunk_text``. ``dimension`` y ``question`` pueden omitirse
+      (``None``) para indicar que la IA debe evaluar la sección completa.
+    * **Parcial (criterio/pregunta)**: utiliza los mismos campos base que el
+      modo global y además espera ``dimension`` y ``question`` que describan el
+      criterio específico o la pregunta orientadora en revisión.
 
-    ``chunk_metadata`` is optional in both modes and allows injecting
-    traceability or pagination hints for the evaluated fragment.
+    ``chunk_metadata`` es opcional en ambos modos y permite inyectar trazas o
+    pistas de paginación para el fragmento evaluado.
     """
 
     document: Document
@@ -76,7 +76,7 @@ class PromptContext:
 
 @dataclass(frozen=True)
 class ScaleLevel:
-    """Definition of a single level in an evaluation scale."""
+    """Definición de un nivel dentro de una escala de evaluación."""
 
     value: float
     description: str
@@ -85,7 +85,7 @@ class ScaleLevel:
 
 @dataclass(slots=True)
 class _PromptData:
-    """Normalised representation of the evaluation context."""
+    """Representación normalizada del contexto de evaluación."""
 
     document_title: str
     report_type: str
@@ -102,7 +102,7 @@ class _PromptData:
 
 
 class BasePromptBuilder(ABC):
-    """Base class that validates context data and renders the final prompt."""
+    """Clase base que valida el contexto y renderiza el *prompt* final."""
 
     fragment_start_marker = "<<<INICIO_FRAGMENTO>>>"
     fragment_end_marker = "<<<FIN_FRAGMENTO>>>"
@@ -138,7 +138,10 @@ class BasePromptBuilder(ABC):
         self.include_chunk_metadata_in_prompt = include_chunk_metadata_in_prompt
         logger_name = f"{__name__}.{self.__class__.__name__}"
         self.logger = logger or logging.getLogger(logger_name)
-        self.logger.debug("logger_initialized", extra={"event": "logger_initialized", "logger_name": logger_name})
+        self.logger.debug(
+            "logger_inicializado",
+            extra={"event": "logger_inicializado", "logger_name": logger_name},
+        )
 
     def __call__(
         self,
@@ -165,7 +168,7 @@ class BasePromptBuilder(ABC):
         return self.build_from_context(context)
 
     def build_from_context(self, context: PromptContext) -> str:
-        """Generate a prompt using a validated :class:`PromptContext`."""
+        """Genera un *prompt* utilizando un :class:`PromptContext` validado."""
 
         self._quality_flags = {}
         report_type_hint = self._clean_str(context.criteria.get("tipo_informe"))
@@ -200,7 +203,7 @@ class BasePromptBuilder(ABC):
         return prompt
 
     def validate_context(self, context: PromptContext) -> None:
-        """Ensure the incoming context includes the required evaluation data."""
+        """Garantiza que el contexto incluya los datos de evaluación requeridos."""
 
         if not isinstance(context.document, Document):
             raise TypeError("'document' debe ser una instancia de data.models.document.Document.")
@@ -253,19 +256,20 @@ class BasePromptBuilder(ABC):
                 )
 
     # ------------------------------------------------------------------
-    # Template methods implemented by subclasses
+    # Métodos plantilla implementados por las subclases
+    # ------------------------------------------------------------------
     @property
     @abstractmethod
     def scale_label(self) -> str:
-        """Human readable name for the scale, including range information."""
+        """Nombre legible para humanos de la escala, incluyendo su rango."""
 
     @property
     @abstractmethod
     def scale_levels(self) -> Sequence[ScaleLevel]:
-        """Ordered collection describing each level of the scale."""
+        """Colección ordenada que describe cada nivel de la escala."""
 
     def _build_objective_lines(self, data: _PromptData) -> list[str]:
-        """Return bullet points describing the evaluation focus."""
+        """Colección ordenada que describe cada nivel de la escala."""
 
         lines = [
             "Analiza el fragmento siguiendo la metodología oficial del CEPLAN.",
@@ -278,12 +282,13 @@ class BasePromptBuilder(ABC):
         return lines
 
     def _response_guidance(self) -> str:
-        """Clarify how the model must select the score values."""
+        """Aclara cómo debe seleccionar el modelo los valores de puntaje."""
 
         return "Utiliza únicamente los valores definidos en la escala y mantén el tono técnico-profesional."
 
     # ------------------------------------------------------------------
-    # Helpers for subclasses
+    # Helpers para las subclases
+    # ------------------------------------------------------------------
     def _normalise_context(self, context: PromptContext) -> _PromptData:
         chunk_text, truncated, extra_instructions = self._prepare_chunk_payload(context)
         metadata = self._prepare_chunk_metadata(context)
@@ -449,7 +454,7 @@ class BasePromptBuilder(ABC):
 
     @property
     def last_quality_metadata(self) -> Optional[Mapping[str, Any]]:
-        """Expose the metrics computed for the most recent prompt build."""
+        """Expone las métricas calculadas para la construcción de *prompt* más reciente."""
 
         return self._last_quality_metadata
 
@@ -510,7 +515,7 @@ class BasePromptBuilder(ABC):
         return "\n".join(line for line in lines if line)
 
     # ------------------------------------------------------------------
-    # Utility helpers
+    # Helpers utilitarios
     # ------------------------------------------------------------------
     def _clean_chunk_text(self, text: Any) -> tuple[str, bool]:
         cleaned = self._clean_str(text)
@@ -532,9 +537,9 @@ class BasePromptBuilder(ABC):
                 cleaned = head_fragment + separator + tail_fragment
             truncated = True
             self.logger.warning(
-                "chunk_truncated",
+                "fragmento_truncado",
                 extra={
-                    "event": "chunk_truncated",
+                    "event": "fragmento_truncado",
                     "original_length": original_length,
                     "max_chunk_chars": self.max_chunk_chars,
                     "result_length": len(cleaned),
@@ -576,11 +581,12 @@ class BasePromptBuilder(ABC):
 
     @staticmethod
     def _extract_scale_values_from_criteria(criteria: Mapping[str, Any]) -> Optional[set[float]]:
-        """Return numeric values declared under ``"niveles"`` or ``"escala"``.
+        """Devuelve los valores numéricos declarados en ``"niveles"`` o ``"escala"``.
 
-        Some datasets expose the scale directly in ``criteria["niveles"]`` while
-        others provide an ``"escala"`` object that nests the levels. Both shapes
-        are normalised to a flat ``set`` of ``float`` values when detected.
+        Algunos conjuntos de datos exponen la escala directamente en
+        ``criteria["niveles"]`` mientras que otros incluyen un objeto
+        ``"escala"`` que anida los niveles. Ambos formatos se normalizan a un
+        ``set`` plano de valores ``float`` cuando se detectan.
         """
         if not isinstance(criteria, MappingABC):
             return None
@@ -668,7 +674,7 @@ class BasePromptBuilder(ABC):
         return f"Valores permitidos para \"score\": [{formatted_values}]{details_text}."
     
     def _compact_prompt(self, prompt: str) -> str:
-        """Collapse repeated whitespace and trim surrounding blank lines."""
+        """Colapsa espacios repetidos y elimina líneas en blanco sobrantes. """
 
         collapsed = "\n".join(line.rstrip() for line in prompt.splitlines())
         collapsed = re.sub(r"\n{3,}", "\n\n", collapsed)
@@ -681,11 +687,14 @@ class BasePromptBuilder(ABC):
         sample = f" {text.lower()} "
         if any(marker in sample for marker in self._spanish_markers):
             return
-        self.logger.warning("language_validation_failed", extra={"event": "language_validation_failed"})
+        self.logger.warning(
+            "validacion_idioma_fallida",
+            extra={"event": "validacion_idioma_fallida"},
+        )
         self._quality_flags["language_suspect"] = True
 
     def to_langchain_prompt(self, context: PromptContext) -> Dict[str, Any]:
-        """Return a LangChain-compatible prompt payload."""
+        """Devuelve una estructura de *prompt* compatible con LangChain."""
 
         prompt = self.build_from_context(context)
         return {
@@ -695,17 +704,20 @@ class BasePromptBuilder(ABC):
         }
     
     def as_langchain_template(self, context: PromptContext) -> Any:
-        """Return a LangChain ``ChatPromptTemplate`` when available.
+        """Devuelve un ``ChatPromptTemplate`` de LangChain cuando está disponible.
 
-        Falls back to the dictionary payload returned by :meth:`to_langchain_prompt`
-        when LangChain is not installed in the runtime environment.
+        Si LangChain no está instalado en el entorno de ejecución, retorna el
+        diccionario generado por :meth:`to_langchain_prompt`.
         """
 
         payload = self.to_langchain_prompt(context)
         try:
             from langchain_core.prompts import ChatPromptTemplate  # type: ignore
         except ImportError:
-            self.logger.info("langchain_not_available", extra={"event": "langchain_not_available"})
+            self.logger.info(
+                "langchain_no_disponible",
+                extra={"event": "langchain_no_disponible"},
+            )
             return payload
 
         template_text = payload["template"]
@@ -762,7 +774,7 @@ class BasePromptBuilder(ABC):
 
 
 class InstitutionalPromptBuilder(BasePromptBuilder):
-    """Prompt builder for institutional reports using the 0–4 CEPLAN scale."""
+    """Constructor de *prompts* para informes institucionales con escala 0–4 del CEPLAN."""
 
     _default_scale_levels = (
         ScaleLevel(0, "La sección no aborda el criterio o presenta información contradictoria.", "No cumple"),
@@ -788,11 +800,11 @@ class InstitutionalPromptBuilder(BasePromptBuilder):
         self._scale_levels = self._resolve_scale_config(scale_config, default=self._default_scale_levels)
 
     @property
-    def scale_label(self) -> str:  # pragma: no cover - simple property
+    def scale_label(self) -> str:  # pragma: no cover - propiedad simple
         return "0 a 4 (valores enteros)"
 
     @property
-    def scale_levels(self) -> Sequence[ScaleLevel]:  # pragma: no cover - simple property
+    def scale_levels(self) -> Sequence[ScaleLevel]:  # pragma: no cover - propiedad simple
         return self._scale_levels
 
     def _build_objective_lines(self, data: _PromptData) -> list[str]:
@@ -808,7 +820,7 @@ class InstitutionalPromptBuilder(BasePromptBuilder):
         )
 
 class PolicyPromptBuilder(BasePromptBuilder):
-    """Prompt builder for national policies using the 0–2 scale with half points."""
+    """Constructor de *prompts* para políticas nacionales con escala 0–2 y medios puntos."""
 
     _default_scale_levels = (
         ScaleLevel(0.0, "La respuesta es inexistente o contradice el criterio evaluado.", "No evidencia"),
@@ -834,11 +846,11 @@ class PolicyPromptBuilder(BasePromptBuilder):
         self._scale_levels = self._resolve_scale_config(scale_config, default=self._default_scale_levels)
 
     @property
-    def scale_label(self) -> str:  # pragma: no cover - simple property
+    def scale_label(self) -> str:  # pragma: no cover - propiedad simple
         return "0 a 2 (pasos de 0.5)"
 
     @property
-    def scale_levels(self) -> Sequence[ScaleLevel]:  # pragma: no cover - simple property
+    def scale_levels(self) -> Sequence[ScaleLevel]:  # pragma: no cover - propiedad simple
         return self._scale_levels
 
     def _build_objective_lines(self, data: _PromptData) -> list[str]:
@@ -852,7 +864,7 @@ class PolicyPromptBuilder(BasePromptBuilder):
         return "Selecciona puntajes en incrementos de 0.5 dentro del rango 0 a 2, según la evidencia disponible."
 
 class PromptFactory:
-    """Factory that selects the appropriate builder based on report type."""
+    """Fábrica que selecciona el generador adecuado según el tipo de informe."""
 
     def __init__(self, *, default_builder: Optional[BasePromptBuilder] = None) -> None:
         self._default_builder = default_builder or InstitutionalPromptBuilder()
@@ -916,11 +928,11 @@ class PromptFactory:
 
     @staticmethod
     def _scale_from_criteria(criteria: Mapping[str, Any]) -> Optional[list[Mapping[str, Any]]]:
-        """Build a scale configuration from criteria metadata.
+        """Construye la configuración de escala a partir del metadato de criterios.
 
-        Accepts either a top-level ``"niveles"`` iterable or an ``"escala"``
-        mapping that itself contains a ``"niveles"`` collection. This mirrors the
-        JSON payloads produced by CEPLAN where both shapes are in use.
+        Acepta un iterable ``"niveles"`` en la raíz o un mapeo ``"escala"`` que
+        contenga a su vez una colección ``"niveles"``. Esto refleja los
+        diferentes formatos JSON emitidos por CEPLAN.
         """
         if not isinstance(criteria, MappingABC):
             return None
@@ -983,7 +995,7 @@ class PromptFactory:
         return entries or None
 
     def default(self) -> BasePromptBuilder:
-        """Return the default builder used when no match is found."""
+        """Devuelve el generador predeterminado cuando no se encuentra coincidencia."""
 
         return self._default_builder
 
@@ -1006,7 +1018,7 @@ def build_prompt_with_meta(
     chunk_metadata: Optional[Mapping[str, Any]],
     extra_instructions: Optional[str] = None,
 ) -> tuple[str, Mapping[str, Any]]:
-    """Create a prompt and return it alongside the collected quality metadata."""
+    """Crea un *prompt* y lo devuelve junto con los metadatos de calidad recopilados."""
 
     builder = _DEFAULT_FACTORY.for_criteria(criteria)
     prompt = builder(
@@ -1034,7 +1046,7 @@ def build_prompt(
     chunk_metadata: Optional[Mapping[str, Any]],
     extra_instructions: Optional[str] = None,
 ) -> str:
-    """Create a detailed prompt guiding the language model evaluation."""
+    """Genera un *prompt* detallado que guía la evaluación del modelo de lenguaje."""
 
     prompt, _ = build_prompt_with_meta(
         document=document,
@@ -1050,7 +1062,7 @@ def build_prompt(
 
 
 def build_prompt_from_context(context: PromptContext) -> str:
-    """Adapter that generates a prompt starting from a :class:`PromptContext`."""
+    """Adaptador que genera un *prompt* a partir de un :class:`PromptContext`."""
 
     builder = _DEFAULT_FACTORY.for_criteria(context.criteria)
     return builder.build_from_context(context)

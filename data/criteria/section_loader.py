@@ -55,7 +55,7 @@ def _prefix_num_pattern() -> str:
 
 
 def _token_set_score(a: str, b: str, **kwargs: Any) -> float:
-    """Wrapper tolerante a stubs de ``rapidfuzz.fuzz.token_set_ratio``."""
+    """Contenedor tolerante a stubs de ``rapidfuzz.fuzz.token_set_ratio``."""
 
     if fuzz is None:
         return SequenceMatcher(None, a, b).ratio() * 100

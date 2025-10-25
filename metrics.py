@@ -1,10 +1,9 @@
-"""Utility helpers to compute global metrics for evaluation results.
+"""Helpers para calcular métricas globales a partir de los resultados.
 
-The orchestration service invokes these helpers after the evaluator has
-produced the per-question scores *and* the weighted aggregates for each
-section.  Keeping the metrics calculations in a separate module makes it
-easier to plug alternative methodologies in the future without touching the
-main service.
+El servicio de orquestación invoca estas funciones luego de que el evaluador
+produce los puntajes por pregunta y los agregados ponderados por sección.
+Separar los cálculos en este módulo permite incorporar metodologías
+alternativas en el futuro sin modificar el servicio principal.
 """
 
 from __future__ import annotations
@@ -24,7 +23,7 @@ __all__ = [
 
 @dataclass(slots=True)
 class MetricsSummary:
-    """Container holding the global index and section level breakdown."""
+    """Contenedor que almacena el índice global y el detalle por sección."""
 
     data: Dict[str, Any]
 
@@ -50,7 +49,7 @@ def _normalise(
 
 
 def _resolve_tipo_informe(evaluation: EvaluationResult) -> Optional[str]:
-    """Extract the report type from ``evaluation`` when available."""
+    """Extrae el tipo de informe desde ``evaluation`` cuando está disponible."""
 
     if hasattr(evaluation, "tipo_informe"):
         tipo = getattr(evaluation, "tipo_informe")  # type: ignore[attr-defined]
@@ -118,7 +117,7 @@ def _target_range_from_criteria(
     default_min: float,
     default_max: float,
 ) -> Tuple[float, float]:
-    """Return the desired output normalisation range."""
+    """Devuelve el rango de normalización de salida deseado."""
 
     if not isinstance(criteria, Mapping):
         return (default_min, default_max)
@@ -141,13 +140,12 @@ def calculate_institutional_metrics(
     normalized_range: Optional[Tuple[float, float]] = None,
     weights: Optional[Mapping[str, float]] = None,
 ) -> MetricsSummary:
-    """Compute the institutional index for an already weighted evaluation.
+    """Calcula el índice institucional para una evaluación ya ponderada.
 
-    The evaluator is expected to provide an :class:`EvaluationResult` where the
-    section scores are already weighted averages.  The helper only normalises
-    those aggregates to the requested output scale.  ``weights`` can override
-    the recorded weight for each section when experimenting with alternative
-    ponderations.
+    Se espera que el evaluador entregue un :class:`EvaluationResult` con las
+    secciones ya promediadas. Esta función únicamente normaliza esos agregados a
+    la escala solicitada. ``weights`` puede sobrescribir el peso de cada sección
+    al explorar ponderaciones alternativas.
     """
 
     scale = (
@@ -199,11 +197,11 @@ def calculate_policy_metrics(
     normalized_range: Optional[Tuple[float, float]] = None,
     weights: Optional[Mapping[str, float]] = None,
 ) -> MetricsSummary:
-    """Return the policy index for an already weighted evaluation.
+    """Devuelve el índice de política para una evaluación ya ponderada.
 
-    Section scores are assumed to be weighted averages.  The helper simply
-    normalises the results to the requested target range.  ``weights`` allows
-    overriding the stored section weights for quick experiments.
+    Se asume que las secciones contienen promedios ponderados. La función solo
+    normaliza los resultados al rango objetivo solicitado. ``weights`` permite
+    ajustar los pesos registrados por sección para experimentar rápidamente.
     """
 
     scale = criteria.get("escala", {}) if isinstance(criteria, Mapping) else {}
@@ -250,12 +248,12 @@ def calculate_metrics(
     normalized_range: Optional[Tuple[float, float]] = None,
     weights: Optional[Mapping[str, float]] = None,
 ) -> MetricsSummary:
-    """Dispatch the metric calculation according to the report type.
+    """Despacha el cálculo de métricas según el tipo de informe.
 
-    The provided :class:`EvaluationResult` must already contain weighted
-    aggregates for each section; this helper focuses on normalising those
-    values and reporting totals.  When ``weights`` is provided it is propagated
-    to the section breakdown regardless of the report type.
+    El :class:`EvaluationResult` recibido debe incluir los agregados ponderados
+    por sección; esta función se encarga de normalizarlos y reportar totales.
+    Cuando se indica ``weights`` se propaga al detalle por sección sin importar
+    el tipo de informe.
     """
 
     report_type = ""
@@ -271,7 +269,7 @@ def calculate_metrics(
             evaluation, criteria, normalized_range=normalized_range, weights=weights
         )
 
-    # Generic fallback: reuse the evaluation score without normalisation.
+    # Recurso genérico: reutiliza el puntaje de evaluación sin normalizar.
     target_min, target_max = normalized_range or (0.0, 100.0)
     data = {
         "methodology": report_type or "desconocida",

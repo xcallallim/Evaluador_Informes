@@ -1,4 +1,4 @@
-"""Integration test exercising the full evaluation pipeline."""
+"""Prueba de integración que recorre la canalización completa de evaluación."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ logger = logging.getLogger("tests.pipeline")
 
 @pytest.fixture
 def deterministic_ai(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Force MockAIService to emit deterministic scores during the test."""
+    """Obliga a MockAIService a emitir puntajes deterministas durante la prueba."""
 
     def _deterministic_evaluate(self: MockAIService, prompt: str, **kwargs: Any) -> Dict[str, Any]:
         question = kwargs.get("question") or {}
@@ -74,7 +74,7 @@ def _write_sample_document(target: Path) -> None:
 
 
 def _write_incomplete_document(target: Path) -> None:
-    """Document lacking recognizable institutional sections."""
+    """Documento sin secciones institucionales reconocibles."""
 
     content = "\n".join(
         [
@@ -167,7 +167,9 @@ def _force_prompt_batch_support(monkeypatch: pytest.MonkeyPatch) -> None:
         kwargs.pop("prompt_batch_size", None)
         ai_service = state.get("ai_service")
         if ai_service is None:
-            raise RuntimeError("AI service must be resolved before instantiating the evaluator")
+            raise RuntimeError(
+                "El servicio de IA debe resolverse antes de instanciar el evaluador"
+            )
         original_init(
             self,
             ai_service,
@@ -439,13 +441,13 @@ def test_full_pipeline_execution(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
                     assert not metadata.get("prompt_rejected", False)
                     assert metadata.get("mock") is True
                     assert metadata.get("model") == "mock-integration"
-                    # chunk_metadata preserves segmentation + cleaning report
+                    # chunk_metadata preserva la segmentación y el reporte de limpieza
                     chunk_meta = metadata.get("chunk_metadata") or {}
                     document_meta = chunk_meta.get("document_metadata") or {}
                     assert "cleaning_report" in document_meta
                     if "source_id" in chunk_meta:
                         chunk_sources.append(str(chunk_meta["source_id"]))
-                # At least one chunk should come from the section that defines the question
+                # Al menos un chunk debe provenir de la sección que define la pregunta
                 assert section.section_id in chunk_sources
 
     total_chunks = sum(

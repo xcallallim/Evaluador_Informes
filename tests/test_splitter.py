@@ -121,7 +121,7 @@ def test_split_document_generates_metadata(sample_sections: Dict[str, str]) -> N
 
     splitter.split_document(document)
 
-    assert document.chunks, "Expected chunks to be generated from the sample sections"
+    assert document.chunks, "Se esperaban chunks generados a partir de las secciones de ejemplo"
     assert {chunk.metadata["source_id"] for chunk in document.chunks} == set(
         sample_sections.keys()
     )
@@ -205,7 +205,7 @@ def test_full_pipeline_generates_expected_chunks() -> None:
         assert chunk.page_content.strip() in document.sections["resumen_ejecutivo"]
 
 
-    # Validate that chunk ordering preserves the original sequence for the section.
+    # Verifica que el orden de los chunks preserve la secuencia original de la sección.
     assert [chunk.metadata["id"] for chunk in resumen_chunks] == [
         f"resumen_ejecutivo_{i}" for i in range(1, expected_resumen_count + 1)
     ]
@@ -216,7 +216,7 @@ def test_full_pipeline_generates_expected_chunks() -> None:
         expected_overlap=splitter.chunk_overlap,
     )
 
-    # Ensure no chunk lost the base metadata propagated by the splitter.
+    # Confirma que ningún chunk haya perdido los metadatos base propagados por el splitter.
     assert all("document_metadata" in chunk.metadata for chunk in document.chunks)
 
 

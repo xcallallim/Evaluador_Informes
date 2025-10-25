@@ -1,15 +1,15 @@
-"""Utility functions for securely retrieving the OpenAI API key.
+"""Funciones para recuperar la clave API de OpenAI de forma segura.
 
-The module tries multiple sources in the following order:
-1. Environment variable ``OPENAI_API_KEY``.
-2. Plain text file ``secrets/openai_api_key.txt`` (intended for local development only).
-3. Encrypted file ``secrets/openai_api_key.enc`` which requires the ``OPENAI_KEY_PASSPHRASE``
-   environment variable to decrypt.
+El módulo evalúa múltiples fuentes en el siguiente orden:
+1. Variable de entorno ``OPENAI_API_KEY``.
+2. Archivo de texto ``secrets/openai_api_key.txt`` (solo para desarrollo local).
+3. Archivo cifrado ``secrets/openai_api_key.enc`` que requiere la variable
+   ``OPENAI_KEY_PASSPHRASE`` para descifrar
 
-The encrypted file is expected to store a JSON payload with two fields:
-``salt`` (base64 encoded random bytes used to derive the key) and ``token`` (the Fernet token).
+El archivo cifrado almacena un JSON con dos campos: ``salt`` (bytes aleatorios en
+base64 usados para derivar la clave) y ``token`` (el *token* de Fernet).
 
-If none of the sources provide a key, a ``SecretManagerError`` is raised.
+Si ninguna fuente proporciona una clave se lanza ``SecretManagerError``.
 """
 
 from __future__ import annotations
@@ -28,12 +28,12 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 class SecretManagerError(RuntimeError):
-    """Raised when the OpenAI API key cannot be retrieved."""
+    """Se lanza cuando no se puede recuperar la clave API de OpenAI."""
 
 
 @dataclass
 class SecretSource:
-    """Represents a possible source for the OpenAI API key."""
+    """Representa una posible fuente para la clave API de OpenAI."""
 
     name: str
     value: Optional[str] = None
@@ -72,7 +72,7 @@ def _load_from_plain_text() -> Optional[SecretSource]:
 
     try:
         content = PLAIN_TEXT_FILE.read_text(encoding="utf-8").strip()
-    except OSError as exc:  # pragma: no cover - unlikely but guarded.
+    except OSError as exc:  # pragma: no cover - improbable pero protegido.
         raise SecretManagerError(
             f"No se pudo leer el archivo de texto con la clave API: {exc}"
         ) from exc
@@ -110,7 +110,7 @@ def seal_key(
 ) -> Path:
     """Cifre y almacene la clave API de OpenAI en ``openai_api_key.enc``.
 
-    Parameters
+     Parámetros
     ----------
     api_key:
         Clave API en texto plano que se desea proteger.
@@ -125,7 +125,7 @@ def seal_key(
     pathlib.Path
         Ruta del archivo cifrado generado.
 
-    Raises
+    Excepciones 
     ------
     SecretManagerError
         Si la clave API está vacía o la passphrase no cumple los requisitos.
@@ -152,7 +152,7 @@ def seal_key(
 
     try:
         destination.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    except OSError as exc:  # pragma: no cover - unexpected filesystem errors.
+    except OSError as exc:  # pragma: no cover - errores de filesystem inesperados.
         raise SecretManagerError(
             f"No se pudo escribir el archivo cifrado con la clave API: {exc}"
         ) from exc
@@ -176,7 +176,7 @@ def _load_from_encrypted_file() -> Optional[SecretSource]:
         payload = json.loads(ENCRYPTED_FILE.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise SecretManagerError("El archivo cifrado contiene un JSON inválido.") from exc
-    except OSError as exc:  # pragma: no cover - filesystem errors are unexpected but handled.
+    except OSError as exc:  # pragma: no cover - errores de filesystem poco probables pero manejados.
         raise SecretManagerError(
             f"No se pudo leer el archivo cifrado con la clave API: {exc}"
         ) from exc
@@ -199,7 +199,7 @@ def _load_from_encrypted_file() -> Optional[SecretSource]:
     try:
         fernet = Fernet(key)
         decrypted = fernet.decrypt(token.encode("utf-8"))
-    except Exception as exc:  # pragma: no cover - cryptography raises multiple exception types.
+    except Exception as exc:  # pragma: no cover - cryptography puede lanzar múltiples excepciones.
         raise SecretManagerError("No se pudo descifrar la clave API con la passphrase proporcionada.") from exc
 
     value = decrypted.decode("utf-8").strip()
@@ -210,7 +210,7 @@ def _load_from_encrypted_file() -> Optional[SecretSource]:
 
 
 def seal_key(api_key: str, passphrase: str, *, output_file: Path = ENCRYPTED_FILE) -> Path:
-    """Seal an API key into an encrypted file compatible with :func:`get_openai_api_key`."""
+    """Cifra una clave API en un archivo compatible con :func:`get_openai_api_key`."""
 
     cleaned_key = (api_key or "").strip()
     if not cleaned_key:
@@ -234,17 +234,17 @@ def seal_key(api_key: str, passphrase: str, *, output_file: Path = ENCRYPTED_FIL
 
 
 def get_openai_api_key() -> str:
-    """Retrieve the OpenAI API key from the available sources.
+    """Obtiene la clave API de OpenAI desde las fuentes disponibles
 
     Returns
     -------
     str
-        The OpenAI API key.
+        Clave API de OpenAI.
 
-    Raises
+    Lanza
     ------
     SecretManagerError
-        If the key cannot be found in any of the supported locations.
+        Si la clave no se encuentra en ninguna ubicación soportada.
     """
 
     for loader in (_load_from_env, _load_from_plain_text, _load_from_encrypted_file):

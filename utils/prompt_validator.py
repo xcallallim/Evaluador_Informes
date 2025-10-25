@@ -1,6 +1,6 @@
-"""Utility helpers to assess the quality of prompts before sending them to the AI.
+"""Ayudantes para evaluar la calidad de los *prompts* antes de enviarlos a la IA.
 
-The validation layer implemented in this module focuses on three dimensions:
+La capa de validación implementada en este módulo se enfoca en tres dimensiones:
 
 * **Estructural** – el texto debe poseer longitud suficiente, delimitadores y
   bloques esperados (fragmentos, JSON de respuesta, etc.).
@@ -87,7 +87,7 @@ class PromptValidationResult:
 class PromptValidator:
     """Valida prompts según reglas ponderadas y produce un índice de calidad.
 
-    Parameters
+    Parámetros
     ----------
     min_length:
         Longitud mínima esperada para considerar que el prompt posee suficiente
@@ -159,6 +159,7 @@ class PromptValidator:
 
     # ------------------------------------------------------------------
     # API principal
+    # ------------------------------------------------------------------
     def validate(
         self,
         prompt: str,
@@ -166,7 +167,7 @@ class PromptValidator:
     ) -> PromptValidationResult:
         """Evalúa el prompt y retorna un :class:`PromptValidationResult`.
 
-        Parameters
+        Parámetros
         ----------
         prompt:
             Texto completo que se enviará al modelo de lenguaje.
@@ -230,6 +231,7 @@ class PromptValidator:
 
     # ------------------------------------------------------------------
     # Reglas individuales
+    # ------------------------------------------------------------------
     def _check_length(
         self,
         prompt: str,
@@ -398,7 +400,7 @@ class PromptValidator:
         if detect_langs is not None and prompt_length >= 50:
             try:
                 detections = detect_langs(normalized_prompt)
-            except Exception:  # pragma: no cover - depends on external library behaviour
+            except Exception:  # pragma: no cover - depende del comportamiento de la librería externa
                 detections = []
             else:
                 for detection in detections:

@@ -44,7 +44,7 @@ class Cleaner:
     ) -> str | Tuple[str, Dict]:
         """Punto de entrada principal del limpiador (texto plano).
 
-        Parameters
+        Parámetros
         ----------
         text:
             Texto completo a limpiar.
