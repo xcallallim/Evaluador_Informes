@@ -399,7 +399,6 @@ class Splitter:
             log_warn(
                 "⚠️ No se generaron chunks por secciones. Usando páginas como fallback."
             )
-            content_sections = {"sin_clasificar": content_text}
             for chunk in self._split_content_map(
                 page_sections,
                 origin="page",
@@ -420,10 +419,11 @@ class Splitter:
         else:
             content_text = ""
 
-        if content_text:
+        if content_text and not produced_any:
             log_warn(
                 "⚠️ No se generaron chunks por secciones ni páginas. Dividiendo el contenido completo."
             )
+            content_sections = {"sin_clasificar": content_text}
             for chunk in self._split_content_map(
                 content_sections,
                 origin="document",

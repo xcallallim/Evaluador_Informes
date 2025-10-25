@@ -1569,3 +1569,5 @@ def test_pipeline_integration_real_ai_tolerance(
     difference = abs(evaluation_a.score - evaluation_b.score)
     assert difference < 0.2
     assert difference > 0
+
+# pytest tests/test_pipeline_integration.py -v

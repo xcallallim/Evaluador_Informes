@@ -1,5 +1,9 @@
-# Ignore local environment directories
+# Ignora los directorios de entorno local
 venv/
 
-# Ignore secret storage directory
+# Ignora el directorio de almacenamiento secreto
 secrets/
+
+# Ignora archivos cache de Python
+__pycache__/
+*.py[cod]
