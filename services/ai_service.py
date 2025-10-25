@@ -6,6 +6,7 @@ import hashlib
 import json
 import logging
 import time
+import unicodedata
 import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -360,6 +361,28 @@ class MockAIService(BaseAIService):
         }
         metadata["report_type"] = report_type
         levels = list(self._extract_levels(kwargs.get("question") or {}))
+        dimension_data = kwargs.get("dimension") or {}
+        dimension_name = None
+        if isinstance(dimension_data, Mapping):
+            raw_dimension = dimension_data.get("nombre")
+            if isinstance(raw_dimension, str):
+                dimension_name = "".join(
+                    ch
+                    for ch in unicodedata.normalize("NFKD", raw_dimension.strip().lower())
+                    if not unicodedata.combining(ch)
+                )
+        if dimension_name == "estructura":
+            levels = [1.0, 2.0]
+        if not levels:
+            if report_type == "institucional":
+                levels = [1.0, 2.0, 3.0, 4.0]
+            elif report_type in {
+                "pn",
+                "politica_nacional",
+                "politica nacional",
+                "politica-nacional",
+            }:
+                levels = [0.0, 0.5, 1.0, 1.5, 2.0]
         metadata["allowed_levels"] = list(levels)
         metadata["enforced_discrete"] = bool(levels)
         if prompt is None and self._is_empty_chunk(chunk_text):
@@ -420,7 +443,7 @@ class MockAIService(BaseAIService):
         if candidates:
             index = base % len(candidates)
             return float(candidates[index])
-        fallback = [0.0, 1.0, 2.0, 3.0, 4.0]
+        fallback = [1.0, 2.0, 3.0, 4.0]
         return float(fallback[base % len(fallback)])
 
 
@@ -433,7 +456,7 @@ class OpenAIService(BaseAIService):
         "(número) y 'justification' (texto). Puedes incluir 'relevant_text' si aplica."
     )
 
-    _INSTITUTIONAL_LEVELS: Sequence[float] = (0.0, 1.0, 2.0, 3.0, 4.0)
+    _INSTITUTIONAL_LEVELS: Sequence[float] = (1.0, 2.0, 3.0, 4.0)
     _PN_LEVELS: Sequence[float] = (0.0, 0.5, 1.0, 1.5, 2.0)
 
     def __init__(

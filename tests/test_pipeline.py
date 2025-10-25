@@ -900,7 +900,7 @@ def test_pipeline_retries_transient_failures_and_timeouts(
         for question in dimension.questions
         if question.question_id == "P3"
     )
-    assert any(chunk.score == 0 for chunk in p3_question.chunk_results)
+    assert any(chunk.score == 1.0 for chunk in p3_question.chunk_results)
     assert all(
         chunk.metadata.get("score_imputed") is True and chunk.metadata.get("error")
         for chunk in p3_question.chunk_results

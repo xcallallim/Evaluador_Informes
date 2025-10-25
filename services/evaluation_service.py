@@ -42,9 +42,11 @@ PROMPT_QUALITY_THRESHOLD = 0.7
 
 SUPPORTED_MODES = {"global", "parcial", "reevaluación"}
 MODE_ALIASES = {
-    "completa": "completo",
-    "total": "completo",
-    "full": "completo",
+    "completa": "global",
+    "total": "global",
+    "full": "global",
+    "completo": "global",
+    "complete": "global",
     "partial": "parcial",
     "reevaluación": "reevaluacion",
     "reevaluacion": "reevaluacion",
@@ -52,6 +54,11 @@ MODE_ALIASES = {
     "reevaluation": "reevaluacion",
 }
 LEGACY_REEVALUATION_MODES = {"reevaluacion"}
+MODE_CANONICAL = {
+    "global": "global",
+    "parcial": "parcial",
+    "reevaluacion": "reevaluación",
+}
 
 __all__ = [
     "EvaluationFilters",
@@ -442,6 +449,14 @@ class ValidatingEvaluator(Evaluator):
             validation = entry["validation"]
             chunk_metadata_dict = entry.get("chunk_metadata_dict", {})
             model_response = self._normalise_response(response)
+            raw_score = model_response.score
+            adjusted_score, adjusted = self._apply_score_constraints(
+                raw_score,
+                criteria=criteria,
+                dimension=dimension_data,
+                question=question_data,
+            )
+            model_response.score = adjusted_score
             response_metadata = dict(model_response.metadata)
             if chunk_metadata_dict:
                 response_metadata.setdefault("chunk_metadata", chunk_metadata_dict)
@@ -460,6 +475,10 @@ class ValidatingEvaluator(Evaluator):
             chunk_weight = self._resolve_chunk_weight(response_metadata)
             if chunk_weight is not None:
                 response_metadata.setdefault("weight", chunk_weight)
+            if adjusted:
+                response_metadata.setdefault("score_adjusted", True)
+                response_metadata.setdefault("score_adjusted_from", raw_score)
+                response_metadata.setdefault("score_adjusted_to", adjusted_score)
 
             chunk_results.append(
                 ChunkResult(
@@ -722,6 +741,14 @@ class ValidatingEvaluator(Evaluator):
                 }
 
             model_response = self._normalise_response(response)
+            raw_score = model_response.score
+            adjusted_score, adjusted = self._apply_score_constraints(
+                raw_score,
+                criteria=criteria,
+                dimension=dimension_data,
+                question=question_data,
+            )
+            model_response.score = adjusted_score
             response_metadata = dict(model_response.metadata)
             if chunk_metadata_dict:
                 response_metadata.setdefault("chunk_metadata", chunk_metadata_dict)
@@ -738,6 +765,10 @@ class ValidatingEvaluator(Evaluator):
             chunk_weight = self._resolve_chunk_weight(response_metadata)
             if chunk_weight is not None:
                 response_metadata.setdefault("weight", chunk_weight)
+            if adjusted:
+                response_metadata.setdefault("score_adjusted", True)
+                response_metadata.setdefault("score_adjusted_from", raw_score)
+                response_metadata.setdefault("score_adjusted_to", adjusted_score)
 
             chunk_results.append(
                 ChunkResult(
@@ -1038,6 +1069,13 @@ class EvaluationService:
         if criteria_path is None:
             raise ValueError("Debe proporcionar criteria_data o criteria_path.")
         path = Path(criteria_path)
+        if not path.exists():
+            parent = path.parent if path.parent else Path(".")
+            target = _normalise_identifier(path.name)
+            for entry in parent.iterdir():
+                if _normalise_identifier(entry.name) == target:
+                    path = entry
+                    break
         with path.open("r", encoding="utf-8") as handle:
             return json.load(handle)
 
@@ -1109,14 +1147,17 @@ class EvaluationService:
         return "institucional"
     
     def _normalise_mode(self, mode: str | None) -> str:
-        value = (mode or "").strip().lower()
+        value = _normalise_identifier(mode)
         if not value:
             value = "global"
-        if value not in SUPPORTED_MODES:
+        else:
+            value = MODE_ALIASES.get(value, value)
+        canonical = MODE_CANONICAL.get(value, value)
+        if canonical not in SUPPORTED_MODES:
             raise ValueError(
                 "El modo debe ser global, parcial o reevaluacion."
             )
-        return value
+        return canonical
 
     def _prepare_criteria(
         self,

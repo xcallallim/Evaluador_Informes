@@ -317,7 +317,10 @@ def test_evaluator_supports_global_blocks() -> None:
     assert len(result.sections) == 1
     section = result.sections[0]
     assert section.section_id == "B1"
-    assert section.dimensions[0].questions[0].score == pytest.approx(4.0)
+    question = section.dimensions[0].questions[0]
+    assert question.score == pytest.approx(2.0)
+    assert question.chunk_results[0].metadata.get("score_adjusted") is True
+    assert question.chunk_results[0].metadata.get("score_adjusted_to") == 2.0
 
 
 def test_dimension_weighting_with_sparse_questions() -> None:
@@ -370,8 +373,9 @@ def test_dimension_weighting_with_sparse_questions() -> None:
     section.recompute_score()
     assert len(section.dimensions) == 3
     assert section.dimensions[2].score is None
-    # Promedio ponderado: ((2*1.0) + (1*5.0)) / (2+1) = 7/3
-    assert section.score == pytest.approx(7 / 3)
+    # El puntaje de la segunda dimensión se ajusta al máximo permitido (4.0).
+    # Promedio ponderado: ((2*1.0) + (1*4.0)) / (2+1) = 6/3
+    assert section.score == pytest.approx(2.0)
 
 
 def test_evaluation_result_generated_at_traces_timestamp() -> None:

@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import logging
 import time
+import unicodedata
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Protocol
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Protocol, Tuple
 
 from data.models.document import Document
 from data.models.evaluation import (
@@ -245,6 +246,14 @@ class Evaluator:
                 elapsed_ms = (time.perf_counter() - start_time) * 1000
 
             model_response = self._normalise_response(response)
+            raw_score = model_response.score
+            adjusted_score, adjusted = self._apply_score_constraints(
+                raw_score,
+                criteria=criteria,
+                dimension=dimension_data,
+                question=question_data,
+            )
+            model_response.score = adjusted_score
             response_metadata = dict(model_response.metadata)
             if chunk_metadata_dict:
                 response_metadata.setdefault("chunk_metadata", chunk_metadata_dict)
@@ -252,6 +261,10 @@ class Evaluator:
             chunk_weight = self._resolve_chunk_weight(response_metadata)
             if chunk_weight is not None:
                 response_metadata.setdefault("weight", chunk_weight)
+            if adjusted:
+                response_metadata.setdefault("score_adjusted", True)
+                response_metadata.setdefault("score_adjusted_from", raw_score)
+                response_metadata.setdefault("score_adjusted_to", adjusted_score)
 
             chunk_results.append(
                 ChunkResult(
@@ -360,6 +373,54 @@ class Evaluator:
             type(response),
         )
         return ModelResponse(score=None, justification=text_response)
+    
+    @staticmethod
+    def _normalise_label(value: Any) -> str:
+        if value is None:
+            return ""
+        text = str(value).strip().lower()
+        if not text:
+            return ""
+        normalized = unicodedata.normalize("NFKD", text)
+        return "".join(ch for ch in normalized if not unicodedata.combining(ch))
+
+    def _apply_score_constraints(
+        self,
+        score: Any,
+        *,
+        criteria: Mapping[str, Any],
+        dimension: Mapping[str, Any],
+        question: Mapping[str, Any],
+    ) -> Tuple[Optional[float], bool]:
+        if score is None:
+            return None, False
+        try:
+            numeric = float(score)
+        except (TypeError, ValueError):
+            logger.warning("Discarding non-numeric score returned by AI: %s", score)
+            return None, True
+
+        report_type = self._normalise_label(criteria.get("tipo_informe"))
+        dimension_name = self._normalise_label(dimension.get("nombre"))
+
+        adjusted = numeric
+        if report_type == "institucional":
+            if dimension_name == "estructura":
+                allowed = (1.0, 2.0)
+            else:
+                allowed = (1.0, 2.0, 3.0, 4.0)
+            adjusted = min(allowed, key=lambda candidate: (abs(candidate - numeric), candidate))
+        elif report_type in {
+            "pn",
+            "politica_nacional",
+            "politica nacional",
+            "politica-nacional",
+        }:
+            adjusted = max(0.0, min(2.0, numeric))
+            adjusted = round(adjusted * 2.0) / 2.0
+
+        changed = abs(adjusted - numeric) > 1e-9
+        return float(adjusted), changed
 
     def _resolve_chunk_weight(self, metadata: Mapping[str, Any]) -> Optional[float]:
         for key in ("weight", "ponderacion", "relevance", "peso"):
