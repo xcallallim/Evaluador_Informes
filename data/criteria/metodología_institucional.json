@@ -1144,5 +1144,20 @@
                 }
             ]
         }
-    ]
+    ],
+    "metodologia": {
+        "pasos": [
+            "Evaluar cada pregunta utilizando la escala definida en la metodolog\u00eda institucional.",
+            "Promediar los resultados por dimensi\u00f3n seg\u00fan las ponderaciones de cada pregunta.",
+            "Calcular el puntaje de la secci\u00f3n combinando las dimensiones con sus ponderaciones espec\u00edficas.",
+            "Agregar las secciones utilizando las ponderaciones globales para obtener el puntaje final."
+        ],
+        "resultado": {
+            "unidad": "escala_likert",
+            "rango": [
+                0,
+                4
+            ]
+        }
+    }   
 }

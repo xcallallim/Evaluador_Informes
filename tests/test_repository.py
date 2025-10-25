@@ -43,6 +43,9 @@ def _sample_evaluation() -> EvaluationResult:
             "criteria_version": "v1",
             "run_id": "run-123",
             "model_name": "gpt-4o-mini",
+            "tipo_informe": "institucional",
+            "pipeline_version": "svc-1",
+            "timestamp": "2024-05-01T10:00:00Z",
         },
     )
     return evaluation
@@ -53,6 +56,10 @@ def test_flatten_includes_criteria_version() -> None:
     rows = flatten_evaluation(evaluation)
     assert rows
     assert rows[0]["criteria_version"] == "v1"
+    assert rows[0]["tipo_informe"] == "institucional"
+    assert rows[0]["model_name"] == "gpt-4o-mini"
+    assert rows[0]["pipeline_version"] == "svc-1"
+    assert rows[0]["timestamp"] == "2024-05-01T10:00:00Z"
 
 
 def test_export_rejects_unknown_format(tmp_path: Path) -> None:

@@ -40,6 +40,8 @@ from utils.prompt_validator import PromptValidationResult, PromptValidator
 SERVICE_VERSION = "0.1.0"
 PROMPT_QUALITY_THRESHOLD = 0.7
 
+SUPPORTED_MODES = {"completo", "parcial", "reevaluacion"}
+
 __all__ = [
     "EvaluationFilters",
     "EvaluationService",
@@ -839,6 +841,7 @@ class EvaluationService:
         raw_criteria = self._load_criteria(criteria_data, criteria_path)
         resolved_tipo = self._resolve_tipo_informe(tipo_informe, raw_criteria)
         filters = filters or EvaluationFilters()
+        resolved_mode = self._normalise_mode(mode)
 
         document_obj = self._prepare_document(
             document=document,
@@ -858,6 +861,7 @@ class EvaluationService:
         criteria_for_run = self._prepare_criteria(
             raw_criteria,
             mode=mode,
+            mode=resolved_mode,
             filters=filters,
             previous_result=previous_result,
         )
@@ -901,7 +905,9 @@ class EvaluationService:
         evaluation.metadata["pipeline_version"] = SERVICE_VERSION
         evaluation.metadata["retries"] = config.retries
         evaluation.metadata["timeout_seconds"] = config.timeout_seconds
-        evaluation.metadata["mode"] = mode
+        evaluation.metadata["mode"] = resolved_mode
+        if resolved_mode != (mode or "").strip().lower():
+            evaluation.metadata["mode_requested"] = mode
         evaluation.metadata["timestamp"] = datetime.utcnow().isoformat()
         if not filters.is_empty():
             evaluation.metadata["filters"] = filters.to_dict()
@@ -912,13 +918,13 @@ class EvaluationService:
         runs_history.append(
             {
                 "run_id": config.run_id,
-                "mode": mode,
+                "mode": resolved_mode,
                 "model": config.model_name,
                 "executed_at": evaluation.metadata["timestamp"],
             }
         )
 
-        if mode == "reevaluacion" and previous_result is not None:
+        if resolved_mode == "reevaluacion" and previous_result is not None:
             evaluation = self._merge_results(previous_result, evaluation)
 
         try:
@@ -1091,6 +1097,17 @@ class EvaluationService:
         if "politica" in tipo_informe:
             return "politica"
         return "institucional"
+    
+    def _normalise_mode(self, mode: str | None) -> str:
+        value = (mode or "").strip().lower()
+        if not value:
+            value = "completo"
+        resolved = MODE_ALIASES.get(value, value)
+        if resolved not in SUPPORTED_MODES:
+            raise ValueError(
+                "El modo debe ser completo, parcial o reevaluacion."
+            )
+        return resolved
 
     def _prepare_criteria(
         self,
@@ -1100,9 +1117,7 @@ class EvaluationService:
         filters: EvaluationFilters,
         previous_result: Optional[EvaluationResult],
     ) -> Dict[str, Any]:
-        mode = mode.lower()
-        if mode not in {"completo", "parcial", "reevaluacion"}:
-            raise ValueError("El modo debe ser completo, parcial o reevaluacion.")
+        mode = self._normalise_mode(mode)
         filtered = copy.deepcopy(dict(criteria))
         filter_sets = filters.normalised()
         question_ids = set(filter_sets["questions"])

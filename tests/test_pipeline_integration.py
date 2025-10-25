@@ -1420,6 +1420,8 @@ def test_pipeline_integration_e2e(
     assert any("model" in column or "modelo" in column for column in header_columns)
     assert any("tipo" in column and "informe" in column for column in header_columns)
     assert xlsx_header.iloc[0]["model_name"] == "ceplan-mock"
+    assert xlsx_header.iloc[0]["pipeline_version"] == evaluation_module.SERVICE_VERSION
+    assert xlsx_header.iloc[0]["timestamp"]
 
     assert evaluation_one.to_dict()["metadata"]["model_name"] == "ceplan-mock"
     assert isinstance(evaluation_one, EvaluationResult)

@@ -24,9 +24,16 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
     """Return a list of rows (one per question) ready to serialise."""
 
     rows: List[Dict[str, Any]] = []
-    criteria_version = None
-    if isinstance(evaluation.metadata, Mapping):
-        criteria_version = evaluation.metadata.get("criteria_version")
+    evaluation_metadata: Mapping[str, Any] = (
+        evaluation.metadata if isinstance(evaluation.metadata, Mapping) else {}
+    )
+    criteria_version = evaluation_metadata.get("criteria_version")
+    tipo_informe = evaluation_metadata.get(
+        "tipo_informe", evaluation.document_type
+    )
+    model_name = evaluation_metadata.get("model_name")
+    pipeline_version = evaluation_metadata.get("pipeline_version")
+    timestamp = evaluation_metadata.get("timestamp")
     for section in evaluation.sections:
         for dimension in section.dimensions:
             for question in dimension.questions:
@@ -51,6 +58,10 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                         "relevant_text": question.relevant_text,
                         "chunk_results": [chunk.to_dict() for chunk in question.chunk_results],
                         "criteria_version": criteria_version,
+                        "tipo_informe": tipo_informe,
+                        "model_name": model_name,
+                        "pipeline_version": pipeline_version,
+                        "timestamp": timestamp,
                         **metadata_columns,
                     }
                 )
@@ -113,7 +124,9 @@ class EvaluationRepository:
                     "run_id": evaluation_metadata.get("run_id"),
                     "model_name": evaluation_metadata.get("model_name"),
                     "tipo_informe": evaluation_metadata.get("tipo_informe", evaluation.document_type),
+                    "pipeline_version": evaluation_metadata.get("pipeline_version"),
                     "criteria_version": evaluation_metadata.get("criteria_version"),
+                    "pipeline_version": evaluation_metadata.get("pipeline_version"),
                 }
             ]
         )  # type: ignore[arg-type]

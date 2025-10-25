@@ -576,6 +576,8 @@ def test_pipeline_exports_tabular_formats(
         ]
         assert dataframe.columns.tolist()[: len(expected_columns)] == expected_columns
         assert "chunk_results" in dataframe.columns
+        assert "pipeline_version" in dataframe.columns
+        assert "timestamp" in dataframe.columns
     else:
         workbook = openpyxl.load_workbook(output_path)
         assert workbook.sheetnames == ["preguntas", "resumen", "indice_global"]
@@ -593,6 +595,8 @@ def test_pipeline_exports_tabular_formats(
         assert header_df.loc[0, "run_id"] == config.run_id
         assert header_df.loc[0, "model_name"] == config.model_name
         assert header_df.loc[0, "criteria_version"] == criteria["version"]
+        assert header_df.loc[0, "pipeline_version"] == evaluation.metadata["pipeline_version"]
+        assert header_df.loc[0, "timestamp"]
 
 
 def test_pipeline_calculates_ceplan_weighted_indices(
