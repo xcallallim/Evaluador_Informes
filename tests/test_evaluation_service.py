@@ -1,7 +1,7 @@
 """Unit tests for the evaluation service helpers."""
 
 from services.ai_service import OpenAIService
-from services.evaluation_service import MockAIService
+from services.evaluation_service import EvaluationService, MockAIService, ServiceConfig
 
 
 def test_mock_ai_service_respects_model_name_and_metadata() -> None:
@@ -70,5 +70,14 @@ def test_openai_service_respects_question_defined_half_point_levels() -> None:
     assert levels == (0.0, 0.5, 2.0)
     assert service._enforce_discrete_score(0.8, levels=levels) == 0.5
     assert service._enforce_discrete_score(1.9, levels=levels) == 2.0
+
+def test_evaluation_service_normalises_modes_with_aliases() -> None:
+    service = EvaluationService(config=ServiceConfig())
+
+    assert service._normalise_mode("completo") == "global"
+    assert service._normalise_mode("global") == "global"
+    assert service._normalise_mode("parcial") == "parcial"
+    assert service._normalise_mode("reevaluación") == "reevaluación"
+    assert service._normalise_mode("reevaluacion") == "reevaluación"
 
 # pytest tests/test_evaluation_service.py -v

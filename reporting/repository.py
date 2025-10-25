@@ -80,7 +80,7 @@ class EvaluationRepository:
         metrics_summary: Mapping[str, Any],
         *,
         output_path: Path,
-        output_format: str = "json",
+        output_format: str = "xlsx",
         extra_metadata: Optional[Mapping[str, Any]] = None,
     ) -> Path:
         output_path = Path(output_path)
@@ -89,79 +89,80 @@ class EvaluationRepository:
                 f"La carpeta destino '{output_path.parent}' no existe."
             )
 
-        output_format = (output_format or "json").lower()
-        normalised_format = _normalise_format(output_format)
-        _validate_format(normalised_format)
-        rows = flatten_evaluation(evaluation)
-        metadata = {
-            "evaluation": evaluation.to_dict(),
-            "metrics": dict(metrics_summary),
-        }
-        if extra_metadata:
-            metadata["extra"] = dict(extra_metadata)
-
-        if normalised_format == "json":
-            output_path.write_text(
-                json.dumps(metadata, ensure_ascii=False, indent=2),
-                encoding="utf-8",
+        requested_format = (output_format or "xlsx").lower()
+        normalised_format = _normalise_format(requested_format)
+        allowed_formats = {"", "xlsx", "json", "csv"}
+        if normalised_format not in allowed_formats:
+            raise ValueError(
+                "Formato de salida no soportado: usa xlsx, csv o json como formato solicitado."
             )
-            return output_path
 
         if pd is None:
             raise RuntimeError(
-                "Exportar a formatos tabulares requiere pandas instalado."
+                "Exportar evaluaciones requiere pandas instalado."
             )
+        
+        base_name = output_path.stem if output_path.suffix else output_path.name
+        base_path = output_path.parent / base_name
+        excel_path = base_path.with_suffix(".xlsx")
+        csv_path = base_path.with_suffix(".csv")
+        json_path = base_path.with_suffix(".json")
 
+        rows = flatten_evaluation(evaluation)
         df = pd.DataFrame(rows)  # type: ignore[arg-type]
         summary_df = pd.DataFrame(metrics_summary.get("sections", []))  # type: ignore[arg-type]
         evaluation_metadata: Mapping[str, Any] = (
             evaluation.metadata if isinstance(evaluation.metadata, Mapping) else {}
         )
-        header_df = pd.DataFrame(
-            [
-                {
-                    **metrics_summary.get("global", {}),
-                    "run_id": evaluation_metadata.get("run_id"),
-                    "model_name": evaluation_metadata.get("model_name"),
-                    "tipo_informe": evaluation_metadata.get("tipo_informe", evaluation.document_type),
-                    "pipeline_version": evaluation_metadata.get("pipeline_version"),
-                    "criteria_version": evaluation_metadata.get("criteria_version"),
-                    "pipeline_version": evaluation_metadata.get("pipeline_version"),
-                }
-            ]
-        )  # type: ignore[arg-type]
+        header_payload: Dict[str, Any] = {
+            **metrics_summary.get("global", {}),
+            "run_id": evaluation_metadata.get("run_id"),
+            "model_name": evaluation_metadata.get("model_name"),
+            "tipo_informe": evaluation_metadata.get(
+                "tipo_informe", evaluation.document_type
+            ),
+            "pipeline_version": evaluation_metadata.get("pipeline_version"),
+            "criteria_version": evaluation_metadata.get("criteria_version"),
+            "timestamp": evaluation_metadata.get("timestamp"),
+        }
+        if extra_metadata:
+            header_payload.update({f"extra_{k}": v for k, v in dict(extra_metadata).items()})
+        header_df = pd.DataFrame([header_payload])  # type: ignore[arg-type]
 
-        if normalised_format == "csv":
-            df.to_csv(output_path, index=False, encoding=self.encoding)
-            return output_path
+        with pd.ExcelWriter(excel_path, engine="openpyxl") as writer:  # type: ignore[arg-type]
+            used_names: Set[str] = set()
+            df.to_excel(
+                writer,
+                sheet_name=_safe_sheet_name("preguntas", used_names),
+                index=False,
+            )
+            summary_df.to_excel(
+                writer,
+                sheet_name=_safe_sheet_name("resumen", used_names),
+                index=False,
+            )
+            header_df.to_excel(
+                writer,
+                sheet_name=_safe_sheet_name("indice_global", used_names),
+                index=False,
+            )
 
-        if normalised_format == "parquet":
-            df.to_parquet(output_path, index=False)
-            return output_path
+        df.to_csv(csv_path, index=False, encoding=self.encoding)
 
-        if normalised_format == "xlsx":
-            with pd.ExcelWriter(output_path, engine="openpyxl") as writer:  # type: ignore[arg-type]
-                used_names: Set[str] = set()
-                df.to_excel(
-                    writer,
-                    sheet_name=_safe_sheet_name("preguntas", used_names),
-                    index=False,
-                )
-                summary_df.to_excel(
-                    writer,
-                    sheet_name=_safe_sheet_name("resumen", used_names),
-                    index=False,
-                )
-                header_df.to_excel(
-                    writer,
-                    sheet_name=_safe_sheet_name("indice_global", used_names),
-                    index=False,
-                )
-            return output_path
+        json_payload: Dict[str, Any] = {
+            "rows": rows,
+            "evaluation": evaluation.to_dict(),
+            "metrics": dict(metrics_summary),
+        }
+        if extra_metadata:
+            json_payload["extra"] = dict(extra_metadata)
 
-        raise ValueError(
-            f"Formato de salida no soportado: '{output_format}'. Usa json, csv, xlsx o parquet."
+        json_path.write_text(
+            json.dumps(json_payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
         )
+
+        return excel_path
 
 
 def _normalise_format(fmt: str) -> str:
@@ -170,14 +171,6 @@ def _normalise_format(fmt: str) -> str:
         "excel": "xlsx",
     }
     return mapping.get(fmt, fmt)
-
-
-def _validate_format(fmt: str) -> None:
-    supported = {"json", "csv", "xlsx", "parquet"}
-    if fmt not in supported:
-        raise ValueError(
-            f"Formato de salida no soportado: '{fmt}'. Usa uno de: {', '.join(sorted(supported))}."
-        )
 
 
 def _safe_sheet_name(name: str, existing: Set[str]) -> str:

@@ -95,9 +95,9 @@ python -m services.evaluation_service \
 
 Argumentos destacados:
 
-- `--modo`: `completo`, `parcial` o `reevaluacion` para controlar el alcance.
-- `--solo-seccion/--solo-bloque/--solo-criterio`: filtros cuando se realiza una
-  evaluación parcial.
+- `--modo`: `global` para ejecutar la evaluación estándar.
+- `--solo-seccion/--solo-bloque/--solo-criterio`: filtros opcionales para
+  limitar el alcance de la evaluación global.
 - `--mock-ai` / `--real-ai`: selecciona entre el simulador integrado y el
   proveedor real.
 - `--previous-result`: permite reusar puntajes previos al ejecutar una
@@ -178,7 +178,7 @@ entorno para integraciones CI/CD.
    `metrics.calculate_metrics` y consolida un Excel/JSON trazable en `reporting/`.
 
 Cada etapa registra *artifacts* intermedios en `reporting/workdir/` cuando se
-habilita el modo detallado (`--modo completo --guardar-pasos`). Esto facilita la
+habilita el modo detallado (`--modo global --guardar-pasos`). Esto facilita la
 auditoría de decisiones y el ajuste fino de reglas.
 
 ## Integración desde Python

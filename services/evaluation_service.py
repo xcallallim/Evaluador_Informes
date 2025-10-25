@@ -40,7 +40,18 @@ from utils.prompt_validator import PromptValidationResult, PromptValidator
 SERVICE_VERSION = "0.1.0"
 PROMPT_QUALITY_THRESHOLD = 0.7
 
-SUPPORTED_MODES = {"completo", "parcial", "reevaluacion"}
+SUPPORTED_MODES = {"global", "parcial", "reevaluación"}
+MODE_ALIASES = {
+    "completa": "completo",
+    "total": "completo",
+    "full": "completo",
+    "partial": "parcial",
+    "reevaluación": "reevaluacion",
+    "reevaluacion": "reevaluacion",
+    "re-evaluacion": "reevaluacion",
+    "reevaluation": "reevaluacion",
+}
+LEGACY_REEVALUATION_MODES = {"reevaluacion"}
 
 __all__ = [
     "EvaluationFilters",
@@ -823,7 +834,7 @@ class EvaluationService:
         criteria_data: Optional[Mapping[str, Any]] = None,
         document: Optional[Document] = None,
         tipo_informe: Optional[str] = None,
-        mode: str = "completo",
+        mode: str = "global",
         filters: Optional[EvaluationFilters] = None,
         output_path: Optional[Path] = None,
         output_format: str = "json",
@@ -860,7 +871,6 @@ class EvaluationService:
 
         criteria_for_run = self._prepare_criteria(
             raw_criteria,
-            mode=mode,
             mode=resolved_mode,
             filters=filters,
             previous_result=previous_result,
@@ -1101,13 +1111,12 @@ class EvaluationService:
     def _normalise_mode(self, mode: str | None) -> str:
         value = (mode or "").strip().lower()
         if not value:
-            value = "completo"
-        resolved = MODE_ALIASES.get(value, value)
-        if resolved not in SUPPORTED_MODES:
+            value = "global"
+        if value not in SUPPORTED_MODES:
             raise ValueError(
-                "El modo debe ser completo, parcial o reevaluacion."
+                "El modo debe ser global, parcial o reevaluacion."
             )
-        return resolved
+        return value
 
     def _prepare_criteria(
         self,
@@ -1131,7 +1140,7 @@ class EvaluationService:
             self.logger.warning(
                 "Se solicitó reintentar preguntas sin puntaje, pero no se proporcionó un resultado previo."
             )
-        if mode == "completo" and not question_ids and filters.is_empty():
+        if mode == "global" and not question_ids and filters.is_empty():
             return filtered
         if filtered.get("tipo_informe") == "institucional":
             filtered["secciones"] = self._filter_sections(
@@ -1637,7 +1646,7 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Ruta del JSON de criterios.",
     )
     parser.add_argument("--tipo-informe", dest="tipo_informe", help="Tipo de informe (institucional o politica_nacional).")
-    parser.add_argument("--modo", dest="modo", default="completo", choices=["completo", "parcial", "reevaluacion"], help="Modo de evaluación.")
+    parser.add_argument("--modo", dest="modo", default="global", choices=["global", "parcial", "reevaluacion"], help="Modo de evaluación.")
     parser.add_argument("--output", dest="output_path", type=Path, help="Ruta del archivo de salida.")
     parser.add_argument(
         "--formato",

@@ -400,7 +400,7 @@ def test_full_pipeline_execution(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     assert evaluation.metadata["criteria_version"] == criteria["version"]
     assert evaluation.metadata["model_name"] == "mock-integration"
     assert evaluation.metadata["run_id"] == "pipeline-integration"
-    assert evaluation.metadata["mode"] == "completo"
+    assert evaluation.metadata["mode"] == "global"
     assert evaluation.metadata["prompt_batch_size"] == 1
     assert evaluation.metadata["retries"] == 0
     assert evaluation.metadata["timeout_seconds"] == 15.0
