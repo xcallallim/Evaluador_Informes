@@ -218,13 +218,41 @@ def test_pipeline_handles_missing_sections(
     missing_section = next(
         section for section in evaluation.sections if section.section_id == "gestion_ceplan"
     )
+    skip_message = "Evaluación omitida por falta de sección"
+
     assert missing_section.score == pytest.approx(0.0)
     question = missing_section.dimensions[0].questions[0]
-    assert question.score == pytest.approx(0.0)
-    assert question.justification == "Evaluación omitida por falta de sección"
-    assert question.chunk_results == []
-    assert question.metadata.get("skipped") is True
-    assert question.metadata.get("skip_reason") == "missing_section"
+    assert missing_section.metadata.get("skipped") is True
+    assert missing_section.metadata.get("skip_reason") == "missing_section"
+
+    assert missing_section.dimensions, "La sección omitida debe conservar sus dimensiones"
+    for dimension in missing_section.dimensions:
+        assert dimension.score == pytest.approx(0.0)
+        assert dimension.metadata.get("skipped") is True
+        assert dimension.metadata.get("skip_reason") == "missing_section"
+        assert dimension.questions, "Las dimensiones omitidas deben conservar sus preguntas"
+        for question in dimension.questions:
+            assert question.score == pytest.approx(0.0)
+            assert question.justification == skip_message
+            assert question.chunk_results == []
+            assert question.metadata.get("skipped") is True
+            assert question.metadata.get("skip_reason") == "missing_section"
+
+    present_sections = [
+        section for section in evaluation.sections if section.section_id != "gestion_ceplan"
+    ]
+    assert present_sections, "Debe existir al menos una sección evaluada normalmente"
+    for section in present_sections:
+        assert section.score is not None and section.score >= 0.0
+        assert section.metadata.get("skipped") is not True
+        for dimension in section.dimensions:
+            assert dimension.score is not None and 0.0 <= dimension.score <= 4.0
+            assert dimension.metadata.get("skipped") is not True
+            for question in dimension.questions:
+                assert question.score is not None and 0.0 <= question.score <= 4.0
+                assert question.justification
+                assert question.justification != skip_message
+                assert question.metadata.get("skipped") is not True
 
     global_metrics = metrics["global"]
     normalized = global_metrics.get("normalized_score")
@@ -237,8 +265,21 @@ def test_pipeline_handles_missing_sections(
     exported_rows = _load_exported_rows(output_path)
     exported_missing = [row for row in exported_rows if row["section_id"] == "gestion_ceplan"]
     assert exported_missing
-    assert all(row["question_score"] == 0 for row in exported_missing)
-    assert exported_missing[0]["justification"] == "Evaluación omitida por falta de sección"
+    for row in exported_missing:
+        assert row["section_score"] == 0
+        assert row["dimension_score"] == 0
+        assert row["question_score"] == 0
+        assert row["justification"] == skip_message
+        assert row.get("metadata.skipped") is True
+        assert row.get("metadata.skip_reason") == "missing_section"
+
+    exported_present = [row for row in exported_rows if row["section_id"] != "gestion_ceplan"]
+    assert exported_present
+    for row in exported_present:
+        assert 0 <= row["section_score"] <= 4
+        assert 0 <= row["dimension_score"] <= 4
+        assert 0 <= row["question_score"] <= 4
+        assert row["justification"] != skip_message 
 
 
 def test_pipeline_handles_irrelevant_document(
