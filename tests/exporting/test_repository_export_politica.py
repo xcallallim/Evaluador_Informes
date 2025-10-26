@@ -21,12 +21,12 @@ def test_repository_generates_excel_and_csv(tmp_path):
     print(f"[⚙️] Ejecutando evaluación simulada del informe: {output_path.stem}")
 
     evaluation, metrics = service.run(
-        input_path="data/examples/informe_institucional_demo.txt",
-        tipo_informe="institucional",
+        input_path="data/examples/informe_politica_demo.txt",
+        tipo_informe="politica",
         mode="global",
         output_format="xlsx",
         output_path=output_path,
-        criteria_path="data/criteria/metodología_politica.json"
+        criteria_path="data/criteria/metodología_politica_nacional.json"
     )
 
     # === 2. Comprobaciones ===
@@ -45,7 +45,7 @@ def test_repository_generates_excel_and_csv(tmp_path):
     print("[🔎] Validando estructura del archivo Excel...")
 
     excel = pd.ExcelFile(output_path)
-    sheet_name = "preguntas_politica"
+    sheet_name = "preguntas_institucional"
     if sheet_name not in excel.sheet_names:
         sheet_name = "preguntas"
     df = excel.parse(sheet_name=sheet_name)
