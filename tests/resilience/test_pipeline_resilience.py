@@ -12,7 +12,7 @@ import pytest
 
 from services.evaluation_service import EvaluationService, ServiceConfig
 
-from .test_pipeline_integration import (
+from tests.test_pipeline_integration import (
     TRACKING_CLASSES,
     TrackingAIService,
     TrackingCleaner,
