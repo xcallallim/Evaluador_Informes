@@ -5,16 +5,22 @@ from __future__ import annotations
 import json
 import math
 import unicodedata
+from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Dict, Iterator, List, Mapping, Tuple
+from typing import Any, Dict, Iterator, List, Mapping, Tuple, TYPE_CHECKING
 
 import pytest
+
+if TYPE_CHECKING:
+    import pandas as pd
+else:
+    pd = pytest.importorskip("pandas")
 
 from data.models.document import Document
 from data.models.evaluation import EvaluationResult
 from metrics import calculate_metrics as real_calculate_metrics
-from reporting.repository import EvaluationRepository
+from reporting.repository import EvaluationRepository, flatten_evaluation
 from services import evaluation_service as evaluation_module
 from services.evaluation_service import EvaluationService, ServiceConfig
 from utils.prompt_validator import PromptValidationResult, PromptValidator
@@ -663,7 +669,7 @@ def test_pipeline_integration_e2e(
     repository = TrackingRepository()
     ai_service = TrackingAIService()
 
-    pd = pytest.importorskip("pandas")
+    pytest.importorskip("pandas")
 
     metrics_calls = _prepare_environment(monkeypatch)
 
@@ -1645,6 +1651,173 @@ def test_pipeline_integration_e2e(
     ] == rejection_summary.get("rejected_prompts")
 
 
+def test_pipeline_traceability_audit_trail(
+    tmp_path: Path,
+    sample_document: Path,
+    sample_criteria: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Garantiza que la ejecución genere un rastro de auditoría completo."""
+
+    pytest.importorskip("pandas")
+
+    loader = TrackingLoader()
+    cleaner = TrackingCleaner()
+    splitter = TrackingSplitter()
+    prompt_builder = TrackingPromptBuilder()
+    prompt_validator = TrackingPromptValidator()
+    repository = TrackingRepository()
+    ai_service = TrackingAIService()
+
+    _prepare_environment(monkeypatch)
+
+    config = ServiceConfig(
+        ai_provider="tracking",
+        run_id="traceability-run",
+        model_name="ceplan-mock",
+        prompt_batch_size=2,
+        retries=0,
+        timeout_seconds=10.0,
+        log_level="ERROR",
+    )
+
+    service = EvaluationService(
+        config=config,
+        loader=loader,
+        cleaner=cleaner,
+        splitter=splitter,
+        repository=repository,
+        ai_service_factory=lambda _: ai_service,
+        prompt_builder=prompt_builder,
+        prompt_validator=prompt_validator,
+    )
+
+    scenario_tag = "traceability-audit"
+    output_json = tmp_path / "resultado_traceabilidad.json"
+
+    evaluation, metrics = service.run(
+        input_path=sample_document,
+        criteria_path=sample_criteria,
+        output_path=output_json,
+        output_format="json",
+        extra_metadata={"scenario": scenario_tag},
+    )
+
+    assert output_json.exists()
+    assert repository.exports, "La exportación debe registrar el rastro de auditoría"
+
+    document_id = evaluation.document_id
+    assert document_id
+    assert evaluation.metadata["run_id"] == config.run_id
+    assert evaluation.metadata["model_name"] == config.model_name
+    assert evaluation.metadata["pipeline_version"] == evaluation_module.SERVICE_VERSION
+
+    timestamp = evaluation.metadata.get("timestamp")
+    assert timestamp
+    parsed_timestamp = datetime.fromisoformat(timestamp)
+    assert parsed_timestamp.tzinfo is None
+
+    runs_history = evaluation.metadata.get("runs")
+    assert isinstance(runs_history, list) and runs_history
+    last_run = runs_history[-1]
+    assert last_run["run_id"] == config.run_id
+    assert last_run["model"] == config.model_name
+    assert last_run["mode"] == "global"
+    assert last_run["executed_at"] == timestamp
+
+    criteria_payload = json.loads(sample_criteria.read_text(encoding="utf-8"))
+    assert evaluation.metadata["criteria_version"] == criteria_payload["version"]
+
+    section_ids: List[str] = []
+    question_ids: List[str] = []
+    chunk_source_ids: List[str] = []
+    for section in evaluation.sections:
+        assert section.section_id
+        section_ids.append(section.section_id)
+        for dimension in section.dimensions:
+            for question in dimension.questions:
+                assert question.question_id
+                question_ids.append(question.question_id)
+                for chunk in question.chunk_results:
+                    chunk_metadata = dict(chunk.metadata)
+                    nested_metadata = {}
+                    if isinstance(chunk_metadata.get("chunk_metadata"), Mapping):
+                        nested_metadata = dict(chunk_metadata["chunk_metadata"])
+                    source_id = chunk_metadata.get("source_id") or nested_metadata.get(
+                        "source_id"
+                    )
+                    if source_id:
+                        chunk_source_ids.append(str(source_id))
+                    chunk_section = chunk_metadata.get("section_id") or nested_metadata.get(
+                        "section_id"
+                    )
+                    if chunk_section:
+                        assert chunk_section == section.section_id
+
+    assert len(section_ids) == len(set(section_ids))
+    assert len(question_ids) == len(set(question_ids))
+    assert chunk_source_ids and len(chunk_source_ids) == len(set(chunk_source_ids))
+
+    rows = flatten_evaluation(evaluation)
+    assert rows
+    assert len(rows) == len(question_ids)
+
+    for row in rows:
+        assert row["document_id"] == document_id
+        assert row["section_id"] in section_ids
+        assert row["question_id"] in question_ids
+        assert row["pipeline_version"] == evaluation.metadata["pipeline_version"]
+        assert row["criteria_version"] == evaluation.metadata["criteria_version"]
+        assert row["model_name"] == evaluation.metadata["model_name"]
+        assert row["timestamp"] == timestamp
+
+    trace_export = repository.exports[0]
+    export_metrics = trace_export["metrics"]
+    assert export_metrics["global"] == metrics["global"]
+    assert export_metrics["sections"]
+    assert {section["section_id"] for section in export_metrics["sections"]} == set(
+        section_ids
+    )
+    assert trace_export["output_path"].suffix == ".json"
+    assert trace_export["extra_metadata"]["scenario"] == scenario_tag
+
+    exported_config = trace_export["extra_metadata"]["config"]
+    assert exported_config["run_id"] == config.run_id
+    assert exported_config["model_name"] == config.model_name
+    assert trace_export["extra_metadata"]["pipeline_version"] == evaluation_module.SERVICE_VERSION
+    assert trace_export["extra_metadata"]["criteria_version"] == evaluation.metadata["criteria_version"]
+
+    segmenter_summary = evaluation.metadata.get("segmenter_summary", {})
+    assert segmenter_summary
+    assert segmenter_summary["total_sections"] == len(section_ids)
+    assert segmenter_summary["status_counts"]["found"] == len(section_ids)
+    assert segmenter_summary["status_counts"]["missing"] == 0
+    assert segmenter_summary["status_counts"]["empty"] == 0
+    assert segmenter_summary["issues_detected"] is False
+
+    assert metrics["global"]["segmenter_flagged_sections"] == 0
+    breakdown = metrics["global"]["segmenter_flagged_breakdown"]
+    assert breakdown["found"] == len(section_ids)
+    assert breakdown["missing"] == 0
+    assert breakdown["empty"] == 0
+
+    assert metrics["sections"]
+    assert {section_summary["section_id"] for section_summary in metrics["sections"]} == set(
+        section_ids
+    )
+
+    assert TrackingSegmenter.instances
+    segmenter_instance = TrackingSegmenter.instances[0]
+    assert segmenter_instance.calls
+    segment_call = segmenter_instance.calls[0]
+    assert Path(segment_call["document"]) == sample_document
+    assert set(segment_call["sections"]) == set(section_ids)
+    assert segment_call["tipo"] == "institucional"
+
+    assert ai_service.calls
+    assert len(ai_service.calls) == len(question_ids)
+
+
 @pytest.mark.slow
 def test_pipeline_integration_real_ai_tolerance(
     tmp_path: Path,
@@ -1690,4 +1863,3 @@ def test_pipeline_integration_real_ai_tolerance(
     assert difference <= 0.2
 
 # pytest tests/test_pipeline_integration.py -v
-# pytest tests/test_pipeline_integration.py
