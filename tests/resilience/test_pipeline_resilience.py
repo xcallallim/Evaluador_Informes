@@ -1,16 +1,18 @@
-"""Pruebas de resiliencia que garantizan que el proceso de evaluación tolere entradas incompletas"""""
+"""Pruebas de resiliencia que garantizan que el proceso de evaluación tolere entradas incompletas."""""
 from __future__ import annotations
 
 import json
 import logging
 import math
+import time
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
 import pytest
 
-from services.evaluation_service import EvaluationService, ServiceConfig
+from data.models.document import Document
+from services.evaluation_service import EvaluationService, ServiceConfig, FuturesTimeoutError
 
 from tests.test_pipeline_integration import (
     TRACKING_CLASSES,
@@ -418,3 +420,305 @@ def test_policy_pipeline_handles_missing_blocks(
         row["justification"] == "Evaluación omitida por falta de sección"
         for row in exported_missing
     )
+
+
+def test_pipeline_retries_after_ai_error(
+    resilience_env: SimpleNamespace,
+    missing_section_document: Path,
+    sample_criteria: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output_path = tmp_path / "resultado_reintento_error.json"
+
+    attempts = {"count": 0}
+    logged_messages: list[str] = []
+
+    def flaky(prompt: str, **kwargs: Any) -> dict[str, Any]:
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise RuntimeError("falla transitoria")
+        return {
+            "score": 2.5,
+            "justification": "respuesta-recuperada",
+            "relevant_text": kwargs.get("chunk_metadata", {}).get("section_id"),
+            "metadata": {"model": "tracking", "retry": attempts["count"]},
+        }
+
+    monkeypatch.setattr(resilience_env.ai_service, "evaluate", flaky, raising=False)
+    monkeypatch.setattr("services.evaluation_service.time.sleep", lambda *_: None)
+    original_warning = resilience_env.service.logger.warning
+
+    def tracking_warning(message: str, *args: Any, **kwargs: Any) -> Any:
+        text = message % args if args else message
+        logged_messages.append(text)
+        return original_warning(message, *args, **kwargs)
+
+    monkeypatch.setattr(resilience_env.service.logger, "warning", tracking_warning)
+
+    evaluation, _ = resilience_env.service.run(
+        input_path=missing_section_document,
+        criteria_path=sample_criteria,
+        output_path=output_path,
+        output_format="json",
+        extra_metadata={"scenario": "ai-error-retry"},
+        config_overrides={"retries": 1, "backoff_factor": 1.0},
+    )
+
+    assert attempts["count"] == 2
+    assert any("Error al invocar el servicio de IA" in message for message in logged_messages)
+
+    present_section = next(
+        section for section in evaluation.sections if section.section_id != "gestion_ceplan"
+    )
+    question = present_section.dimensions[0].questions[0]
+    assert question.score is not None and question.score > 0
+    chunk = question.chunk_results[0]
+    assert chunk.metadata.get("score_imputed") is not True
+    assert chunk.justification == "respuesta-recuperada"
+
+    exported_rows = _load_exported_rows(output_path)
+    evaluated_rows = [row for row in exported_rows if row["section_id"] == present_section.section_id]
+    assert evaluated_rows
+    assert all(row["question_score"] > 0 for row in evaluated_rows)
+
+
+def test_pipeline_imputes_score_when_ai_never_recovers(
+    resilience_env: SimpleNamespace,
+    missing_section_document: Path,
+    sample_criteria: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output_path = tmp_path / "resultado_error_permanente.json"
+
+    attempts = {"count": 0}
+    logged_messages: list[str] = []
+
+    def failing(prompt: str, **kwargs: Any) -> dict[str, Any]:
+        attempts["count"] += 1
+        raise RuntimeError("falla permanente")
+
+    monkeypatch.setattr(resilience_env.ai_service, "evaluate", failing, raising=False)
+    monkeypatch.setattr("services.evaluation_service.time.sleep", lambda *_: None)
+    original_warning = resilience_env.service.logger.warning
+    original_error = resilience_env.service.logger.error
+
+    def tracking_warning(message: str, *args: Any, **kwargs: Any) -> Any:
+        text = message % args if args else message
+        logged_messages.append(text)
+        return original_warning(message, *args, **kwargs)
+
+    monkeypatch.setattr(resilience_env.service.logger, "warning", tracking_warning)
+    def tracking_error(message: str, *args: Any, **kwargs: Any) -> Any:
+        text = message % args if args else message
+        logged_messages.append(text)
+        return original_error(message, *args, **kwargs)
+
+    monkeypatch.setattr(resilience_env.service.logger, "error", tracking_error)
+
+    evaluation, _ = resilience_env.service.run(
+        input_path=missing_section_document,
+        criteria_path=sample_criteria,
+        output_path=output_path,
+        output_format="json",
+        extra_metadata={"scenario": "ai-error-imputed"},
+        config_overrides={"retries": 1, "backoff_factor": 1.0},
+    )
+
+    assert attempts["count"] == 2
+    assert any("Fallo permanente del servicio de IA" in message for message in logged_messages)
+
+    present_section = next(
+        section for section in evaluation.sections if section.section_id != "gestion_ceplan"
+    )
+    question = present_section.dimensions[0].questions[0]
+    assert question.score is not None
+    chunk = question.chunk_results[0]
+    assert chunk.metadata.get("score_imputed") is True
+    assert chunk.metadata.get("error") is True
+    assert chunk.score == pytest.approx(1.0)
+
+    exported_rows = _load_exported_rows(output_path)
+    evaluated_rows = [row for row in exported_rows if row["section_id"] == present_section.section_id]
+    assert evaluated_rows
+    for row in evaluated_rows:
+        [chunk_payload] = row["chunk_results"]
+        assert chunk_payload["metadata"]["score_imputed"] is True
+        assert chunk_payload["metadata"]["error"] is True
+
+
+def test_pipeline_handles_none_ai_response(
+    resilience_env: SimpleNamespace,
+    missing_section_document: Path,
+    sample_criteria: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output_path = tmp_path / "resultado_respuesta_nula.json"
+
+    calls = {"count": 0}
+
+    def empty_response(prompt: str, **kwargs: Any) -> None:
+        calls["count"] += 1
+        return None
+
+    monkeypatch.setattr(resilience_env.ai_service, "evaluate", empty_response, raising=False)
+
+    evaluation, _ = resilience_env.service.run(
+        input_path=missing_section_document,
+        criteria_path=sample_criteria,
+        output_path=output_path,
+        output_format="json",
+        extra_metadata={"scenario": "ai-none-response"},
+    )
+
+    assert calls["count"] == 1
+
+    present_section = next(
+        section for section in evaluation.sections if section.section_id != "gestion_ceplan"
+    )
+    question = present_section.dimensions[0].questions[0]
+    assert question.score is None
+    assert question.justification == "None"
+
+    exported_rows = _load_exported_rows(output_path)
+    evaluated_rows = [row for row in exported_rows if row["section_id"] == present_section.section_id]
+    assert evaluated_rows
+    assert all(row["question_score"] is None for row in evaluated_rows)
+
+
+def test_pipeline_handles_corrupted_file_with_invalid_bytes(
+    resilience_env: SimpleNamespace,
+    sample_criteria: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    corrupted_path = tmp_path / "informe_corrupto.txt"
+    corrupted_bytes = (
+        b"[SECTION:resumen_ejecutivo]\nContenido valido antes\n"
+        b"\xff\xfe\x00\xff"
+        b"[SECTION:gestion_ceplan]\nTexto valido despues"
+    )
+    corrupted_path.write_bytes(corrupted_bytes)
+
+    original_load = resilience_env.loader.load
+    logged_messages: list[str] = []
+    original_warning = resilience_env.service.logger.warning
+
+    def tracking_warning(message: str, *args: Any, **kwargs: Any) -> Any:
+        text = message % args if args else message
+        logged_messages.append(text)
+        return original_warning(message, *args, **kwargs)
+
+    monkeypatch.setattr(resilience_env.service.logger, "warning", tracking_warning)
+
+    def resilient_load(
+        filepath: str,
+        *,
+        extract_tables: bool = True,
+        extract_images: bool = True,
+    ) -> Document:
+        try:
+            return original_load(filepath, extract_tables=extract_tables, extract_images=extract_images)
+        except UnicodeDecodeError as exc:  # pragma: no cover - depende del contenido
+            resilience_env.service.logger.warning(
+                "Archivo corrupto o con caracteres no validos: %s", exc
+            )
+            raw = Path(filepath).read_text(encoding="utf-8", errors="ignore")
+            document = Document(
+                content=raw,
+                metadata={
+                    "source": filepath,
+                    "filename": Path(filepath).name,
+                    "extension": Path(filepath).suffix or ".txt",
+                    "processed_with": "tracking-loader",
+                    "pages": [raw],
+                    "raw_text": raw,
+                },
+                pages=[raw],
+            )
+            resilience_env.loader.calls.append(
+                {"path": filepath, "extract_tables": extract_tables, "extract_images": extract_images}
+            )
+            return document
+
+    monkeypatch.setattr(resilience_env.loader, "load", resilient_load, raising=False)
+
+    output_path = tmp_path / "resultado_corrupto.json"
+    evaluation, _ = resilience_env.service.run(
+        input_path=corrupted_path,
+        criteria_path=sample_criteria,
+        output_path=output_path,
+        output_format="json",
+        extra_metadata={"scenario": "corrupted-file"},
+    )
+
+    assert any("caracteres no validos" in message.lower() for message in logged_messages)
+
+    summary = evaluation.metadata.get("segmenter_summary", {})
+    assert summary["status_counts"]["found"] >= 1
+
+    exported_rows = _load_exported_rows(output_path)
+    assert exported_rows
+    assert all(row["justification"] for row in exported_rows)
+
+
+def test_pipeline_retries_when_ai_times_out(
+    resilience_env: SimpleNamespace,
+    missing_section_document: Path,
+    sample_criteria: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    output_path = tmp_path / "resultado_timeout.json"
+
+    attempts = {"count": 0}
+    logged_messages: list[str] = []
+
+    def slow_then_ok(prompt: str, **kwargs: Any) -> dict[str, Any]:
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise FuturesTimeoutError()
+        return {
+            "score": 2.0,
+            "justification": f"respuesta-{attempts['count']}",
+            "metadata": {"attempt": attempts["count"]},
+        }
+
+    monkeypatch.setattr(resilience_env.ai_service, "evaluate", slow_then_ok, raising=False)
+    original_warning = resilience_env.service.logger.warning
+
+    def tracking_warning(message: str, *args: Any, **kwargs: Any) -> Any:
+        text = message % args if args else message
+        logged_messages.append(text)
+        return original_warning(message, *args, **kwargs)
+
+    monkeypatch.setattr(resilience_env.service.logger, "warning", tracking_warning)
+
+    evaluation, _ = resilience_env.service.run(
+        input_path=missing_section_document,
+        criteria_path=sample_criteria,
+        output_path=output_path,
+        output_format="json",
+        extra_metadata={"scenario": "ai-timeout"},
+        config_overrides={"retries": 1, "timeout_seconds": 0.01, "backoff_factor": 1.0},
+    )
+
+    assert attempts["count"] >= 2
+    assert any("Timeout al invocar el servicio de IA" in message for message in logged_messages)
+    assert "⚠️" in caplog.text
+
+    present_section = next(
+        section for section in evaluation.sections if section.section_id != "gestion_ceplan"
+    )
+    question = present_section.dimensions[0].questions[0]
+    assert question.score is not None
+    chunk = question.chunk_results[0]
+    assert chunk.metadata.get("score_imputed") is not True
+
+    exported_rows = _load_exported_rows(output_path)
+    assert any(row["section_id"] == present_section.section_id for row in exported_rows)
+
+# pytest tests/resilience/test_pipeline_resilience.py -v
