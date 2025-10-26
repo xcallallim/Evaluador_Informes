@@ -1176,8 +1176,8 @@ class EvaluationService:
         )
 
         self.repository.export(
-            evaluation,
             export_evaluation,
+            export_metrics_summary,
             output_path=Path(export_path),
             output_format=effective_format,
             extra_metadata=export_metadata,

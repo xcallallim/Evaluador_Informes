@@ -200,7 +200,7 @@ class EvaluationRepository:
 
         return excel_path
     
-def _prepare_sections_for_summary(
+    def _prepare_sections_for_summary(
         self,
         sections: Iterable[Mapping[str, Any]],
         global_summary: Mapping[str, Any],
