@@ -158,7 +158,7 @@ def calculate_institutional_metrics(
     target_min, target_max = (
         normalized_range
         if normalized_range is not None
-        else _target_range_from_criteria(criteria, default_min=0.0, default_max=100.0)
+        else _target_range_from_criteria(criteria, default_min=0.0, default_max=20.0)
     )
     global_normalized = _normalise(
         evaluation.score,
