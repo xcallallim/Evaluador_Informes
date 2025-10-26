@@ -17,13 +17,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Resumen Ejecutivo"
     },
     {
       "document_id": "informe_politica_demo",
@@ -42,13 +52,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Resumen Ejecutivo"
     },
     {
       "document_id": "informe_politica_demo",
@@ -67,13 +87,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Descripción de la política nacional"
     },
     {
       "document_id": "informe_politica_demo",
@@ -92,13 +122,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Descripción de la política nacional"
     },
     {
       "document_id": "informe_politica_demo",
@@ -117,13 +157,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de los resultados de la política nacional"
     },
     {
       "document_id": "informe_politica_demo",
@@ -142,13 +192,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de los resultados de la política nacional"
     },
     {
       "document_id": "informe_politica_demo",
@@ -167,13 +227,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de los resultados de la política nacional"
     },
     {
       "document_id": "informe_politica_demo",
@@ -192,13 +262,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de los resultados de la política nacional"
     },
     {
       "document_id": "informe_politica_demo",
@@ -217,13 +297,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de la implementación"
     },
     {
       "document_id": "informe_politica_demo",
@@ -242,13 +332,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de la implementación"
     },
     {
       "document_id": "informe_politica_demo",
@@ -267,13 +367,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de la implementación"
     },
     {
       "document_id": "informe_politica_demo",
@@ -292,13 +402,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de la implementación"
     },
     {
       "document_id": "informe_politica_demo",
@@ -317,13 +437,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de la implementación"
     },
     {
       "document_id": "informe_politica_demo",
@@ -342,13 +472,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Análisis de la implementación"
     },
     {
       "document_id": "informe_politica_demo",
@@ -367,13 +507,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Conclusiones"
     },
     {
       "document_id": "informe_politica_demo",
@@ -392,13 +542,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Recomendaciones"
     },
     {
       "document_id": "informe_politica_demo",
@@ -417,13 +577,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Recomendaciones"
     },
     {
       "document_id": "informe_politica_demo",
@@ -442,13 +612,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Anexos"
     },
     {
       "document_id": "informe_politica_demo",
@@ -467,13 +647,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Anexos"
     },
     {
       "document_id": "informe_politica_demo",
@@ -492,13 +682,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Preguntas complementarias"
     },
     {
       "document_id": "informe_politica_demo",
@@ -517,13 +717,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Preguntas complementarias"
     },
     {
       "document_id": "informe_politica_demo",
@@ -542,13 +752,23 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": null,
+      "scale_max": null,
       "tipo_informe": "politica_nacional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "metadata.skipped": true,
       "metadata.skip_reason": "missing_section",
-      "metadata.segmenter_status": "missing"
+      "metadata.segmenter_status": "missing",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+      "metadata.run_id_history": "[\"a1de0ddd622744788ce686c90a8f7dbb\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "dimension_id": "Preguntas complementarias"
     }
   ],
   "evaluation": {
@@ -571,7 +791,7 @@
         ]
       }
     },
-    "generated_at": "2025-10-26T11:29:42.908028",
+    "generated_at": "2025-10-26T22:25:27.186689",
     "score": 0.0,
     "sections": [
       {
@@ -597,7 +817,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -611,14 +843,38 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
             "metadata": {
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -634,7 +890,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -660,7 +928,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -674,14 +954,38 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
             "metadata": {
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -697,7 +1001,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -723,7 +1039,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -737,7 +1065,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -751,7 +1091,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -765,14 +1117,38 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
             "metadata": {
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -788,7 +1164,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -814,7 +1202,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -828,7 +1228,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -842,7 +1254,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -856,7 +1280,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -870,7 +1306,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -884,14 +1332,38 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
             "metadata": {
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -907,7 +1379,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -933,14 +1417,38 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
             "metadata": {
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -956,7 +1464,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -982,7 +1502,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -996,14 +1528,38 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
             "metadata": {
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -1019,7 +1575,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -1045,7 +1613,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -1059,14 +1639,38 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
             "metadata": {
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -1082,7 +1686,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -1108,7 +1724,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -1122,7 +1750,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               },
               {
@@ -1136,7 +1776,19 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "missing_section",
-                  "segmenter_status": "missing"
+                  "segmenter_status": "missing",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+                  "run_id_history": [
+                    "a1de0ddd622744788ce686c90a8f7dbb"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ]
                 }
               }
             ],
@@ -1144,7 +1796,19 @@
               "tipo_escala": "manual",
               "skipped": true,
               "skip_reason": "missing_section",
-              "segmenter_status": "missing"
+              "segmenter_status": "missing",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+              "run_id_history": [
+                "a1de0ddd622744788ce686c90a8f7dbb"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -1160,7 +1824,19 @@
           },
           "skipped": true,
           "skip_reason": "missing_section",
-          "segmenter_status": "missing"
+          "segmenter_status": "missing",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
+          "run_id_history": [
+            "a1de0ddd622744788ce686c90a8f7dbb"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       }
     ],
@@ -1289,23 +1965,36 @@
       "validator_version": "1.0.0",
       "builder_version": "InstitutionalPromptBuilder",
       "model_name": "gpt-4o-mini",
-      "run_id": "f8e202da056c46b48a6e0608d49a82d5",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
       "prompt_batch_size": 1,
       "pipeline_version": "0.1.0",
+      "criteria_hash": "5c7fdfed71a0c2f52a7171577c792d9c236420ba3b160ba8e2305c65aa06bc0c",
       "retries": 2,
       "timeout_seconds": 60.0,
       "mode": "global",
       "metrics_strict_normalization": false,
       "missing_section_message_style": "default",
-      "timestamp": "2025-10-26T11:29:42.909132",
+      "timestamp": "2025-10-26T22:25:27.187688",
       "source_path": "data\\examples\\informe_politica_demo.txt",
       "runs": [
         {
-          "run_id": "f8e202da056c46b48a6e0608d49a82d5",
+          "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
           "mode": "global",
           "model": "gpt-4o-mini",
-          "executed_at": "2025-10-26T11:29:42.909132"
+          "executed_at": "2025-10-26T22:25:27.187688",
+          "pipeline_version": "0.1.0",
+          "criteria_version": "2024.1",
+          "filters": null
         }
+      ],
+      "run_id_history": [
+        "a1de0ddd622744788ce686c90a8f7dbb"
+      ],
+      "pipeline_version_history": [
+        "0.1.0"
+      ],
+      "criteria_version_history": [
+        "2024.1"
       ]
     }
   },
@@ -1318,6 +2007,7 @@
       "scale_max": 2.0,
       "normalized_min": 0.0,
       "normalized_max": 20.0,
+      "criteria_version": "2024.1",
       "segmenter_flagged_breakdown": {
         "missing": 8,
         "empty": 0,
@@ -1344,7 +2034,9 @@
         "weight": 0.1,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       },
       {
         "section_id": "descripcion_politica",
@@ -1352,7 +2044,9 @@
         "weight": 0.12,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       },
       {
         "section_id": "analisis_resultados",
@@ -1360,7 +2054,9 @@
         "weight": 0.2,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       },
       {
         "section_id": "analisis_implementacion",
@@ -1368,7 +2064,9 @@
         "weight": 0.24,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       },
       {
         "section_id": "conclusiones",
@@ -1376,7 +2074,9 @@
         "weight": 0.1,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       },
       {
         "section_id": "recomendaciones",
@@ -1384,7 +2084,9 @@
         "weight": 0.1,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       },
       {
         "section_id": "anexos",
@@ -1392,7 +2094,9 @@
         "weight": 0.07,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       },
       {
         "section_id": null,
@@ -1400,14 +2104,17 @@
         "weight": 0.07,
         "score": 0.0,
         "tipo_informe": "politica_nacional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1"
       }
     ],
     "totals": {
       "sections_total": 8,
       "sections_with_score": 8,
       "sections_without_score": 0
-    }
+    },
+    "criteria_hash": "5c7fdfed71a0c2f52a7171577c792d9c236420ba3b160ba8e2305c65aa06bc0c"
   },
   "extra": {
     "config": {
@@ -1419,7 +2126,7 @@
       "log_level": "INFO",
       "log_file": null,
       "ai_provider": "mock",
-      "run_id": "f8e202da056c46b48a6e0608d49a82d5",
+      "run_id": "a1de0ddd622744788ce686c90a8f7dbb",
       "document_id": null,
       "extra_instructions": null,
       "splitter_log_level": "info",
@@ -1427,6 +2134,7 @@
     },
     "tipo_informe": "institucional",
     "criteria_version": "2024.1",
-    "pipeline_version": "0.1.0"
+    "pipeline_version": "0.1.0",
+    "criteria_hash": "5c7fdfed71a0c2f52a7171577c792d9c236420ba3b160ba8e2305c65aa06bc0c"
   }
 }

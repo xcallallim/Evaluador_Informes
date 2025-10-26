@@ -57,7 +57,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.001400010660290718,
+            "ai_latency_ms": 0.000600004568696022,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -157,7 +157,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.001999898813664913,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -257,7 +257,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000200001522898674,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -357,7 +357,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -418,13 +418,28 @@
         }
       ],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
-      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]"
+      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.3846,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -452,8 +467,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "3837729d-2f03-4c95-b575-d1ac927aa355",
-            "timestamp": "2025-10-26T11:29:42.468+00:00",
+            "request_id": "7006fbfe-9c17-4781-a4c9-5609ba07ac26",
+            "timestamp": "2025-10-26T22:25:26.903+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -498,7 +513,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 1.0878000175580382,
+            "ai_latency_ms": 1.0788000654429197,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -561,8 +576,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "67083116-f2ed-489c-b75a-8483ca515844",
-            "timestamp": "2025-10-26T11:29:42.471+00:00",
+            "request_id": "d5816b82-cd85-4ce6-b528-4e6bc6af74f4",
+            "timestamp": "2025-10-26T22:25:26.906+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -607,7 +622,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.687899999320507,
+            "ai_latency_ms": 0.7520000217482448,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -670,8 +685,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "b4adec16-6850-46f7-ac98-30e37bca157b",
-            "timestamp": "2025-10-26T11:29:42.473+00:00",
+            "request_id": "df2cf447-019f-4277-ad44-049bc18afceb",
+            "timestamp": "2025-10-26T22:25:26.908+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -716,7 +731,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.5541000282391906,
+            "ai_latency_ms": 0.710100051946938,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -779,8 +794,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "a6ccbe08-a7f3-456d-a246-fe12867a534d",
-            "timestamp": "2025-10-26T11:29:42.476+00:00",
+            "request_id": "c1a118ea-6efe-43b9-ad19-d2fd5e023ef0",
+            "timestamp": "2025-10-26T22:25:26.910+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -825,7 +840,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 2.1601999178528786,
+            "ai_latency_ms": 0.8021000539883971,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -880,13 +895,28 @@
         }
       ],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
-      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
+      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.6154,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -914,8 +944,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "12442613-5bc5-41e1-90f0-5d2ab647777e",
-            "timestamp": "2025-10-26T11:29:42.484+00:00",
+            "request_id": "d2f13524-ae2c-4b4d-842a-18aadc3fc334",
+            "timestamp": "2025-10-26T22:25:26.914+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -960,7 +990,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 1.2561999028548598,
+            "ai_latency_ms": 1.5881999861449003,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1023,8 +1053,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "87864910-30bc-4125-97c4-8e0f2b75556d",
-            "timestamp": "2025-10-26T11:29:42.490+00:00",
+            "request_id": "5befcabb-45d5-48a0-8783-f14fe1688489",
+            "timestamp": "2025-10-26T22:25:26.916+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -1069,7 +1099,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 1.2170999543741345,
+            "ai_latency_ms": 0.6590000120922923,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1132,8 +1162,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "2d7d56b9-0e9d-49e8-9f75-724e219708d6",
-            "timestamp": "2025-10-26T11:29:42.493+00:00",
+            "request_id": "90dd6b5a-5b5b-4a4d-81ad-e2dcb65358e3",
+            "timestamp": "2025-10-26T22:25:26.917+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -1178,7 +1208,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 1.392900012433529,
+            "ai_latency_ms": 0.4925000248476863,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1241,8 +1271,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "53469a59-0b7e-46b8-a20f-79554a05090a",
-            "timestamp": "2025-10-26T11:29:42.499+00:00",
+            "request_id": "b66a3ca3-8039-4add-9b5c-850dec8e8685",
+            "timestamp": "2025-10-26T22:25:26.920+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -1287,7 +1317,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 1.2361000990495086,
+            "ai_latency_ms": 0.6013000383973122,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1342,13 +1372,28 @@
         }
       ],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
-      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
+      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.6154,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -1407,7 +1452,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.0010998919606208801,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1507,7 +1552,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.001400010660290718,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1607,7 +1652,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000600004568696022,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1707,7 +1752,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000700005330145359,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1768,13 +1813,28 @@
         }
       ],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
-      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]"
+      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.3846,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -1833,7 +1893,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000700005330145359,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1933,7 +1993,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.000800006091594696,
+            "ai_latency_ms": 0.003400025889277458,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -2033,7 +2093,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000400003045797348,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -2133,7 +2193,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -2194,13 +2254,28 @@
         }
       ],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
-      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]"
+      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.3846,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -2228,8 +2303,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "2e8e638f-e2ac-4c0b-a2bc-f613163dabba",
-            "timestamp": "2025-10-26T11:29:42.536+00:00",
+            "request_id": "94cfe308-d363-4de6-9366-a4cd452362ee",
+            "timestamp": "2025-10-26T22:25:26.934+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2274,7 +2349,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 1.7591000068932772,
+            "ai_latency_ms": 1.0037999600172043,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2337,8 +2412,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "d9724285-a96c-4c1c-8a2a-cb613e185ab4",
-            "timestamp": "2025-10-26T11:29:42.540+00:00",
+            "request_id": "141f10d3-8136-452b-808c-257903cb3966",
+            "timestamp": "2025-10-26T22:25:26.937+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2383,7 +2458,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 1.2398000108078122,
+            "ai_latency_ms": 0.7324999896809459,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2446,8 +2521,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "21cec507-dab3-4298-9945-217a5c2b5e78",
-            "timestamp": "2025-10-26T11:29:42.544+00:00",
+            "request_id": "12060e75-a8a8-41fc-8173-5ad9c4ed88c3",
+            "timestamp": "2025-10-26T22:25:26.938+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2492,7 +2567,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 1.1581999715417624,
+            "ai_latency_ms": 0.6650000577792525,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2555,8 +2630,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "e2303d44-d555-40b5-93e3-8ea70bf550b7",
-            "timestamp": "2025-10-26T11:29:42.550+00:00",
+            "request_id": "0ab3afce-b88c-4c91-af10-9ae177640ee6",
+            "timestamp": "2025-10-26T22:25:26.941+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2601,7 +2676,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 1.4451000606641173,
+            "ai_latency_ms": 0.8207999635487795,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2656,13 +2731,28 @@
         }
       ],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
-      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
+      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.6154,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -2690,8 +2780,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "e69ad703-abaf-4cab-9a79-b1ee20bf502e",
-            "timestamp": "2025-10-26T11:29:42.556+00:00",
+            "request_id": "775b9241-7760-4ef1-abf0-f41738fc85f4",
+            "timestamp": "2025-10-26T22:25:26.944+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2736,7 +2826,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 1.1666999198496342,
+            "ai_latency_ms": 1.3395999558269978,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2799,8 +2889,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "e38608ff-e5e6-4bbd-b0fe-38571eb8a53c",
-            "timestamp": "2025-10-26T11:29:42.560+00:00",
+            "request_id": "b10f395f-b2a9-4485-8950-57cf319a0a45",
+            "timestamp": "2025-10-26T22:25:26.946+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2845,7 +2935,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 1.1261000763624907,
+            "ai_latency_ms": 0.6080999737605453,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2908,8 +2998,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "4c0192c7-4e2f-4cbe-a2d9-e59c30b8bf4b",
-            "timestamp": "2025-10-26T11:29:42.564+00:00",
+            "request_id": "4a643534-d6e8-4bb2-a2e9-ad5e11d9ae47",
+            "timestamp": "2025-10-26T22:25:26.948+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2954,7 +3044,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 1.1475000064820051,
+            "ai_latency_ms": 0.6792999338358641,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -3017,8 +3107,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "466278a8-1fd1-4bfb-8ac8-40cc5cab0388",
-            "timestamp": "2025-10-26T11:29:42.570+00:00",
+            "request_id": "2c196c48-4c26-40ff-a927-6f6098bdce38",
+            "timestamp": "2025-10-26T22:25:26.950+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -3063,7 +3153,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 1.545200007967651,
+            "ai_latency_ms": 0.6390999769791961,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -3118,13 +3208,28 @@
         }
       ],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
-      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
+      "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.6154,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3143,13 +3248,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3168,13 +3288,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3193,13 +3328,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3218,13 +3368,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3243,13 +3408,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3268,13 +3448,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3293,13 +3488,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3318,13 +3528,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3343,13 +3568,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3368,13 +3608,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3393,13 +3648,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3418,13 +3688,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3443,13 +3728,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3468,13 +3768,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3493,13 +3808,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3518,13 +3848,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3543,13 +3888,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3568,13 +3928,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3593,13 +3968,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3618,13 +4008,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3643,13 +4048,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3668,13 +4088,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3693,13 +4128,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3718,13 +4168,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.08,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3743,13 +4208,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.3846,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3768,13 +4248,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.6154,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3793,13 +4288,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 0.6154,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3818,13 +4328,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3843,13 +4368,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3868,13 +4408,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3893,13 +4448,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3918,13 +4488,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.25,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3943,13 +4528,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3968,13 +4568,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.4,
+      "metadata.question_weight": 0.5,
+      "dimension_id": "Claridad y coherencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -3993,13 +4608,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 4.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 4.0,
+      "metadata.section_weight": 0.1,
+      "metadata.dimension_weight": 0.35,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Pertinencia"
     },
     {
       "document_id": "informe_institucional_demo",
@@ -4018,13 +4648,28 @@
       "relevant_text": null,
       "chunk_results": [],
       "criteria_version": "2024.1",
+      "scale_min": 0.0,
+      "scale_max": 1.0,
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
-      "metadata.segmenter_status": "empty"
+      "metadata.segmenter_status": "empty",
+      "metadata.pipeline_version": "0.1.0",
+      "metadata.pipeline_version_history": "[\"0.1.0\"]",
+      "metadata.run_id": "6e1f644715ba46eb8e587889065bfb58",
+      "metadata.run_id_history": "[\"6e1f644715ba46eb8e587889065bfb58\"]",
+      "metadata.criteria_version": "2024.1",
+      "metadata.criteria_versions": "[\"2024.1\"]",
+      "metadata.scale_min": 0.0,
+      "metadata.scale_max": 1.0,
+      "metadata.section_weight": 0.07,
+      "metadata.dimension_weight": 1.0,
+      "metadata.question_weight": 1.0,
+      "dimension_id": "Estructura"
     }
   ],
   "evaluation": {
@@ -4046,7 +4691,7 @@
         ]
       }
     },
-    "generated_at": "2025-10-26T11:29:42.445681",
+    "generated_at": "2025-10-26T22:25:26.895615",
     "score": 0.385,
     "sections": [
       {
@@ -4110,7 +4755,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.001400010660290718,
+                      "ai_latency_ms": 0.000600004568696022,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4210,7 +4855,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.001999898813664913,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4310,7 +4955,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000200001522898674,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4410,7 +5055,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4512,12 +5157,41 @@
                         "was_valid": true
                       }
                     ]
-                  }
+                  },
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.3846,
+                  "question_weight": 1.0
                 }
               }
             ],
             "metadata": {
-              "tipo_escala": "binario"
+              "tipo_escala": "binario",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -4544,8 +5218,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "3837729d-2f03-4c95-b575-d1ac927aa355",
-                      "timestamp": "2025-10-26T11:29:42.468+00:00",
+                      "request_id": "7006fbfe-9c17-4781-a4c9-5609ba07ac26",
+                      "timestamp": "2025-10-26T22:25:26.903+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4590,7 +5264,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 1.0878000175580382,
+                      "ai_latency_ms": 1.0788000654429197,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -4653,8 +5327,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "67083116-f2ed-489c-b75a-8483ca515844",
-                      "timestamp": "2025-10-26T11:29:42.471+00:00",
+                      "request_id": "d5816b82-cd85-4ce6-b528-4e6bc6af74f4",
+                      "timestamp": "2025-10-26T22:25:26.906+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4699,7 +5373,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.687899999320507,
+                      "ai_latency_ms": 0.7520000217482448,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -4762,8 +5436,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "b4adec16-6850-46f7-ac98-30e37bca157b",
-                      "timestamp": "2025-10-26T11:29:42.473+00:00",
+                      "request_id": "df2cf447-019f-4277-ad44-049bc18afceb",
+                      "timestamp": "2025-10-26T22:25:26.908+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4808,7 +5482,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.5541000282391906,
+                      "ai_latency_ms": 0.710100051946938,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -4871,8 +5545,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "a6ccbe08-a7f3-456d-a246-fe12867a534d",
-                      "timestamp": "2025-10-26T11:29:42.476+00:00",
+                      "request_id": "c1a118ea-6efe-43b9-ad19-d2fd5e023ef0",
+                      "timestamp": "2025-10-26T22:25:26.910+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4917,7 +5591,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 2.1601999178528786,
+                      "ai_latency_ms": 0.8021000539883971,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5009,7 +5683,24 @@
                         "was_valid": true
                       }
                     ]
-                  }
+                  },
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.6154,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -5030,8 +5721,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "12442613-5bc5-41e1-90f0-5d2ab647777e",
-                      "timestamp": "2025-10-26T11:29:42.484+00:00",
+                      "request_id": "d2f13524-ae2c-4b4d-842a-18aadc3fc334",
+                      "timestamp": "2025-10-26T22:25:26.914+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5076,7 +5767,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 1.2561999028548598,
+                      "ai_latency_ms": 1.5881999861449003,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5139,8 +5830,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "87864910-30bc-4125-97c4-8e0f2b75556d",
-                      "timestamp": "2025-10-26T11:29:42.490+00:00",
+                      "request_id": "5befcabb-45d5-48a0-8783-f14fe1688489",
+                      "timestamp": "2025-10-26T22:25:26.916+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5185,7 +5876,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 1.2170999543741345,
+                      "ai_latency_ms": 0.6590000120922923,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5248,8 +5939,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "2d7d56b9-0e9d-49e8-9f75-724e219708d6",
-                      "timestamp": "2025-10-26T11:29:42.493+00:00",
+                      "request_id": "90dd6b5a-5b5b-4a4d-81ad-e2dcb65358e3",
+                      "timestamp": "2025-10-26T22:25:26.917+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5294,7 +5985,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 1.392900012433529,
+                      "ai_latency_ms": 0.4925000248476863,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5357,8 +6048,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "53469a59-0b7e-46b8-a20f-79554a05090a",
-                      "timestamp": "2025-10-26T11:29:42.499+00:00",
+                      "request_id": "b66a3ca3-8039-4add-9b5c-850dec8e8685",
+                      "timestamp": "2025-10-26T22:25:26.920+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5403,7 +6094,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 1.2361000990495086,
+                      "ai_latency_ms": 0.6013000383973122,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5495,12 +6186,41 @@
                         "was_valid": true
                       }
                     ]
-                  }
+                  },
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.6154,
+                  "question_weight": 0.5
                 }
               }
             ],
             "metadata": {
-              "tipo_escala": "likert"
+              "tipo_escala": "likert",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -5510,7 +6230,19 @@
           "segmenter": {
             "status": "found",
             "detected": true
-          }
+          },
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -5574,7 +6306,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.0010998919606208801,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -5674,7 +6406,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.001400010660290718,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -5774,7 +6506,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000600004568696022,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -5874,7 +6606,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000700005330145359,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -5976,7 +6708,24 @@
                         "was_valid": true
                       }
                     ]
-                  }
+                  },
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.3846,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -6028,7 +6777,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000700005330145359,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6128,7 +6877,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.000800006091594696,
+                      "ai_latency_ms": 0.003400025889277458,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6228,7 +6977,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000400003045797348,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6328,7 +7077,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6430,12 +7179,41 @@
                         "was_valid": true
                       }
                     ]
-                  }
+                  },
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.3846,
+                  "question_weight": 0.5
                 }
               }
             ],
             "metadata": {
-              "tipo_escala": "binario"
+              "tipo_escala": "binario",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -6462,8 +7240,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "2e8e638f-e2ac-4c0b-a2bc-f613163dabba",
-                      "timestamp": "2025-10-26T11:29:42.536+00:00",
+                      "request_id": "94cfe308-d363-4de6-9366-a4cd452362ee",
+                      "timestamp": "2025-10-26T22:25:26.934+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6508,7 +7286,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 1.7591000068932772,
+                      "ai_latency_ms": 1.0037999600172043,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6571,8 +7349,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "d9724285-a96c-4c1c-8a2a-cb613e185ab4",
-                      "timestamp": "2025-10-26T11:29:42.540+00:00",
+                      "request_id": "141f10d3-8136-452b-808c-257903cb3966",
+                      "timestamp": "2025-10-26T22:25:26.937+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6617,7 +7395,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 1.2398000108078122,
+                      "ai_latency_ms": 0.7324999896809459,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6680,8 +7458,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "21cec507-dab3-4298-9945-217a5c2b5e78",
-                      "timestamp": "2025-10-26T11:29:42.544+00:00",
+                      "request_id": "12060e75-a8a8-41fc-8173-5ad9c4ed88c3",
+                      "timestamp": "2025-10-26T22:25:26.938+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6726,7 +7504,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 1.1581999715417624,
+                      "ai_latency_ms": 0.6650000577792525,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6789,8 +7567,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "e2303d44-d555-40b5-93e3-8ea70bf550b7",
-                      "timestamp": "2025-10-26T11:29:42.550+00:00",
+                      "request_id": "0ab3afce-b88c-4c91-af10-9ae177640ee6",
+                      "timestamp": "2025-10-26T22:25:26.941+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6835,7 +7613,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 1.4451000606641173,
+                      "ai_latency_ms": 0.8207999635487795,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6927,7 +7705,24 @@
                         "was_valid": true
                       }
                     ]
-                  }
+                  },
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.6154,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -6948,8 +7743,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "e69ad703-abaf-4cab-9a79-b1ee20bf502e",
-                      "timestamp": "2025-10-26T11:29:42.556+00:00",
+                      "request_id": "775b9241-7760-4ef1-abf0-f41738fc85f4",
+                      "timestamp": "2025-10-26T22:25:26.944+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6994,7 +7789,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 1.1666999198496342,
+                      "ai_latency_ms": 1.3395999558269978,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -7057,8 +7852,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "e38608ff-e5e6-4bbd-b0fe-38571eb8a53c",
-                      "timestamp": "2025-10-26T11:29:42.560+00:00",
+                      "request_id": "b10f395f-b2a9-4485-8950-57cf319a0a45",
+                      "timestamp": "2025-10-26T22:25:26.946+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -7103,7 +7898,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 1.1261000763624907,
+                      "ai_latency_ms": 0.6080999737605453,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -7166,8 +7961,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "4c0192c7-4e2f-4cbe-a2d9-e59c30b8bf4b",
-                      "timestamp": "2025-10-26T11:29:42.564+00:00",
+                      "request_id": "4a643534-d6e8-4bb2-a2e9-ad5e11d9ae47",
+                      "timestamp": "2025-10-26T22:25:26.948+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -7212,7 +8007,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 1.1475000064820051,
+                      "ai_latency_ms": 0.6792999338358641,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -7275,8 +8070,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "466278a8-1fd1-4bfb-8ac8-40cc5cab0388",
-                      "timestamp": "2025-10-26T11:29:42.570+00:00",
+                      "request_id": "2c196c48-4c26-40ff-a927-6f6098bdce38",
+                      "timestamp": "2025-10-26T22:25:26.950+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -7321,7 +8116,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 1.545200007967651,
+                      "ai_latency_ms": 0.6390999769791961,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -7413,12 +8208,41 @@
                         "was_valid": true
                       }
                     ]
-                  }
+                  },
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.6154,
+                  "question_weight": 0.5
                 }
               }
             ],
             "metadata": {
-              "tipo_escala": "likert"
+              "tipo_escala": "likert",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -7428,7 +8252,19 @@
           "segmenter": {
             "status": "found",
             "detected": true
-          }
+          },
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -7454,7 +8290,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7462,7 +8315,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7482,7 +8347,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -7496,7 +8378,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -7504,7 +8403,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7524,7 +8435,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7532,7 +8460,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -7549,7 +8489,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -7575,7 +8527,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7583,7 +8552,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7603,7 +8584,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -7617,7 +8615,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -7625,7 +8640,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7645,7 +8672,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7653,7 +8697,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -7670,7 +8726,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -7696,7 +8764,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7704,7 +8789,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7724,7 +8821,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -7738,7 +8852,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -7746,7 +8877,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7766,7 +8909,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7774,7 +8934,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -7791,7 +8963,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -7817,7 +9001,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7825,7 +9026,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7845,7 +9058,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -7859,7 +9089,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -7867,7 +9114,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7887,7 +9146,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7895,7 +9171,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -7912,7 +9200,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -7938,7 +9238,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -7946,7 +9263,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -7966,7 +9295,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -7980,7 +9326,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -7988,7 +9351,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8008,7 +9383,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8016,7 +9408,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -8033,7 +9437,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -8059,7 +9475,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8067,7 +9500,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8087,7 +9532,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -8101,7 +9563,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -8109,7 +9588,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8129,7 +9620,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.08,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8137,7 +9645,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -8154,7 +9674,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -8180,7 +9712,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.3846,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8188,7 +9737,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8208,7 +9769,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.6154,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -8222,7 +9800,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 0.6154,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -8230,7 +9825,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -8247,7 +9854,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -8273,7 +9892,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8281,7 +9917,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8301,7 +9949,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -8315,7 +9980,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -8323,7 +10005,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8343,7 +10037,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8351,7 +10062,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -8368,7 +10091,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -8394,7 +10129,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.25,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8402,7 +10154,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8422,7 +10186,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               },
               {
@@ -8436,7 +10217,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.4,
+                  "question_weight": 0.5
                 }
               }
             ],
@@ -8444,7 +10242,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           },
           {
@@ -8464,7 +10274,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 4.0,
+                  "section_weight": 0.1,
+                  "dimension_weight": 0.35,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8472,7 +10299,19 @@
               "tipo_escala": "likert",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -8489,7 +10328,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       },
       {
@@ -8515,7 +10366,24 @@
                 "metadata": {
                   "skipped": true,
                   "skip_reason": "empty_section",
-                  "segmenter_status": "empty"
+                  "segmenter_status": "empty",
+                  "pipeline_version": "0.1.0",
+                  "pipeline_version_history": [
+                    "0.1.0"
+                  ],
+                  "run_id": "6e1f644715ba46eb8e587889065bfb58",
+                  "run_id_history": [
+                    "6e1f644715ba46eb8e587889065bfb58"
+                  ],
+                  "criteria_version": "2024.1",
+                  "criteria_versions": [
+                    "2024.1"
+                  ],
+                  "scale_min": 0.0,
+                  "scale_max": 1.0,
+                  "section_weight": 0.07,
+                  "dimension_weight": 1.0,
+                  "question_weight": 1.0
                 }
               }
             ],
@@ -8523,7 +10391,19 @@
               "tipo_escala": "binario",
               "skipped": true,
               "skip_reason": "empty_section",
-              "segmenter_status": "empty"
+              "segmenter_status": "empty",
+              "pipeline_version": "0.1.0",
+              "pipeline_version_history": [
+                "0.1.0"
+              ],
+              "run_id": "6e1f644715ba46eb8e587889065bfb58",
+              "run_id_history": [
+                "6e1f644715ba46eb8e587889065bfb58"
+              ],
+              "criteria_version": "2024.1",
+              "criteria_versions": [
+                "2024.1"
+              ]
             }
           }
         ],
@@ -8540,7 +10420,19 @@
           },
           "skipped": true,
           "skip_reason": "empty_section",
-          "segmenter_status": "empty"
+          "segmenter_status": "empty",
+          "pipeline_version": "0.1.0",
+          "pipeline_version_history": [
+            "0.1.0"
+          ],
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
+          "run_id_history": [
+            "6e1f644715ba46eb8e587889065bfb58"
+          ],
+          "criteria_version": "2024.1",
+          "criteria_versions": [
+            "2024.1"
+          ]
         }
       }
     ],
@@ -8589,8 +10481,8 @@
         "total_prompts": 28,
         "rejected_prompts": 12,
         "average_quality": 0.735714285714286,
-        "average_latency_ms": 0.7211785663717559,
-        "latency_std_ms": 0.6811155406975229,
+        "average_latency_ms": 0.47072500456124544,
+        "latency_std_ms": 0.4601139044298665,
         "issues": [
           {
             "question_id": "RESUMEN_EJECUTIVO_ESTRUCTURA_1",
@@ -8808,8 +10700,8 @@
             "total_prompts": 12,
             "rejected_prompts": 4,
             "average_quality": 0.75,
-            "average_latency_ms": 0.7997916545718908,
-            "latency_std_ms": 0.6758634908399254
+            "average_latency_ms": 0.5571166887724152,
+            "latency_std_ms": 0.4754954379360611
           },
           {
             "section_key": "prioridades_politica_institucional",
@@ -8817,8 +10709,8 @@
             "total_prompts": 16,
             "rejected_prompts": 8,
             "average_quality": 0.7250000000000002,
-            "average_latency_ms": 0.6622187502216548,
-            "latency_std_ms": 0.6790819521817417
+            "average_latency_ms": 0.4059312414028682,
+            "latency_std_ms": 0.4371677036831608
           },
           {
             "section_key": "analisis_oei",
@@ -8915,23 +10807,36 @@
       "validator_version": "1.0.0",
       "builder_version": "InstitutionalPromptBuilder",
       "model_name": "gpt-4o-mini",
-      "run_id": "20c938fa385e493db9c5b8676269eaeb",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
       "prompt_batch_size": 1,
       "pipeline_version": "0.1.0",
+      "criteria_hash": "eee65f9935e8b1971574cd1fefcf3de3c40982e92244c9a88002790fd8a98966",
       "retries": 2,
       "timeout_seconds": 60.0,
       "mode": "global",
       "metrics_strict_normalization": false,
       "missing_section_message_style": "default",
-      "timestamp": "2025-10-26T11:29:42.576574",
+      "timestamp": "2025-10-26T22:25:26.952738",
       "source_path": "data\\examples\\informe_institucional_demo.txt",
       "runs": [
         {
-          "run_id": "20c938fa385e493db9c5b8676269eaeb",
+          "run_id": "6e1f644715ba46eb8e587889065bfb58",
           "mode": "global",
           "model": "gpt-4o-mini",
-          "executed_at": "2025-10-26T11:29:42.576574"
+          "executed_at": "2025-10-26T22:25:26.952738",
+          "pipeline_version": "0.1.0",
+          "criteria_version": "2024.1",
+          "filters": null
         }
+      ],
+      "run_id_history": [
+        "6e1f644715ba46eb8e587889065bfb58"
+      ],
+      "pipeline_version_history": [
+        "0.1.0"
+      ],
+      "criteria_version_history": [
+        "2024.1"
       ]
     }
   },
@@ -8944,6 +10849,7 @@
       "scale_max": 1.0,
       "normalized_min": 0.0,
       "normalized_max": 100.0,
+      "criteria_version": "2024.1",
       "segmenter_flagged_breakdown": {
         "missing": 0,
         "empty": 10,
@@ -8972,7 +10878,11 @@
         "weight": 0.07,
         "score": 3.0,
         "tipo_informe": "institucional",
-        "normalized_score": 15.0
+        "normalized_score": 75.0,
+        "raw_score": 3.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "prioridades_politica_institucional",
@@ -8980,7 +10890,11 @@
         "weight": 0.07,
         "score": 2.5,
         "tipo_informe": "institucional",
-        "normalized_score": 12.5
+        "normalized_score": 62.5,
+        "raw_score": 2.5,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "analisis_oei",
@@ -8988,7 +10902,11 @@
         "weight": 0.1,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "diagnostico_oei_priorizados",
@@ -8996,7 +10914,11 @@
         "weight": 0.08,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "analisis_implementacion_aei",
@@ -9004,7 +10926,11 @@
         "weight": 0.1,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "analisis_aei_oei",
@@ -9012,7 +10938,11 @@
         "weight": 0.08,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "analisis_productos_aei",
@@ -9020,7 +10950,11 @@
         "weight": 0.08,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "analisis_ejecucion_operativa",
@@ -9028,7 +10962,11 @@
         "weight": 0.08,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "aplicacion_recomendaciones",
@@ -9036,7 +10974,11 @@
         "weight": 0.07,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "conclusiones",
@@ -9044,7 +10986,11 @@
         "weight": 0.1,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "recomendaciones",
@@ -9052,7 +10998,11 @@
         "weight": 0.1,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 4.0
       },
       {
         "section_id": "anexos",
@@ -9060,7 +11010,11 @@
         "weight": 0.07,
         "score": 0.0,
         "tipo_informe": "institucional",
-        "normalized_score": 0.0
+        "normalized_score": 0.0,
+        "raw_score": 0.0,
+        "criteria_version": "2024.1",
+        "scale_min": 0.0,
+        "scale_max": 1.0
       }
     ],
     "totals": {
@@ -9096,7 +11050,8 @@
         "weight": 0.6,
         "weighted_score": 0.0
       }
-    ]
+    ],
+    "criteria_hash": "eee65f9935e8b1971574cd1fefcf3de3c40982e92244c9a88002790fd8a98966"
   },
   "extra": {
     "config": {
@@ -9108,7 +11063,7 @@
       "log_level": "INFO",
       "log_file": null,
       "ai_provider": "mock",
-      "run_id": "20c938fa385e493db9c5b8676269eaeb",
+      "run_id": "6e1f644715ba46eb8e587889065bfb58",
       "document_id": null,
       "extra_instructions": null,
       "splitter_log_level": "info",
@@ -9116,6 +11071,7 @@
     },
     "tipo_informe": "institucional",
     "criteria_version": "2024.1",
-    "pipeline_version": "0.1.0"
+    "pipeline_version": "0.1.0",
+    "criteria_hash": "eee65f9935e8b1971574cd1fefcf3de3c40982e92244c9a88002790fd8a98966"
   }
 }

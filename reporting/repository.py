@@ -75,35 +75,34 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                 )
                 if not dimension_identifier:
                     dimension_identifier = dimension.name
-                rows.append(
-                    {
-                        "document_id": evaluation.document_id,
-                        "section_id": section.section_id,
-                        "section_title": section.title,
-                        "section_score": section.score,
-                        "section_weight": section.weight,
-                        "dimension_id": dimension_identifier,
-                        "dimension_name": dimension.name,
-                        "dimension_score": dimension.score,
-                        "dimension_weight": dimension.weight,
-                        "question_id": question.question_id,
-                        "question_text": question.text,
-                        "question_score": question.score,
-                        "question_weight": question.weight,
-                        "justification": question.justification,
-                        "relevant_text": question.relevant_text,
-                        "chunk_results": [chunk.to_dict() for chunk in question.chunk_results],
-                        "criteria_version": question_criteria_version or criteria_version,
-                        "scale_min": scale_min,
-                        "scale_max": scale_max,
-                        "tipo_informe": tipo_informe,
-                        "model_name": model_name,
-                        "pipeline_version": pipeline_version,
-                        "run_id": run_id,
-                        "timestamp": timestamp,
-                        **metadata_columns,
-                    }
-                )
+                row = {
+                    "document_id": evaluation.document_id,
+                    "section_id": section.section_id,
+                    "section_title": section.title,
+                    "section_score": section.score,
+                    "section_weight": section.weight,
+                    "dimension_name": dimension.name,
+                    "dimension_score": dimension.score,
+                    "dimension_weight": dimension.weight,
+                    "question_id": question.question_id,
+                    "question_text": question.text,
+                    "question_score": question.score,
+                    "question_weight": question.weight,
+                    "justification": question.justification,
+                    "relevant_text": question.relevant_text,
+                    "chunk_results": [chunk.to_dict() for chunk in question.chunk_results],
+                    "criteria_version": question_criteria_version or criteria_version,
+                    "scale_min": scale_min,
+                    "scale_max": scale_max,
+                    "tipo_informe": tipo_informe,
+                    "model_name": model_name,
+                    "pipeline_version": pipeline_version,
+                    "run_id": run_id,
+                    "timestamp": timestamp,
+                    **metadata_columns,
+                }
+                row["dimension_id"] = dimension_identifier
+                rows.append(row)
     return rows
 
 
