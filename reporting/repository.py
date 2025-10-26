@@ -45,6 +45,7 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
     model_name = evaluation_metadata.get("model_name")
     pipeline_version = evaluation_metadata.get("pipeline_version")
     timestamp = evaluation_metadata.get("timestamp")
+    run_id = evaluation_metadata.get("run_id")
     seen_rows: Set[tuple[str, str, str]] = set()
     for section in evaluation.sections:
         for dimension in section.dimensions:
@@ -67,6 +68,13 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                 question_criteria_version = None
                 if isinstance(question.metadata, Mapping):
                     question_criteria_version = question.metadata.get("criteria_version")
+                dimension_identifier = (
+                    dimension.metadata.get("id")
+                    if isinstance(dimension.metadata, Mapping)
+                    else None
+                )
+                if not dimension_identifier:
+                    dimension_identifier = dimension.name
                 rows.append(
                     {
                         "document_id": evaluation.document_id,
@@ -74,6 +82,7 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                         "section_title": section.title,
                         "section_score": section.score,
                         "section_weight": section.weight,
+                        "dimension_id": dimension_identifier,
                         "dimension_name": dimension.name,
                         "dimension_score": dimension.score,
                         "dimension_weight": dimension.weight,
@@ -90,6 +99,7 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                         "tipo_informe": tipo_informe,
                         "model_name": model_name,
                         "pipeline_version": pipeline_version,
+                        "run_id": run_id,
                         "timestamp": timestamp,
                         **metadata_columns,
                     }

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import logging
 import sys
@@ -77,6 +78,32 @@ def _normalise_identifier(value: Any) -> str:
         return ""
     normalized = unicodedata.normalize("NFKD", text)
     return "".join(ch for ch in normalized if not unicodedata.combining(ch))
+
+
+def _normalise_for_hash(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {
+            str(key): _normalise_for_hash(inner)
+            for key, inner in sorted(value.items(), key=lambda item: str(item[0]))
+        }
+    if isinstance(value, list):
+        return [_normalise_for_hash(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_normalise_for_hash(item) for item in value)
+    if isinstance(value, set):
+        return sorted(_normalise_for_hash(item) for item in value)
+    return value
+
+
+def _stable_mapping_hash(payload: Mapping[str, Any]) -> str:
+    normalised = _normalise_for_hash(payload)
+    encoded = json.dumps(
+        normalised,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def _unique_preserving_order(values: Iterable[Any]) -> list[Any]:
@@ -965,6 +992,12 @@ class EvaluationService:
         self._configure_logging(config)
 
         raw_criteria = self._load_criteria(criteria_data, criteria_path)
+        criteria_hash: str | None = None
+        if isinstance(raw_criteria, Mapping):
+            try:
+                criteria_hash = _stable_mapping_hash(raw_criteria)
+            except Exception:  # pragma: no cover - fallback ante criterios no serializables
+                criteria_hash = None
         resolved_tipo = self._resolve_tipo_informe(tipo_informe, raw_criteria)
         filters = filters or EvaluationFilters()
         resolved_mode = self._normalise_mode(mode)
@@ -1037,6 +1070,8 @@ class EvaluationService:
         evaluation.metadata["run_id"] = config.run_id
         evaluation.metadata["prompt_batch_size"] = config.prompt_batch_size
         evaluation.metadata["pipeline_version"] = SERVICE_VERSION
+        if criteria_hash:
+            evaluation.metadata["criteria_hash"] = criteria_hash
         evaluation.metadata["retries"] = config.retries
         evaluation.metadata["timeout_seconds"] = config.timeout_seconds
         evaluation.metadata["mode"] = resolved_mode
@@ -1091,6 +1126,9 @@ class EvaluationService:
         metrics_summary = self._enrich_metrics_summary(
             evaluation, metrics_summary
         )
+        if criteria_hash and isinstance(metrics_summary, Mapping):
+            metrics_summary = dict(metrics_summary)
+            metrics_summary.setdefault("criteria_hash", criteria_hash)
 
         segmenter_summary_meta = evaluation.metadata.get("segmenter_summary")
         if isinstance(segmenter_summary_meta, Mapping):
@@ -1129,6 +1167,8 @@ class EvaluationService:
             "criteria_version": raw_criteria.get("version"),
             "pipeline_version": SERVICE_VERSION,
         }
+        if criteria_hash:
+            export_metadata["criteria_hash"] = criteria_hash
         if extra_metadata:
             export_metadata.update(extra_metadata)
         if not filters.is_empty():
