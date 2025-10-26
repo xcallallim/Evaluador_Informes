@@ -122,6 +122,11 @@ de cero si detecta errores.
 - `data/models/evaluation.py` define las clases de datos (`SectionResult`,
   `QuestionResult`, etc.) utilizadas por el repositorio y expone métodos
   `to_dict()` para serializar sin pérdida de información.
+- `utils/generate_required_fields_excel.py` genera un Excel con los campos
+  necesarios para la ingestión y las exportaciones si necesitas compartirlos con
+  equipos de captura o etiquetado. Ejecuta `python utils/generate_required_fields_excel.py`
+  y encontrarás el archivo en `artifacts/campos/campos_requeridos.xlsx` (puedes
+  cambiar el directorio con `--output-dir`).
 
 Ejemplo de exportación directa desde Python:
 

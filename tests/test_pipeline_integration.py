@@ -124,6 +124,11 @@ class TrackingSegmenter:
         if current_id is not None:
             sections[current_id] = "\n".join(buffer).strip()
         document.sections = sections
+        metadata = getattr(document, "metadata", None)
+        if isinstance(metadata, dict):
+            metadata.setdefault("segmenter_missing_sections", not bool(sections))
+            if sections:
+                metadata["segmenter_missing_sections"] = False
         self.calls.append(
             {
                 "document": document.metadata.get("source"),

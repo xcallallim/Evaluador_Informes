@@ -45,6 +45,10 @@ def test_evaluator_generates_weighted_scores() -> None:
             _FakeChunk("Texto del chunk 1", {"page": 1}),
             _FakeChunk("Texto del chunk 2", {"page": 2}),
         ],
+        sections={
+            "Sección 1": "Texto del chunk 1",
+            "Sección 2": "Texto del chunk 2",
+        },
     )
 
     criteria: Dict[str, Any] = {
@@ -139,7 +143,11 @@ def test_evaluator_generates_weighted_scores() -> None:
 
 
 def test_evaluator_handles_missing_scores() -> None:
-    document = Document(content="Contenido sin chunks", metadata={"id": "doc-void"})
+    document = Document(
+        content="Contenido sin chunks",
+        metadata={"id": "doc-void"},
+        sections={"Única sección": "Contenido sin chunks"},
+    )
 
     criteria = {
         "tipo_informe": "institucional",
@@ -188,6 +196,7 @@ def test_evaluator_uses_chunk_weights_when_available() -> None:
             _FakeChunk("C1", {"relevance": 1}),
             _FakeChunk("C2", {"relevance": 3}),
         ],
+        sections={"Única": "C1\nC2"},
     )
 
     criteria = {
@@ -228,7 +237,11 @@ def test_evaluator_handles_ai_failures_gracefully() -> None:
         def evaluate(self, *args: Any, **kwargs: Any) -> Any:
             raise RuntimeError("boom")
 
-    document = Document(content="Texto", metadata={"id": "doc-error"})
+    document = Document(
+        content="Texto",
+        metadata={"id": "doc-error"},
+        sections={"Sección": "Texto"},
+    )
     criteria = {
         "tipo_informe": "institucional",
         "secciones": [
@@ -264,7 +277,11 @@ def test_evaluator_normalises_unexpected_ai_payload() -> None:
             self.prompts.append(prompt)
             return "respuesta libre sin formato"
 
-    document = Document(content="Texto", metadata={"id": "doc-odd"})
+    document = Document(
+        content="Texto",
+        metadata={"id": "doc-odd"},
+        sections={"Sección": "Texto"},
+    )
     criteria = {
         "tipo_informe": "institucional",
         "secciones": [
@@ -291,7 +308,11 @@ def test_evaluator_normalises_unexpected_ai_payload() -> None:
 
 
 def test_evaluator_supports_global_blocks() -> None:
-    document = Document(content="", metadata={"id": "doc-global"})
+    document = Document(
+        content="",
+        metadata={"id": "doc-global"},
+        sections={"Bloque 1": ""},
+    )
     criteria = {
         "tipo_informe": "politica_nacional",
         "metodologia": "global",
@@ -325,7 +346,10 @@ def test_evaluator_supports_global_blocks() -> None:
 
 def test_dimension_weighting_with_sparse_questions() -> None:
     document = Document(
-        content="", metadata={"id": "doc-dim"}, chunks=[_FakeChunk("C1"), _FakeChunk("C2")]
+        content="",
+        metadata={"id": "doc-dim"},
+        chunks=[_FakeChunk("C1"), _FakeChunk("C2")],
+        sections={"S1": "C1\nC2"},
     )
 
     criteria = {

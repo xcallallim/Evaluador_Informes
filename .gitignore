@@ -7,3 +7,6 @@ secrets/
 # Ignora archivos cache de Python
 __pycache__/
 *.py[cod]
+
+# Artefactos generados por scripts auxiliares
+artifacts/

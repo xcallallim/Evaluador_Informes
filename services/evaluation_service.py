@@ -274,7 +274,7 @@ class RetryingAIService:
         self.logger.error("Fallo permanente del servicio de IA tras %s intentos", attempt)
         elapsed_ms = (time.perf_counter() - start_total) * 1000
         return {
-            "score": 0,
+            "score": 1.0,
             "justification": f"No fue posible obtener respuesta de la IA: {last_exception}",
             "metadata": {
                 "error": True,
@@ -369,6 +369,14 @@ class ValidatingEvaluator(Evaluator):
                 chunk_text = str(chunk)
             chunk_metadata = getattr(chunk, "metadata", {}) or {}
             chunk_metadata_dict = dict(chunk_metadata)
+            section_key = self._normalise_label(
+                section_data.get("id") or section_data.get("id_segmenter")
+            )
+            chunk_section_key = self._normalise_label(
+                chunk_metadata_dict.get("section_id")
+            )
+            if section_key and chunk_section_key and section_key != chunk_section_key:
+                continue
             prompt = self.prompt_builder(
                 document=document,
                 criteria=criteria,
@@ -685,6 +693,14 @@ class ValidatingEvaluator(Evaluator):
                 chunk_text = str(chunk)
             chunk_metadata = getattr(chunk, "metadata", {}) or {}
             chunk_metadata_dict = dict(chunk_metadata)
+            section_key = self._normalise_label(
+                section_data.get("id") or section_data.get("id_segmenter")
+            )
+            chunk_section_key = self._normalise_label(
+                chunk_metadata_dict.get("section_id")
+            )
+            if section_key and chunk_section_key and section_key != chunk_section_key:
+                continue
             prompt = self.prompt_builder(
                 document=document,
                 criteria=criteria,
@@ -987,6 +1003,37 @@ class EvaluationService:
         except Exception as exc:  # pragma: no cover - robustez ante métricas
             self.logger.exception("Error calculando métricas: %s", exc)
             metrics_summary = {}
+
+        segmenter_summary_meta = evaluation.metadata.get("segmenter_summary")
+        if isinstance(segmenter_summary_meta, Mapping):
+            global_metrics = metrics_summary.setdefault("global", {})
+            status_counts = segmenter_summary_meta.get("status_counts", {})
+            flagged_missing = 0
+            flagged_empty = 0
+            if isinstance(status_counts, Mapping):
+                flagged_missing = int(status_counts.get("missing", 0) or 0)
+                flagged_empty = int(status_counts.get("empty", 0) or 0)
+                global_metrics.setdefault(
+                    "segmenter_flagged_breakdown",
+                    {
+                        "missing": flagged_missing,
+                        "empty": flagged_empty,
+                        "found": int(status_counts.get("found", 0) or 0),
+                    },
+                )
+            flagged_total = flagged_missing + flagged_empty
+            global_metrics.setdefault("segmenter_flagged_sections", flagged_total)
+            missing_list = segmenter_summary_meta.get("missing_sections")
+            empty_list = segmenter_summary_meta.get("empty_sections")
+            if isinstance(missing_list, list):
+                global_metrics.setdefault("missing_sections", list(missing_list))
+            if isinstance(empty_list, list):
+                global_metrics.setdefault("empty_sections", list(empty_list))
+            if flagged_total:
+                global_metrics.setdefault(
+                    "segmenter_warning",
+                    "Se detectaron secciones ausentes o sin contenido durante la evaluación.",
+                )
 
         export_metadata = {
             "config": config.dump(),

@@ -360,9 +360,12 @@ def calculate_institutional_metrics(
         weight = INSTITUTIONAL_CRITERION_WEIGHTS.get(entry["key"])
         if weight is not None:
             entry["weight"] = weight
-            entry["weighted_score"] = entry["normalized_score"] * weight
-            weighted_score += entry["weighted_score"]
-            total_weight += weight
+            if entry.get("questions_evaluated", 0):
+                entry["weighted_score"] = entry["normalized_score"] * weight
+                weighted_score += entry["weighted_score"]
+                total_weight += weight
+            else:
+                entry["weighted_score"] = None
         else:
             entry["weight"] = None
             entry["weighted_score"] = None

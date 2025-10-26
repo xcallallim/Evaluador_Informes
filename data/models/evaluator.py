@@ -132,12 +132,47 @@ class Evaluator:
             for section_result in self._evaluate_global(document, criteria):
                 evaluation.sections.append(section_result)
                 section_result.recompute_score()
+        
+        status_counts = {"found": 0, "missing": 0, "empty": 0}
+        missing_sections: List[str] = []
+        empty_sections: List[str] = []
+        for section in evaluation.sections:
+            segmenter_metadata = section.metadata.get("segmenter")
+            status = None
+            if isinstance(segmenter_metadata, Mapping):
+                status = segmenter_metadata.get("status")
+            status = str(status or "found")
+            if status not in status_counts:
+                status = "found"
+            status_counts[status] += 1
+            identifier = section.section_id or section.title or ""
+            if status == "missing" and identifier:
+                missing_sections.append(identifier)
+            elif status == "empty" and identifier:
+                empty_sections.append(identifier)
+
+        if evaluation.sections and status_counts["found"] == 0:
+            logger.warning(
+                "⚠️ No se detectaron secciones válidas para evaluar; se devolverán puntajes cero."
+            )
+
+        evaluation.metadata.setdefault("segmenter_summary", {})
+        segmenter_summary = evaluation.metadata["segmenter_summary"]
+        if isinstance(segmenter_summary, dict):
+            segmenter_summary["status_counts"] = dict(status_counts)
+            segmenter_summary["missing_sections"] = list(missing_sections)
+            segmenter_summary["empty_sections"] = list(empty_sections)
+            segmenter_summary["total_sections"] = len(evaluation.sections)
+            segmenter_summary["issues_detected"] = bool(
+                missing_sections or empty_sections
+            )
 
         evaluation.recompute_score()
         return evaluation
 
     # ---------------------------------------------------------------------
     # Helpers
+    # ---------------------------------------------------------------------
     def _evaluate_section(
         self,
         document: Document,
@@ -152,22 +187,27 @@ class Evaluator:
         )
 
         section_status = self._section_status(document, section_data)
-        segmenter_metadata = section_result.metadata.setdefault("segmenter", {})
-        if isinstance(segmenter_metadata, dict):
-            segmenter_metadata.setdefault("status", section_status)
-            segmenter_metadata.setdefault("detected", section_status != "missing")
-            if section_status == "missing":
-                segmenter_metadata.setdefault("missing", True)
-                logger.warning(
-                    "⚠️ Sección '%s' no encontrada en el documento; se imputará puntaje 0.",
-                    section_result.title,
-                )
-            elif section_status == "empty":
-                segmenter_metadata.setdefault("empty", True)
-                logger.warning(
-                    "⚠️ Sección '%s' sin contenido para evaluar; se imputará puntaje 0.",
-                    section_result.title,
-                )
+        skip_reason, skip_justification = self._handle_segmenter_status(
+            section_result,
+            section_status,
+            entity_label="Sección",
+        )
+
+        if skip_reason is not None and section_status == "empty":
+            self._populate_skipped_section(
+                section_result,
+                [
+                    (
+                        dimension_data,
+                        list(dimension_data.get("preguntas", [])),
+                    )
+                    for dimension_data in section_data.get("dimensiones", []) or []
+                ],
+                skip_reason=skip_reason,
+                skip_justification=skip_justification or "",
+                segmenter_status=section_status,
+            )
+            return section_result
 
         for dimension_data in section_data.get("dimensiones", []):
             dimension_result = self._evaluate_dimension(
@@ -178,6 +218,14 @@ class Evaluator:
             )
             section_result.dimensions.append(dimension_result)
             dimension_result.recompute_score()
+
+        if skip_reason is not None:
+            self._override_section_as_skipped(
+                section_result,
+                skip_reason=skip_reason,
+                skip_justification=skip_justification or "",
+                segmenter_status=section_status,
+            )
         return section_result
 
     def _evaluate_dimension(
@@ -224,6 +272,17 @@ class Evaluator:
                 chunk_text = str(chunk)
             chunk_metadata = getattr(chunk, "metadata", {}) or {}
             chunk_metadata_dict = dict(chunk_metadata)
+            section_key = self._normalise_label(
+                section_data.get("id") or section_data.get("id_segmenter")
+            )
+            chunk_section_key = self._normalise_label(
+                chunk_metadata_dict.get("section_id")
+            )
+            if section_key and chunk_section_key and section_key != chunk_section_key:
+                if not self._should_use_chunk_for_missing_section(
+                    document, section_key, chunk_section_key
+                ):
+                    continue
             prompt = self.prompt_builder(
                 document=document,
                 criteria=criteria,
@@ -408,6 +467,58 @@ class Evaluator:
             return ""
         normalized = unicodedata.normalize("NFKD", text)
         return "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    
+    def _section_status(
+        self, document: Document, section_data: Mapping[str, Any]
+    ) -> str:
+        metadata = getattr(document, "metadata", {})
+        missing_flag = False
+        if isinstance(metadata, Mapping):
+            missing_flag = bool(metadata.get("segmenter_missing_sections"))
+
+        sections = getattr(document, "sections", None)
+        if not isinstance(sections, Mapping):
+            if missing_flag or not getattr(document, "chunks", None):
+                return "missing"
+            return "found"
+
+        if not sections:
+            if missing_flag:
+                return "missing"
+            if getattr(document, "chunks", None):
+                return "found"
+            return "missing"
+
+        normalised_sections: Dict[str, str] = {}
+        for key, value in sections.items():
+            normalised_key = self._normalise_label(key)
+            if not normalised_key:
+                continue
+            text = value if isinstance(value, str) else str(value or "")
+            normalised_sections[normalised_key] = text
+
+        candidate_keys = {
+            self._normalise_label(section_data.get("id")),
+            self._normalise_label(section_data.get("id_segmenter")),
+            self._normalise_label(section_data.get("titulo")),
+            self._normalise_label(section_data.get("nombre")),
+        }
+        candidate_keys = {key for key in candidate_keys if key}
+        if not candidate_keys:
+            return "found"
+
+        for key in candidate_keys:
+            if key not in normalised_sections:
+                continue
+            text = normalised_sections[key]
+            if text.strip():
+                return "found"
+            return "missing" if missing_flag else "empty"
+
+        if missing_flag or not normalised_sections:
+            return "missing"
+
+        return "missing"
 
     def _apply_score_constraints(
         self,
@@ -479,6 +590,27 @@ class Evaluator:
                     if key in bloque
                 },
             )
+            section_status = self._section_status(document, bloque)
+            skip_reason, skip_justification = self._handle_segmenter_status(
+                section_result,
+                section_status,
+                entity_label="Bloque",
+            )
+            if skip_reason is not None:
+                self._populate_skipped_section(
+                    section_result,
+                    [
+                        (
+                            bloque,
+                            list(bloque.get("preguntas", [])),
+                        )
+                    ],
+                    skip_reason=skip_reason,
+                    skip_justification=skip_justification or "",
+                    segmenter_status=section_status,
+                )
+                yield section_result
+                continue
             dimension_result = DimensionResult(
                 name=bloque.get("nombre", section_result.title),
                 weight=bloque.get("ponderacion"),
@@ -501,6 +633,199 @@ class Evaluator:
             dimension_result.recompute_score()
             section_result.dimensions.append(dimension_result)
             yield section_result
+
+    def _handle_segmenter_status(
+        self,
+        section_result: SectionResult,
+        status: str,
+        *,
+        entity_label: str,
+    ) -> tuple[Optional[str], Optional[str]]:
+        segmenter_metadata = section_result.metadata.setdefault("segmenter", {})
+        if not isinstance(segmenter_metadata, dict):
+            return None, None
+
+        segmenter_metadata.setdefault("status", status)
+        segmenter_metadata.setdefault("detected", status != "missing")
+        if status == "missing":
+            segmenter_metadata.setdefault("missing", True)
+            logger.warning(
+                "⚠️ %s '%s' no encontrada en el documento; se imputará puntaje 0.",
+                entity_label,
+                section_result.title,
+            )
+            return "missing_section", "Evaluación omitida por falta de sección"
+        if status == "empty":
+            segmenter_metadata.setdefault("empty", True)
+            logger.warning(
+                "⚠️ %s '%s' sin contenido para evaluar; se imputará puntaje 0.",
+                entity_label,
+                section_result.title,
+            )
+            return "empty_section", "Sin contenido para evaluar"
+        return None, None
+
+    def _populate_skipped_section(
+        self,
+        section_result: SectionResult,
+        dimension_entries: Iterable[tuple[Mapping[str, Any], Iterable[Mapping[str, Any]]]],
+        *,
+        skip_reason: str,
+        skip_justification: str,
+        segmenter_status: str,
+    ) -> None:
+        segmenter_metadata = section_result.metadata.setdefault("segmenter", {})
+        if isinstance(segmenter_metadata, dict):
+            segmenter_metadata.setdefault("skip_reason", skip_reason)
+            segmenter_metadata.setdefault("skipped", True)
+            segmenter_metadata.setdefault("segmenter_status", segmenter_status)
+
+        populated = False
+        for dimension_data, questions in dimension_entries:
+            dimension_result = DimensionResult(
+                name=(
+                    dimension_data.get("nombre")
+                    or dimension_data.get("titulo")
+                    or dimension_data.get("id")
+                    or "Dimensión"
+                ),
+                weight=dimension_data.get("ponderacion"),
+                method=dimension_data.get("metodo_agregacion"),
+                metadata={
+                    key: dimension_data[key]
+                    for key in ("tipo_escala", "descripcion", "id", "codigo")
+                    if key in dimension_data
+                },
+            )
+            dimension_result.metadata.setdefault("skipped", True)
+            dimension_result.metadata.setdefault("skip_reason", skip_reason)
+            dimension_result.metadata.setdefault("segmenter_status", segmenter_status)
+
+            for question_data in questions or []:
+                dimension_result.questions.append(
+                    self._build_skipped_question_result(
+                        question_data,
+                        skip_reason=skip_reason,
+                        skip_justification=skip_justification,
+                        segmenter_status=segmenter_status,
+                    )
+                )
+
+            dimension_result.recompute_score()
+            if dimension_result.score is None:
+                dimension_result.score = 0.0
+            section_result.dimensions.append(dimension_result)
+            populated = True
+
+        if not populated:
+            # Garantizar una estructura consistente aunque no haya preguntas.
+            placeholder_dimension = DimensionResult(
+                name="Dimensión",
+                weight=1.0,
+                method=None,
+                metadata={
+                    "skipped": True,
+                    "skip_reason": skip_reason,
+                    "segmenter_status": segmenter_status,
+                },
+            )
+            placeholder_dimension.score = 0.0
+            section_result.dimensions.append(placeholder_dimension)
+
+        section_result.recompute_score()
+        if section_result.score is None:
+            section_result.score = 0.0
+        section_result.metadata.setdefault("skipped", True)
+        section_result.metadata.setdefault("skip_reason", skip_reason)
+        section_result.metadata.setdefault("segmenter_status", segmenter_status)
+
+    def _build_skipped_question_result(
+        self,
+        question_data: Mapping[str, Any],
+        *,
+        skip_reason: str,
+        skip_justification: str,
+        segmenter_status: str,
+    ) -> QuestionResult:
+        question_metadata = {
+            key: question_data[key]
+            for key in ("tipo", "descripcion")
+            if key in question_data
+        }
+        question_metadata.setdefault("skipped", True)
+        question_metadata.setdefault("skip_reason", skip_reason)
+        question_metadata.setdefault("segmenter_status", segmenter_status)
+        return QuestionResult(
+            question_id=str(question_data.get("id") or question_data.get("texto", "")),
+            text=question_data.get("texto", ""),
+            weight=question_data.get("ponderacion"),
+            score=0.0,
+            justification=skip_justification,
+            relevant_text=None,
+            chunk_results=[],
+            metadata=question_metadata,
+        )
+
+    def _override_section_as_skipped(
+        self,
+        section_result: SectionResult,
+        *,
+        skip_reason: str,
+        skip_justification: str,
+        segmenter_status: str,
+    ) -> None:
+        segmenter_metadata = section_result.metadata.setdefault("segmenter", {})
+        if isinstance(segmenter_metadata, dict):
+            segmenter_metadata.setdefault("status", segmenter_status)
+            segmenter_metadata.setdefault("skip_reason", skip_reason)
+            segmenter_metadata.setdefault("skipped", True)
+            segmenter_metadata.setdefault("segmenter_status", segmenter_status)
+
+        for dimension_result in section_result.dimensions:
+            dimension_result.metadata.setdefault("skipped", True)
+            dimension_result.metadata.setdefault("skip_reason", skip_reason)
+            dimension_result.metadata.setdefault("segmenter_status", segmenter_status)
+            for question_result in dimension_result.questions:
+                question_result.metadata.setdefault("skipped", True)
+                question_result.metadata.setdefault("skip_reason", skip_reason)
+                question_result.metadata.setdefault("segmenter_status", segmenter_status)
+                question_result.score = 0.0
+                question_result.justification = skip_justification
+            dimension_result.recompute_score()
+            if dimension_result.score is None:
+                dimension_result.score = 0.0
+
+        if not section_result.dimensions:
+            placeholder = DimensionResult(
+                name="Dimensión",
+                weight=1.0,
+                method=None,
+                metadata={
+                    "skipped": True,
+                    "skip_reason": skip_reason,
+                    "segmenter_status": segmenter_status,
+                },
+            )
+            placeholder.score = 0.0
+            section_result.dimensions.append(placeholder)
+
+        section_result.recompute_score()
+        if section_result.score is None:
+            section_result.score = 0.0
+        section_result.metadata.setdefault("skipped", True)
+        section_result.metadata.setdefault("skip_reason", skip_reason)
+        section_result.metadata.setdefault("segmenter_status", segmenter_status)
+
+    def _should_use_chunk_for_missing_section(
+        self,
+        document: Document,
+        section_key: str,
+        chunk_section_key: str,
+    ) -> bool:
+        metadata = getattr(document, "metadata", {})
+        if isinstance(metadata, Mapping) and metadata.get("segmenter_missing_sections"):
+            return True
+        return False
 
 
 __all__ = ["Evaluator", "ModelResponse", "PromptBuilder", "default_prompt_builder"]
