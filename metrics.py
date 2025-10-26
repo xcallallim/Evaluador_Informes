@@ -160,18 +160,6 @@ def _target_range_from_criteria(
             if coerced:
                 return coerced
 
-    metodologia = criteria.get("metodologia")
-    if isinstance(metodologia, Mapping):
-        resultado = metodologia.get("resultado")
-        if isinstance(resultado, Mapping):
-            rango = resultado.get("rango")
-            if isinstance(rango, (list, tuple)) and len(rango) == 2:
-                try:
-                    values = (float(rango[0]), float(rango[1]))
-                except (TypeError, ValueError):
-                    values = None
-                if values and values[1] > values[0]:
-                    return values
     return (default_min, default_max)
 
 
@@ -348,11 +336,17 @@ def calculate_institutional_metrics(
     if normalized_range is not None:
         target_min, target_max = normalized_range
     else:
-        target_min, target_max = (0.0, 100.0)
+        target_min, target_max = _target_range_from_criteria(
+            criteria, default_min=0.0, default_max=100.0
+        )
 
     criteria_breakdown = _aggregate_institutional_criteria(
         evaluation, section_weight_overrides=weights
     )
+    if normalized_range is not None:
+        section_target_min, section_target_max = normalized_range
+    else:
+        section_target_min, section_target_max = (target_min, target_max)
 
     total_weight = 0.0
     weighted_score = 0.0
@@ -376,16 +370,63 @@ def calculate_institutional_metrics(
         scale_min = 0.0
         scale_max = 1.0
     else:
-        raw_global_score = evaluation.score
-        normalized_global_score = _normalise(
-            raw_global_score,
-            min_value=min_value,
-            max_value=max_value,
-            target_min=target_min,
-            target_max=target_max,
+        weighted_entries_present = any(
+            entry.get("weight") not in (None, 0)
+            and entry.get("questions_evaluated", 0)
         )
-        scale_min = min_value
-        scale_max = max_value
+        strict_mode = False
+        metadata = getattr(evaluation, "metadata", {})
+        if isinstance(metadata, Mapping):
+            strict_mode = bool(metadata.get("metrics_strict_normalization"))
+        sections_have_scores = any(
+            section.score is not None for section in evaluation.sections
+        )
+        if weighted_entries_present:
+            raw_global_score = evaluation.score
+            if raw_global_score is None:
+                if sections_have_scores:
+                    raw_global_score = 0.0
+                    normalized_global_score = target_min
+                else:
+                    normalized_global_score = None
+            else:
+                normalized_global_score = _normalise(
+                    raw_global_score,
+                    min_value=min_value,
+                    max_value=max_value,
+                    target_min=target_min,
+                    target_max=target_max,
+                )
+                if normalized_global_score is None and raw_global_score == 0.0:
+                    normalized_global_score = target_min
+            scale_min = min_value
+            scale_max = max_value
+        else:
+            if strict_mode:
+                raw_global_score = 0.0
+                normalized_global_score = target_min
+                scale_min = 0.0
+                scale_max = 1.0
+            else:
+                raw_global_score = evaluation.score
+                if raw_global_score is None:
+                    if sections_have_scores:
+                        raw_global_score = 0.0
+                        normalized_global_score = target_min
+                    else:
+                        normalized_global_score = None
+                else:
+                    normalized_global_score = _normalise(
+                        raw_global_score,
+                        min_value=min_value,
+                        max_value=max_value,
+                        target_min=target_min,
+                        target_max=target_max,
+                    )
+                    if normalized_global_score is None and raw_global_score == 0.0:
+                        normalized_global_score = target_min
+                scale_min = min_value
+                scale_max = max_value
 
     data = {
         "methodology": "institucional",
@@ -401,7 +442,7 @@ def calculate_institutional_metrics(
             evaluation,
             min_value=min_value,
             max_value=max_value,
-            target_range=(target_min, target_max),
+            target_range=(section_target_min, section_target_max),
             weights=weights,
         ),
         "totals": _totals(evaluation),

@@ -579,6 +579,9 @@ class Evaluator:
         self, document: Document, criteria: Mapping[str, Any]
     ) -> Iterable[SectionResult]:
         bloques = criteria.get("bloques") or []
+        methodology = self._normalise_label(
+            criteria.get("metodologia") or criteria.get("tipo_metodologia")
+        )
         for bloque in bloques:
             section_result = SectionResult(
                 title=bloque.get("titulo") or bloque.get("nombre", "Bloque"),
@@ -590,12 +593,26 @@ class Evaluator:
                     if key in bloque
                 },
             )
-            section_status = self._section_status(document, bloque)
-            skip_reason, skip_justification = self._handle_segmenter_status(
-                section_result,
-                section_status,
-                entity_label="Bloque",
-            )
+            skip_reason = None
+            skip_justification = None
+            if methodology != "global":
+                section_status = self._section_status(document, bloque)
+                (
+                    skip_reason,
+                    skip_justification,
+                ) = self._handle_segmenter_status(
+                    section_result,
+                    section_status,
+                    entity_label="Bloque",
+                )
+            else:
+                section_status = "found"
+                segmenter_metadata = section_result.metadata.setdefault(
+                    "segmenter", {}
+                )
+                if isinstance(segmenter_metadata, dict):
+                    segmenter_metadata.setdefault("status", section_status)
+                    segmenter_metadata.setdefault("detected", True)
             if skip_reason is not None:
                 self._populate_skipped_section(
                     section_result,
@@ -789,8 +806,8 @@ class Evaluator:
                 question_result.metadata.setdefault("skipped", True)
                 question_result.metadata.setdefault("skip_reason", skip_reason)
                 question_result.metadata.setdefault("segmenter_status", segmenter_status)
-                question_result.score = 0.0
                 question_result.justification = skip_justification
+                question_result.score = 0.0
             dimension_result.recompute_score()
             if dimension_result.score is None:
                 dimension_result.score = 0.0
