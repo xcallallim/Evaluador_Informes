@@ -9,6 +9,7 @@ import json
 import logging
 import sys
 import time
+import tracemalloc
 import unicodedata
 import uuid
 from statistics import pstdev
@@ -987,7 +988,16 @@ class EvaluationService:
     ) -> tuple[EvaluationResult, Dict[str, Any]]:
         """Execute the full evaluation pipeline and optionally export the result."""
 
-        start_time = time.time()
+        start_time = time.perf_counter()
+        memory_was_tracing = tracemalloc.is_tracing()
+        memory_start: tuple[int, int] | None = None
+        if not memory_was_tracing:
+            try:
+                tracemalloc.start()
+            except RuntimeError:
+                memory_was_tracing = True
+        if tracemalloc.is_tracing():
+            memory_start = tracemalloc.get_traced_memory()  
         config = self.config.with_overrides(**(config_overrides or {}))
         self._configure_logging(config)
 
@@ -1201,14 +1211,48 @@ class EvaluationService:
             suffix = Path(export_path).suffix.lstrip(".").lower()
             effective_format = format_mapping.get(suffix, suffix or "json")
 
-        export_evaluation = evaluation
+        export_metrics_summary = metrics_summary
         export_metrics_summary = metrics_summary
         if not filters.is_empty():
             export_evaluation = self._subset_evaluation_for_export(
                 evaluation, filters
             )
+        
+        duration_seconds = time.perf_counter() - start_time
+        question_counts = self._question_counts(evaluation)
+
+        performance_metrics: Dict[str, Any] = {
+            "execution_time_seconds": round(duration_seconds, 6),
+            "questions_evaluated": question_counts[0],
+            "questions_total": question_counts[1],
+        }
+
+        if tracemalloc.is_tracing():
+            current, peak = tracemalloc.get_traced_memory()
+            start_peak = memory_start[1] if memory_start else 0
+            peak_bytes = max(peak, start_peak)
+            delta_bytes = max(0, peak - start_peak)
+            performance_metrics.update(
+                {
+                    "memory_current_mib": round(current / (1024 ** 2), 6),
+                    "memory_peak_mib": round(peak_bytes / (1024 ** 2), 6),
+                    "memory_delta_mib": round(delta_bytes / (1024 ** 2), 6),
+                }
+            )
+            if not memory_was_tracing:
+                tracemalloc.stop()
+
+        metrics_summary = dict(metrics_summary)
+        system_metrics = dict(metrics_summary.get("system", {}))
+        system_metrics.update(performance_metrics)
+        metrics_summary["system"] = system_metrics
+
+        evaluation.metadata.setdefault("performance", {})
+        evaluation.metadata["performance"].update(performance_metrics)
+
+        if not filters.is_empty():
             export_metrics_summary = self._filter_metrics_summary_for_export(
-                export_metrics_summary, export_evaluation
+                metrics_summary, export_evaluation
             )
 
         export_metrics_summary = self._prepare_metrics_for_export(
@@ -1225,8 +1269,6 @@ class EvaluationService:
 
         print(f"[💾] Exportado: {Path(export_path)}")
 
-        duration_seconds = time.time() - start_time
-        question_counts = self._question_counts(evaluation)
         self._print_summary(evaluation, metrics_summary, duration_seconds, question_counts)
         return evaluation, metrics_summary
 
