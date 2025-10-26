@@ -84,10 +84,13 @@ class EvaluationRepository:
         extra_metadata: Optional[Mapping[str, Any]] = None,
     ) -> Path:
         output_path = Path(output_path)
-        if not output_path.parent.exists():
-            raise FileNotFoundError(
-                f"La carpeta destino '{output_path.parent}' no existe."
-            )
+        output_dir = output_path.parent
+        if not output_dir.exists():
+            # Garantiza que los formatos solicitados se puedan exportar aun cuando el
+            # directorio destino no exista. Esto facilita los usos desde scripts o
+            # pruebas que escriben directamente en ``data/example`` u otras carpetas
+            # efímeras sin necesidad de crearlas previamente.
+            output_dir.mkdir(parents=True, exist_ok=True)
 
         requested_format = (output_format or "xlsx").lower()
         normalised_format = _normalise_format(requested_format)

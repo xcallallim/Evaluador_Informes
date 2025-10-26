@@ -9,8 +9,11 @@ from services.evaluation_service import EvaluationService
 def test_repository_generates_excel_and_csv(tmp_path):
     """Valida que la exportación institucional genere artefactos completos y consistentes."""
 
-    output_dir = tmp_path / "exports"
-    output_dir.mkdir()
+    #output_dir = tmp_path / "exports"
+    #output_dir.mkdir()
+    from pathlib import Path
+    output_dir = Path("data/examples")
+    output_dir.mkdir(exist_ok=True)
     output_path = output_dir / "resultados_informe_institucional_demo_test.xlsx"
 
     service = EvaluationService()
