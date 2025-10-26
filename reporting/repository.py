@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import json
-import re   
+import re
+import unicodedata   
 from dataclasses import dataclass
 from pathlib import Path
 import re
@@ -20,6 +21,16 @@ except Exception:  # pragma: no cover - fallback when pandas is missing
 __all__ = ["EvaluationRepository", "flatten_evaluation"]
 
 
+def _normalise_identifier(value: Any) -> str:
+    if value is None:
+        return ""
+    text = str(value).strip().lower()
+    if not text:
+        return ""
+    normalized = unicodedata.normalize("NFKD", text)
+    return "".join(ch for ch in normalized if not unicodedata.combining(ch))
+
+
 def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
     """Return a list of rows (one per question) ready to serialise."""
 
@@ -34,12 +45,28 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
     model_name = evaluation_metadata.get("model_name")
     pipeline_version = evaluation_metadata.get("pipeline_version")
     timestamp = evaluation_metadata.get("timestamp")
+    seen_rows: Set[tuple[str, str, str]] = set()
     for section in evaluation.sections:
         for dimension in section.dimensions:
             for question in dimension.questions:
+                section_key = _normalise_identifier(section.section_id or section.title)
+                dimension_key = _normalise_identifier(dimension.name)
+                question_key = _normalise_identifier(question.question_id)
+                row_key = (section_key, dimension_key, question_key)
+                if row_key in seen_rows:
+                    continue
+                seen_rows.add(row_key)
                 metadata_columns = {}
                 if isinstance(question.metadata, Mapping):
                     metadata_columns = _flatten_mapping(question.metadata, prefix="metadata")
+                scale_min = None
+                scale_max = None
+                if isinstance(question.metadata, Mapping):
+                    scale_min = question.metadata.get("scale_min")
+                    scale_max = question.metadata.get("scale_max")
+                question_criteria_version = None
+                if isinstance(question.metadata, Mapping):
+                    question_criteria_version = question.metadata.get("criteria_version")
                 rows.append(
                     {
                         "document_id": evaluation.document_id,
@@ -57,7 +84,9 @@ def flatten_evaluation(evaluation: EvaluationResult) -> List[Dict[str, Any]]:
                         "justification": question.justification,
                         "relevant_text": question.relevant_text,
                         "chunk_results": [chunk.to_dict() for chunk in question.chunk_results],
-                        "criteria_version": criteria_version,
+                        "criteria_version": question_criteria_version or criteria_version,
+                        "scale_min": scale_min,
+                        "scale_max": scale_max,
                         "tipo_informe": tipo_informe,
                         "model_name": model_name,
                         "pipeline_version": pipeline_version,
@@ -113,7 +142,11 @@ class EvaluationRepository:
 
         rows = flatten_evaluation(evaluation)
         df = pd.DataFrame(rows)  # type: ignore[arg-type]
-        summary_df = pd.DataFrame(metrics_summary.get("sections", []))  # type: ignore[arg-type]
+        summary_sections = self._prepare_sections_for_summary(
+            metrics_summary.get("sections", []),
+            metrics_summary.get("global", {}),
+        )
+        summary_df = pd.DataFrame(summary_sections)  # type: ignore[arg-type]
         evaluation_metadata: Mapping[str, Any] = (
             evaluation.metadata if isinstance(evaluation.metadata, Mapping) else {}
         )
@@ -166,6 +199,32 @@ class EvaluationRepository:
         )
 
         return excel_path
+    
+def _prepare_sections_for_summary(
+        self,
+        sections: Iterable[Mapping[str, Any]],
+        global_summary: Mapping[str, Any],
+    ) -> List[Dict[str, Any]]:
+        prepared: List[Dict[str, Any]] = []
+        try:
+            normalized_max = float(global_summary.get("normalized_max"))
+        except (TypeError, ValueError):
+            normalized_max = None
+        desired_max = 20.0
+        scale = None
+        if normalized_max and normalized_max > 0 and abs(normalized_max - desired_max) > 1e-9:
+            scale = desired_max / normalized_max
+        for entry in sections:
+            if not isinstance(entry, Mapping):
+                continue
+            copied = dict(entry)
+            if scale is not None and "normalized_score" in copied:
+                try:
+                    copied["normalized_score"] = float(copied["normalized_score"]) * scale
+                except (TypeError, ValueError):
+                    pass
+            prepared.append(copied)
+        return prepared
 
 
 def _normalise_format(fmt: str) -> str:

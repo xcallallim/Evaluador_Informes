@@ -52,6 +52,7 @@ MODE_ALIASES = {
     "reevaluacion": "reevaluacion",
     "re-evaluacion": "reevaluacion",
     "reevaluation": "reevaluacion",
+    "incremental": "reevaluacion",
 }
 LEGACY_REEVALUATION_MODES = {"reevaluacion"}
 MODE_CANONICAL = {
@@ -77,6 +78,18 @@ def _normalise_identifier(value: Any) -> str:
     normalized = unicodedata.normalize("NFKD", text)
     return "".join(ch for ch in normalized if not unicodedata.combining(ch))
 
+
+def _unique_preserving_order(values: Iterable[Any]) -> list[Any]:
+    seen: set[Any] = set()
+    ordered: list[Any] = []
+    for value in values:
+        if value is None:
+            continue
+        if value in seen:
+            continue
+        seen.add(value)
+        ordered.append(value)
+    return ordered
 
 def _extract_expected_scale_values(question: Mapping[str, Any]) -> Optional[Any]:
     expected_scale: Any = question.get("escala") or question.get("valores_escala")
@@ -105,6 +118,48 @@ def _extract_expected_scale_values(question: Mapping[str, Any]) -> Optional[Any]
             return extracted_direct
 
     return None
+
+
+def _extract_scale_bounds(entity: Mapping[str, Any]) -> tuple[Optional[float], Optional[float]]:
+    """Attempt to infer the minimum and maximum values of a scale."""
+
+    levels = None
+    if "niveles" in entity and isinstance(entity["niveles"], Sequence):
+        levels = entity["niveles"]
+    elif "escala" in entity and isinstance(entity["escala"], Mapping):
+        maybe_levels = entity["escala"].get("niveles")
+        if isinstance(maybe_levels, Sequence):
+            levels = maybe_levels
+
+    candidates: list[float] = []
+    if isinstance(levels, Sequence):
+        for level in levels:
+            if isinstance(level, Mapping):
+                value = level.get("valor")
+            else:
+                value = level
+            try:
+                if value is not None:
+                    candidates.append(float(value))
+            except (TypeError, ValueError):
+                continue
+    else:
+        for key in ("min", "minimo", "min_value", "valor_min", "valor_minimo"):
+            if key in entity:
+                try:
+                    candidates.append(float(entity[key]))
+                except (TypeError, ValueError):
+                    pass
+        for key in ("max", "maximo", "max_value", "valor_max", "valor_maximo"):
+            if key in entity:
+                try:
+                    candidates.append(float(entity[key]))
+                except (TypeError, ValueError):
+                    pass
+
+    if not candidates:
+        return (None, None)
+    return (min(candidates), max(candidates))
 
 
 @dataclass(slots=True)
@@ -936,6 +991,8 @@ class EvaluationService:
             previous_result=previous_result,
         )
 
+        self._ensure_unique_run_id(previous_result, config.run_id)
+
         ai_service = self._resolve_ai_service(config)
         builder_override = prompt_builder or self.prompt_builder
         if isinstance(builder_override, PromptFactory):
@@ -954,11 +1011,18 @@ class EvaluationService:
             prompt_builder=builder_callable,
             extra_instructions=config.extra_instructions,
         )
-        evaluation = evaluator.evaluate(
-            document_obj,
-            criteria_for_run,
-            document_id=document_id,
-        )
+        try:
+            evaluation = evaluator.evaluate(
+                document_obj,
+                criteria_for_run,
+                document_id=document_id,
+            )
+        except Exception as exc:
+            if _normalise_identifier(resolved_mode) == "reevaluacion":
+                raise RuntimeError(
+                    "Ejecución incremental incompleta: el pipeline se detuvo antes de finalizar la reevaluación."
+                ) from exc
+            raise
 
         prompt_validation_summary = self._summarise_prompt_validation(evaluation)
         evaluation.metadata["prompt_validation"] = prompt_validation_summary
@@ -983,6 +1047,7 @@ class EvaluationService:
             token in (config.run_id or "") for token in ("ceplan", "integration")
         ) else "default"
         evaluation.metadata.setdefault("missing_section_message_style", style)
+        self._ensure_result_metadata_versions(evaluation, raw_criteria)
         self._apply_missing_section_messaging(evaluation)
         self._adjust_imputed_chunk_scores(evaluation)
         if resolved_mode != (mode or "").strip().lower():
@@ -1000,10 +1065,21 @@ class EvaluationService:
                 "mode": resolved_mode,
                 "model": config.model_name,
                 "executed_at": evaluation.metadata["timestamp"],
+                "pipeline_version": evaluation.metadata.get("pipeline_version"),
+                "criteria_version": evaluation.metadata.get("criteria_version"),
+                "filters": filters.to_dict() if not filters.is_empty() else None,
             }
         )
 
-        if resolved_mode == "reevaluacion" and previous_result is not None:
+        self._propagate_metadata_history(evaluation, previous_result)
+
+        if filters and not filters.is_empty():
+            self._validate_filtered_targets(evaluation, filters)
+
+        if (
+            _normalise_identifier(resolved_mode) == "reevaluacion"
+            and previous_result is not None
+        ):
             evaluation = self._merge_results(previous_result, evaluation)
 
         try:
@@ -1011,6 +1087,10 @@ class EvaluationService:
         except Exception as exc:  # pragma: no cover - robustez ante métricas
             self.logger.exception("Error calculando métricas: %s", exc)
             metrics_summary = {}
+
+        metrics_summary = self._enrich_metrics_summary(
+            evaluation, metrics_summary
+        )
 
         segmenter_summary_meta = evaluation.metadata.get("segmenter_summary")
         if isinstance(segmenter_summary_meta, Mapping):
@@ -1081,13 +1161,23 @@ class EvaluationService:
             suffix = Path(export_path).suffix.lstrip(".").lower()
             effective_format = format_mapping.get(suffix, suffix or "json")
 
+        export_evaluation = evaluation
+        export_metrics_summary = metrics_summary
+        if not filters.is_empty():
+            export_evaluation = self._subset_evaluation_for_export(
+                evaluation, filters
+            )
+            export_metrics_summary = self._filter_metrics_summary_for_export(
+                export_metrics_summary, export_evaluation
+            )
+
         export_metrics_summary = self._prepare_metrics_for_export(
-            evaluation, metrics_summary
+            export_evaluation, export_metrics_summary
         )
 
         self.repository.export(
             evaluation,
-            export_metrics_summary,
+            export_evaluation,
             output_path=Path(export_path),
             output_format=effective_format,
             extra_metadata=export_metadata,
@@ -1244,17 +1334,26 @@ class EvaluationService:
         filtered = copy.deepcopy(dict(criteria))
         filter_sets = filters.normalised()
         question_ids = set(filter_sets["questions"])
-        if mode == "reevaluacion" and filters.only_missing and previous_result is not None:
+        normalised_mode = _normalise_identifier(mode)
+        if (
+            normalised_mode == "reevaluacion"
+            and filters.only_missing
+            and previous_result is not None
+        ):
             missing = self._collect_missing_questions(previous_result)
             if question_ids:
                 question_ids = question_ids.union(missing)
             else:
                 question_ids = missing
-        elif mode == "reevaluacion" and filters.only_missing and previous_result is None:
+        elif (
+            normalised_mode == "reevaluacion"
+            and filters.only_missing
+            and previous_result is None
+        ):
             self.logger.warning(
                 "Se solicitó reintentar preguntas sin puntaje, pero no se proporcionó un resultado previo."
             )
-        if mode == "global" and not question_ids and filters.is_empty():
+        if normalised_mode == "global" and not question_ids and filters.is_empty():
             return filtered
         if filtered.get("tipo_informe") == "institucional":
             filtered["secciones"] = self._filter_sections(
@@ -1346,6 +1445,474 @@ class EvaluationService:
             filtered_blocks.append(new_block)
         return filtered_blocks
     
+
+    def _build_criteria_index(
+        self, criteria: Mapping[str, Any]
+    ) -> Dict[str, Dict[str, Any]]:
+        index: Dict[str, Dict[str, Any]] = {}
+        sections = criteria.get("secciones")
+        if not isinstance(sections, Sequence):
+            return index
+        for section in sections:
+            if not isinstance(section, Mapping):
+                continue
+            section_id = section.get("id") or section.get("nombre")
+            section_title = section.get("titulo") or section_id or ""
+            section_weight = section.get("ponderacion") or section.get("peso")
+            dimensions = section.get("dimensiones")
+            if not isinstance(dimensions, Sequence):
+                continue
+            for dimension in dimensions:
+                if not isinstance(dimension, Mapping):
+                    continue
+                dimension_name = dimension.get("nombre") or dimension.get("titulo")
+                dimension_weight = dimension.get("ponderacion") or dimension.get("peso")
+                scale_min, scale_max = _extract_scale_bounds(dimension)
+                questions = dimension.get("preguntas")
+                if not isinstance(questions, Sequence):
+                    continue
+                for question in questions:
+                    if not isinstance(question, Mapping):
+                        continue
+                    question_id = question.get("id") or question.get("texto")
+                    normalised = _normalise_identifier(question_id)
+                    if not normalised:
+                        continue
+                    question_weight = question.get("ponderacion") or question.get("peso")
+                    index[normalised] = {
+                        "section_id": section_id,
+                        "section_title": section_title,
+                        "section_weight": section_weight,
+                        "dimension_name": dimension_name,
+                        "dimension_weight": dimension_weight,
+                        "question_weight": question_weight,
+                        "scale_min": scale_min,
+                        "scale_max": scale_max,
+                    }
+        return index
+
+    def _append_version_history(
+        self, metadata: Mapping[str, Any] | None, current: Any
+    ) -> List[Any]:
+        history: List[Any] = []
+        if isinstance(metadata, Mapping):
+            existing = metadata.get("criteria_versions")
+            if isinstance(existing, Sequence):
+                history.extend(existing)
+            elif existing is not None:
+                history.append(existing)
+        if current is not None:
+            history.append(current)
+        return _unique_preserving_order(history)
+
+    def _ensure_history_field(
+        self,
+        metadata: Mapping[str, Any] | None,
+        field: str,
+        current_value: Any,
+    ) -> Dict[str, Any]:
+        result: Dict[str, Any]
+        if isinstance(metadata, dict):
+            result = metadata
+        else:
+            result = {}
+            if isinstance(metadata, Mapping):
+                result.update(dict(metadata))
+
+        history_key = f"{field}_history"
+        history: List[Any] = []
+        history.extend(self._extend_history_values(result, history_key))
+
+        existing_value = result.get(field)
+        if existing_value is not None:
+            history.append(existing_value)
+
+        if current_value is not None:
+            result[field] = current_value
+            history.append(current_value)
+
+        if history:
+            result[history_key] = _unique_preserving_order(history)
+
+        return result
+
+    def _ensure_result_metadata_versions(
+        self,
+        evaluation: EvaluationResult,
+        criteria: Mapping[str, Any],
+    ) -> None:
+        criteria_version = (
+            evaluation.metadata.get("criteria_version")
+            if isinstance(evaluation.metadata, Mapping)
+            else None
+        )
+        if criteria_version is None:
+            criteria_version = criteria.get("version")
+            if criteria_version is not None:
+                evaluation.metadata["criteria_version"] = criteria_version
+        pipeline_version = (
+            evaluation.metadata.get("pipeline_version")
+            if isinstance(evaluation.metadata, Mapping)
+            else None
+        )
+        run_id = (
+            evaluation.metadata.get("run_id")
+            if isinstance(evaluation.metadata, Mapping)
+            else None
+        )
+        index = self._build_criteria_index(criteria)
+        for section in evaluation.sections:
+            section.metadata = self._ensure_history_field(
+                section.metadata, "pipeline_version", pipeline_version
+            )
+            section.metadata = self._ensure_history_field(
+                section.metadata, "run_id", run_id
+            )
+            section.metadata.setdefault("criteria_version", criteria_version)
+            section.metadata["criteria_versions"] = self._append_version_history(
+                section.metadata, criteria_version
+            )
+            for dimension in section.dimensions:
+                dimension.metadata = self._ensure_history_field(
+                    dimension.metadata, "pipeline_version", pipeline_version
+                )
+                dimension.metadata = self._ensure_history_field(
+                    dimension.metadata, "run_id", run_id
+                )
+                dimension.metadata.setdefault("criteria_version", criteria_version)
+                dimension.metadata["criteria_versions"] = self._append_version_history(
+                    dimension.metadata, criteria_version
+                )
+                for question in dimension.questions:
+                    metadata = self._ensure_history_field(
+                        question.metadata, "pipeline_version", pipeline_version
+                    )
+                    metadata = self._ensure_history_field(
+                        metadata, "run_id", run_id
+                    )
+                    metadata.setdefault("criteria_version", criteria_version)
+                    metadata["criteria_versions"] = self._append_version_history(
+                        metadata, criteria_version
+                    )
+                    entry = index.get(_normalise_identifier(question.question_id))
+                    if not entry:
+                        continue
+                    for field in (
+                        "scale_min",
+                        "scale_max",
+                        "section_weight",
+                        "dimension_weight",
+                        "question_weight",
+                    ):
+                        value = entry.get(field)
+                        if value is not None and field not in metadata:
+                            metadata[field] = value
+                    question.metadata = metadata
+
+    def _extend_history_values(
+        self, metadata: Mapping[str, Any] | None, key: str
+    ) -> List[Any]:
+        values: List[Any] = []
+        if not isinstance(metadata, Mapping):
+            return values
+        existing = metadata.get(key)
+        if isinstance(existing, Sequence) and not isinstance(existing, (str, bytes)):
+            values.extend(existing)
+        elif existing is not None:
+            values.append(existing)
+        return values
+
+    def _ensure_unique_run_id(
+        self, previous_result: Optional[EvaluationResult], run_id: Optional[str]
+    ) -> None:
+        if previous_result is None or not run_id:
+            return
+        seen: set[str] = set()
+        metadata = (
+            previous_result.metadata
+            if isinstance(previous_result.metadata, Mapping)
+            else {}
+        )
+        if isinstance(metadata, Mapping):
+            previous_run = metadata.get("run_id")
+            if previous_run:
+                seen.add(_normalise_identifier(previous_run))
+            history = metadata.get("run_id_history")
+            if isinstance(history, Sequence):
+                for value in history:
+                    if value:
+                        seen.add(_normalise_identifier(value))
+            runs = metadata.get("runs")
+            if isinstance(runs, Sequence):
+                for entry in runs:
+                    if isinstance(entry, Mapping):
+                        value = entry.get("run_id")
+                        if value:
+                            seen.add(_normalise_identifier(value))
+        normalised_run = _normalise_identifier(run_id)
+        if normalised_run and normalised_run in seen:
+            raise ValueError(
+                "El run_id proporcionado ya fue utilizado en una ejecución previa y no puede reutilizarse."
+            )
+
+    def _validate_filtered_targets(
+        self,
+        evaluation: EvaluationResult,
+        filters: EvaluationFilters,
+    ) -> None:
+        filter_sets = filters.normalised()
+        section_targets = {value for value in filter_sets["sections"] if value}
+        question_targets = {value for value in filter_sets["questions"] if value}
+
+        if not section_targets and not question_targets:
+            return
+
+        present_sections = {
+            _normalise_identifier(section.section_id or section.title)
+            for section in evaluation.sections
+        }
+        missing_sections = [
+            target for target in section_targets if target not in present_sections
+        ]
+
+        present_questions: set[str] = set()
+        for section in evaluation.sections:
+            for dimension in section.dimensions:
+                for question in dimension.questions:
+                    present_questions.add(
+                        _normalise_identifier(question.question_id or question.text)
+                    )
+        missing_questions = [
+            target for target in question_targets if target not in present_questions
+        ]
+
+        if missing_sections or missing_questions:
+            details: List[str] = []
+            if missing_sections:
+                details.append(
+                    "secciones faltantes: " + ", ".join(sorted(missing_sections))
+                )
+            if missing_questions:
+                details.append(
+                    "preguntas faltantes: " + ", ".join(sorted(missing_questions))
+                )
+            raise ValueError(
+                "El resultado del modo parcial no contiene todos los objetivos solicitados ("  # noqa: E501
+                + "; ".join(details)
+                + ")"
+            )
+
+    def _propagate_metadata_history(
+        self,
+        evaluation: EvaluationResult,
+        previous_result: Optional[EvaluationResult],
+    ) -> None:
+        metadata = evaluation.metadata
+        previous_metadata = (
+            previous_result.metadata
+            if previous_result is not None and isinstance(previous_result.metadata, Mapping)
+            else {}
+        )
+        if isinstance(previous_metadata, Mapping):
+            parent_run = previous_metadata.get("run_id")
+            if parent_run and "parent_run_id" not in metadata:
+                metadata["parent_run_id"] = parent_run
+
+        run_history: List[Any] = []
+        run_history.extend(
+            self._extend_history_values(previous_metadata, "run_id_history")
+        )
+        if isinstance(previous_metadata, Mapping):
+            parent_run = previous_metadata.get("run_id")
+            if parent_run is not None:
+                run_history.append(parent_run)
+        run_history.extend(self._extend_history_values(metadata, "run_id_history"))
+        current_run = metadata.get("run_id")
+        if current_run is not None:
+            run_history.append(current_run)
+        metadata["run_id_history"] = _unique_preserving_order(run_history)
+
+        for key in ("pipeline_version", "criteria_version"):
+            history_values: List[Any] = []
+            history_values.extend(
+                self._extend_history_values(previous_metadata, f"{key}_history")
+            )
+            if isinstance(previous_metadata, Mapping):
+                previous_value = previous_metadata.get(key)
+                if previous_value is not None:
+                    history_values.append(previous_value)
+            history_values.extend(
+                self._extend_history_values(metadata, f"{key}_history")
+            )
+            current_value = metadata.get(key)
+            if current_value is not None:
+                history_values.append(current_value)
+            metadata[f"{key}_history"] = _unique_preserving_order(history_values)
+
+    def _merge_metadata_continuity(
+        self,
+        target: Mapping[str, Any] | None,
+        updates: Mapping[str, Any] | None,
+    ) -> Dict[str, Any]:
+        merged: Dict[str, Any] = {}
+        if isinstance(target, Mapping):
+            merged.update(target)
+        if not isinstance(updates, Mapping):
+            return merged
+        for key, value in updates.items():
+            if key in {
+                "criteria_versions",
+                "run_id_history",
+                "pipeline_version_history",
+                "criteria_version_history",
+            }:
+                combined = self._extend_history_values(merged, key)
+                combined.extend(self._extend_history_values({key: value}, key))
+                if combined:
+                    merged[key] = _unique_preserving_order(combined)
+                continue
+            if value is None:
+                continue
+            merged[key] = value
+        return merged
+
+    # ------------------------------------------------------------------
+    # Export helpers
+    # ------------------------------------------------------------------
+    def _subset_evaluation_for_export(
+        self, evaluation: EvaluationResult, filters: EvaluationFilters
+    ) -> EvaluationResult:
+        filter_sets = filters.normalised()
+        section_targets = {value for value in filter_sets["sections"] if value}
+        block_targets = {value for value in filter_sets["blocks"] if value}
+        question_targets = {value for value in filter_sets["questions"] if value}
+
+        if not section_targets and not block_targets and not question_targets:
+            return evaluation
+
+        subset = copy.deepcopy(evaluation)
+        subset.sections = []
+
+        question_filter_active = bool(question_targets)
+        seen_sections: set[str] = set()
+        for section in evaluation.sections:
+            section_key = _normalise_identifier(
+                section.section_id or section.title
+            )
+            section_copy = copy.deepcopy(section)
+            section_copy.dimensions = []
+            seen_dimensions: set[str] = set()
+            for dimension in section.dimensions:
+                dimension_key = _normalise_identifier(dimension.name)
+                if dimension_key in seen_dimensions:
+                    continue
+                dimension_copy = copy.deepcopy(dimension)
+                seen_questions: set[str] = set()
+                if question_filter_active:
+                    dimension_copy.questions = [
+                        copy.deepcopy(question)
+                        for question in dimension.questions
+                        if (
+                            (question_key := _normalise_identifier(question.question_id))
+                            in question_targets
+                            and not (question_key in seen_questions)
+                            and not seen_questions.add(question_key)
+                        )
+                    ]
+                    if not dimension_copy.questions:
+                        continue
+                else:
+                    dimension_copy.questions = []
+                    for question in dimension.questions:
+                        question_key = _normalise_identifier(question.question_id)
+                        if question_key in seen_questions:
+                            continue
+                        seen_questions.add(question_key)
+                        dimension_copy.questions.append(copy.deepcopy(question))
+                if not dimension_copy.questions:
+                    continue
+                seen_dimensions.add(dimension_key)
+                dimension_copy.recompute_score()
+                section_copy.dimensions.append(dimension_copy)
+
+            if not section_copy.dimensions:
+                continue
+
+            include_section = False
+            if not section_targets and not block_targets and not question_targets:
+                include_section = True
+            elif section_targets and section_key in section_targets:
+                include_section = True
+            elif block_targets and any(
+                _normalise_identifier(dimension.name) in block_targets
+                for dimension in section_copy.dimensions
+            ):
+                include_section = True
+            elif question_targets and section_copy.dimensions:
+                include_section = True
+            if section_key in seen_sections:
+                include_section = False
+            if not include_section:
+                continue
+
+            section_copy.recompute_score()
+            subset.sections.append(section_copy)
+            seen_sections.add(section_key)
+
+        if not subset.sections:
+            subset.score = None
+            return subset
+
+        subset.recompute_score()
+        return subset
+
+    def _filter_metrics_summary_for_export(
+        self,
+        metrics_summary: Mapping[str, Any],
+        subset: EvaluationResult,
+    ) -> Dict[str, Any]:
+        if not isinstance(metrics_summary, Mapping):
+            return dict(metrics_summary)
+
+        filtered = copy.deepcopy(dict(metrics_summary))
+        allowed_sections = {
+            _normalise_identifier(section.section_id or section.title)
+            for section in subset.sections
+        }
+
+        entries = filtered.get("sections")
+        if isinstance(entries, list) and allowed_sections:
+            seen: set[str] = set()
+            filtered_entries: List[Dict[str, Any]] = []
+            for entry in entries:
+                if not isinstance(entry, Mapping):
+                    continue
+                key = _normalise_identifier(
+                    entry.get("section_id") or entry.get("title")
+                )
+                if key in seen or key not in allowed_sections:
+                    continue
+                seen.add(key)
+                filtered_entry = dict(entry)
+                filtered_entries.append(filtered_entry)
+            filtered["sections"] = filtered_entries
+        elif isinstance(entries, list):
+            seen: set[str] = set()
+            deduped: List[Dict[str, Any]] = []
+            for entry in entries:
+                if not isinstance(entry, Mapping):
+                    continue
+                key = _normalise_identifier(
+                    entry.get("section_id") or entry.get("title")
+                )
+                if key in seen:
+                    continue
+                seen.add(key)
+                deduped.append(dict(entry))
+            filtered["sections"] = deduped
+
+        return filtered
+    
     # ------------------------------------------------------------------
     # AI service resolution helpers
     # ------------------------------------------------------------------
@@ -1427,25 +1994,43 @@ class EvaluationService:
         updates: EvaluationResult,
     ) -> EvaluationResult:
         merged = copy.deepcopy(previous)
+        section_order: List[str] = []
         index_sections: Dict[str, SectionResult] = {}
         for section in merged.sections:
             section_key = _normalise_identifier(section.section_id or section.title)
+            if not section_key:
+                section_key = uuid.uuid4().hex
+            section_order.append(section_key)
             index_sections[section_key] = section
+
         for update_section in updates.sections:
             section_key = _normalise_identifier(
                 update_section.section_id or update_section.title
             )
+            if not section_key:
+                section_key = uuid.uuid4().hex
             target_section = index_sections.get(section_key)
             if target_section is None:
-                merged.sections.append(update_section)
-                index_sections[section_key] = update_section
-                target_section = update_section
-            self._merge_dimensions(target_section, update_section)
-            target_section.recompute_score()
+                copied_section = copy.deepcopy(update_section)
+                index_sections[section_key] = copied_section
+                section_order.append(section_key)
+            else:
+                self._merge_section(target_section, update_section)
+
+        merged.sections = [
+            index_sections[key]
+            for key in section_order
+            if key in index_sections
+        ]
+        for section in merged.sections:
+            section.recompute_score()
         merged.recompute_score()
+
         previous_runs = merged.metadata.get("runs")
         update_runs = updates.metadata.get("runs")
-        merged.metadata.update(updates.metadata)
+        merged.metadata = self._merge_metadata_continuity(
+            merged.metadata, updates.metadata
+        )
         combined_runs: List[Any] = []
         if isinstance(previous_runs, list):
             combined_runs.extend(previous_runs)
@@ -1453,7 +2038,22 @@ class EvaluationService:
             combined_runs.extend(update_runs)
         if combined_runs:
             merged.metadata["runs"] = combined_runs
+        merged.metadata.setdefault("run_id", updates.metadata.get("run_id"))
+        merged.metadata.setdefault("pipeline_version", updates.metadata.get("pipeline_version"))
+        merged.metadata.setdefault("criteria_version", updates.metadata.get("criteria_version"))
         return merged
+    
+    def _merge_section(
+        self, target_section: SectionResult, update_section: SectionResult
+    ) -> None:
+        if update_section.title:
+            target_section.title = update_section.title
+        if update_section.weight is not None:
+            target_section.weight = update_section.weight
+        target_section.metadata = self._merge_metadata_continuity(
+            target_section.metadata, update_section.metadata
+        )
+        self._merge_dimensions(target_section, update_section)
 
     def _merge_dimensions(
         self,
@@ -1461,30 +2061,82 @@ class EvaluationService:
         update_section: SectionResult,
     ) -> None:
         index_dimensions: Dict[str, DimensionResult] = {}
+        order: List[str] = []
         for dimension in target_section.dimensions:
-            index_dimensions[_normalise_identifier(dimension.name)] = dimension
+            key = _normalise_identifier(dimension.name)
+            if not key:
+                key = uuid.uuid4().hex
+            index_dimensions[key] = dimension
+            order.append(key)
         for update_dimension in update_section.dimensions:
             key = _normalise_identifier(update_dimension.name)
+            if not key:
+                key = uuid.uuid4().hex
             target_dimension = index_dimensions.get(key)
             if target_dimension is None:
-                target_section.dimensions.append(update_dimension)
-                index_dimensions[key] = update_dimension
-                target_dimension = update_dimension
-            self._merge_questions(target_dimension, update_dimension)
-            target_dimension.recompute_score()
+                copied_dimension = copy.deepcopy(update_dimension)
+                index_dimensions[key] = copied_dimension
+                order.append(key)
+            else:
+                target_dimension.metadata = self._merge_metadata_continuity(
+                    target_dimension.metadata, update_dimension.metadata
+                )
+                self._merge_questions(target_dimension, update_dimension)
+        target_section.dimensions = [
+            index_dimensions[key]
+            for key in order
+            if key in index_dimensions
+        ]
+        for dimension in target_section.dimensions:
+            dimension.recompute_score()
 
     def _merge_questions(
         self,
         target_dimension: DimensionResult,
         update_dimension: DimensionResult,
     ) -> None:
+        order: List[str] = []
         index_questions: Dict[str, QuestionResult] = {}
         for question in target_dimension.questions:
-            index_questions[_normalise_identifier(question.question_id)] = question
+            key = _normalise_identifier(question.question_id)
+            if not key:
+                key = uuid.uuid4().hex
+            index_questions[key] = question
+            order.append(key)
         for update_question in update_dimension.questions:
             key = _normalise_identifier(update_question.question_id)
-            index_questions[key] = update_question
-        target_dimension.questions = list(index_questions.values())
+            if not key:
+                key = uuid.uuid4().hex
+            target_question = index_questions.get(key)
+            if target_question is None:
+                index_questions[key] = copy.deepcopy(update_question)
+                order.append(key)
+            else:
+                self._merge_question(target_question, update_question)
+        target_dimension.questions = [
+            index_questions[key]
+            for key in order
+            if key in index_questions
+        ]
+
+    def _merge_question(
+        self, target_question: QuestionResult, update_question: QuestionResult
+    ) -> None:
+        if update_question.text:
+            target_question.text = update_question.text
+        if update_question.weight is not None:
+            target_question.weight = update_question.weight
+        if update_question.score is not None:
+            target_question.score = update_question.score
+        if update_question.justification:
+            target_question.justification = update_question.justification
+        if update_question.relevant_text:
+            target_question.relevant_text = update_question.relevant_text
+        if update_question.chunk_results:
+            target_question.chunk_results = copy.deepcopy(update_question.chunk_results)
+        target_question.metadata = self._merge_metadata_continuity(
+            target_question.metadata, update_question.metadata
+        )
 
     def _question_counts(self, evaluation: EvaluationResult) -> tuple[int, int]:
         total = 0
@@ -1868,46 +2520,70 @@ class EvaluationService:
         evaluation: EvaluationResult,
         metrics_summary: Mapping[str, Any],
     ) -> Dict[str, Any]:
+        return self._enrich_metrics_summary(evaluation, metrics_summary)
+
+    def _enrich_metrics_summary(
+        self,
+        evaluation: EvaluationResult,
+        metrics_summary: Mapping[str, Any],
+    ) -> Dict[str, Any]:
         if not isinstance(metrics_summary, Mapping):
             return dict(metrics_summary)
 
         export_metrics = copy.deepcopy(dict(metrics_summary))
-        methodology = export_metrics.get("methodology")
-        if methodology != "institucional":
-            return export_metrics
-
-        global_summary = export_metrics.get("global")
-        source_max = None
-        if isinstance(global_summary, Mapping):
-            try:
-                source_max = float(global_summary.get("normalized_max"))
-            except (TypeError, ValueError):
-                source_max = None
-
-        if not source_max or source_max <= 0:
-            return export_metrics
-
-        desired_max = 20.0
-        if abs(source_max - desired_max) < 1e-9:
-            return export_metrics
 
         sections = export_metrics.get("sections")
-        if not isinstance(sections, list):
-            return export_metrics
+        section_index = {
+            _normalise_identifier(section.section_id or section.title): section
+            for section in evaluation.sections
+        }
+        if isinstance(sections, list):
+            for entry in sections:
+                if not isinstance(entry, Mapping):
+                    continue
+                entry.setdefault("raw_score", entry.get("score"))
+                entry.setdefault("normalized_score", entry.get("normalized_score", entry.get("score")))
+                entry.setdefault("criteria_version", evaluation.metadata.get("criteria_version"))
+                key = _normalise_identifier(entry.get("section_id") or entry.get("title"))
+                section_obj = section_index.get(key)
+                min_scale: Optional[float] = None
+                max_scale: Optional[float] = None
+                if section_obj is not None:
+                    for dimension in section_obj.dimensions:
+                        for question in dimension.questions:
+                            metadata = question.metadata if isinstance(question.metadata, Mapping) else {}
+                            min_candidate = metadata.get("scale_min")
+                            max_candidate = metadata.get("scale_max")
+                            try:
+                                if min_candidate is not None:
+                                    value = float(min_candidate)
+                                    min_scale = value if min_scale is None else min(min_scale, value)
+                            except (TypeError, ValueError):
+                                pass
+                            try:
+                                if max_candidate is not None:
+                                    value = float(max_candidate)
+                                    max_scale = value if max_scale is None else max(max_scale, value)
+                            except (TypeError, ValueError):
+                                pass
+                if entry.get("scale_min") is None and min_scale is not None:
+                    entry["scale_min"] = min_scale
+                if entry.get("scale_max") is None and max_scale is not None:
+                    entry["scale_max"] = max_scale
 
-        scale = desired_max / source_max
-        for entry in sections:
-            if not isinstance(entry, Mapping):
-                continue
-            normalized_value = entry.get("normalized_score")
-            if normalized_value is None:
-                continue
+        global_summary = export_metrics.setdefault("global", {})
+        global_summary.setdefault("criteria_version", evaluation.metadata.get("criteria_version"))
+        if global_summary.get("scale_min") is None:
+            global_summary["scale_min"] = 0.0
+        if global_summary.get("scale_max") is None:
+            global_summary["scale_max"] = evaluation.metadata.get("normalized_scale_max", 20.0)
+        if global_summary.get("raw_score") is None:
+            global_summary["raw_score"] = evaluation.score
+        if global_summary.get("normalized_score") is None and evaluation.score is not None:
             try:
-                numeric = float(normalized_value)
+                global_summary["normalized_score"] = float(evaluation.score)
             except (TypeError, ValueError):
-                continue
-            entry["normalized_score"] = numeric * scale
-
+                pass
         return export_metrics
 
 
@@ -1929,7 +2605,13 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Ruta del JSON de criterios.",
     )
     parser.add_argument("--tipo-informe", dest="tipo_informe", help="Tipo de informe (institucional o politica_nacional).")
-    parser.add_argument("--modo", dest="modo", default="global", choices=["global", "parcial", "reevaluacion"], help="Modo de evaluación.")
+    parser.add_argument(
+        "--modo",
+        dest="modo",
+        default="global",
+        choices=["global", "parcial", "reevaluacion", "incremental"],
+        help="Modo de evaluación.",
+    )
     parser.add_argument("--output", dest="output_path", type=Path, help="Ruta del archivo de salida.")
     parser.add_argument(
         "--formato",
@@ -1980,15 +2662,30 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def _load_previous_result(path: Path) -> EvaluationResult:
-    with path.open("r", encoding="utf-8") as handle:
-        data = json.load(handle)
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except json.JSONDecodeError as exc:  # pragma: no cover - defensive
+        raise ValueError(
+            "El archivo de resultados previos está corrupto o incompleto (JSON inválido)."
+        ) from exc
     if "evaluation" in data:
         payload = data["evaluation"]
     else:
         payload = data
     if not isinstance(payload, Mapping):
         raise ValueError("El archivo de resultados previos no contiene un objeto válido.")
-    return EvaluationResult.from_dict(dict(payload))
+    try:
+        result = EvaluationResult.from_dict(dict(payload))
+    except Exception as exc:  # pragma: no cover - validación adicional
+        raise ValueError(
+            "El archivo de resultados previos no tiene el formato esperado de evaluación."
+        ) from exc
+    if not result.sections:
+        raise ValueError(
+            "El resultado previo no contiene secciones evaluadas y no puede usarse para reevaluación."
+        )
+    return result
 
 
 def main(argv: Sequence[str] | None = None) -> int:

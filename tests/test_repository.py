@@ -2,6 +2,7 @@
 
 from io import StringIO
 import json
+import copy
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,7 @@ def _sample_evaluation() -> EvaluationResult:
         text="Pregunta",
         score=0.8,
         weight=1.0,
+        metadata={"scale_min": 0, "scale_max": 4, "criteria_version": "v1"},
     )
     dimension = DimensionResult(
         name="Dimension",
@@ -60,6 +62,8 @@ def test_flatten_includes_criteria_version() -> None:
     assert rows[0]["model_name"] == "gpt-4o-mini"
     assert rows[0]["pipeline_version"] == "svc-1"
     assert rows[0]["timestamp"] == "2024-05-01T10:00:00Z"
+    assert rows[0]["scale_min"] == 0
+    assert rows[0]["scale_max"] == 4
 
 
 def test_export_rejects_unsupported_format(tmp_path: Path) -> None:
@@ -128,6 +132,19 @@ def test_export_creates_excel_csv_and_json(tmp_path: Path) -> None:
     assert payload["metrics"]["global"]["score"] == 0.8
     assert payload["rows"][0]["document_id"] == "doc-1"
 
+
+def test_flatten_deduplicates_questions() -> None:
+    evaluation = _sample_evaluation()
+    section = evaluation.sections[0]
+    dimension = section.dimensions[0]
+    duplicate = copy.deepcopy(dimension.questions[0])
+    dimension.questions.append(duplicate)
+    dimension.recompute_score()
+    section.recompute_score()
+    evaluation.recompute_score()
+
+    rows = flatten_evaluation(evaluation)
+    assert len(rows) == 1
 
 def test_export_without_permissions(monkeypatch, tmp_path: Path) -> None:
     evaluation = _sample_evaluation()
