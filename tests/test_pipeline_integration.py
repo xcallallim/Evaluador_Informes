@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import unicodedata
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Dict, Iterator, List, Mapping, Tuple
@@ -863,6 +864,45 @@ def test_pipeline_integration_e2e(
         if fallback:
             return sum(fallback) / len(fallback)
         return None
+    
+    def _canonical_criterion(label: str | None) -> str:
+        text = label or ""
+        normalised = "".join(
+            ch for ch in unicodedata.normalize("NFKD", text.strip().lower()) if not unicodedata.combining(ch)
+        )
+        if normalised.startswith("estructura"):
+            return "estructura"
+        if "claridad" in normalised and "coherencia" in normalised:
+            return "claridad y coherencia"
+        if normalised.startswith("pertinencia"):
+            return "pertinencia"
+        return normalised
+
+    def _discretise_institutional(score: float, criterion_key: str) -> float:
+        if criterion_key == "estructura":
+            allowed = (0.0, 1.0)
+        else:
+            allowed = tuple(float(level) for level in range(0, 5))
+        return min(allowed, key=lambda candidate: (abs(candidate - score), candidate))
+
+    def _question_max_score(section_id: str, question_id: str, criterion_key: str) -> float:
+        metadata = question_metadata.get((section_id, question_id), {})
+        scale_values = metadata.get("scale") or []
+        candidates: List[float] = []
+        for entry in scale_values:
+            try:
+                candidates.append(float(entry))
+            except (TypeError, ValueError):
+                continue
+        if candidates:
+            return max(candidates)
+        if criterion_key == "estructura":
+            return 1.0
+        return 4.0
+
+    def _discretise_policy(score: float) -> float:
+        adjusted = max(0.0, min(2.0, float(score)))
+        return round(adjusted * 2.0) / 2.0
 
     def _aggregate_chunks(question: Any) -> float | None:
         weighted_items: List[tuple[float, float]] = []
@@ -893,6 +933,9 @@ def test_pipeline_integration_e2e(
     expected_dimension_scores: Dict[tuple[str, str], float | None] = {}
     expected_section_scores: Dict[str, float | None] = {}
     section_pairs: List[tuple[float, float | None]] = []
+    criterion_weighted_sums: Dict[str, float] = {}
+    criterion_weight_totals: Dict[str, float] = {}
+    criterion_question_counts: Dict[str, int] = {}
 
     for section in evaluation_one.sections:
         section_id = section.section_id or ""
@@ -905,14 +948,31 @@ def test_pipeline_integration_e2e(
             dimension_definition = section_definition["dimensions"].get(dimension.name)
             if not dimension_definition:
                 continue
+            criterion_key = _canonical_criterion(dimension.name)
             question_pairs: List[tuple[float, float | None]] = []
+            normalized_pairs: List[tuple[float, float | None]] = []
             for question in dimension.questions:
                 expected_score = _aggregate_chunks(question)
-                expected_question_scores[question.question_id] = expected_score
-                assert question.score == pytest.approx(expected_score)
+                if expected_score is not None:
+                    discrete_score = _discretise_institutional(expected_score, criterion_key)
+                else:
+                    discrete_score = None
+                expected_question_scores[question.question_id] = discrete_score
+                if discrete_score is None:
+                    assert question.score is None
+                else:
+                    assert question.score == pytest.approx(discrete_score)
                 per_section_chunk_counts.append(len(question.chunk_results))
                 question_weight = dimension_definition["questions"].get(question.question_id, 1.0)
-                question_pairs.append((question_weight, expected_score))
+                question_pairs.append((question_weight, discrete_score))
+                if criterion_key and discrete_score is not None:
+                    max_score = _question_max_score(section_id, question.question_id, criterion_key)
+                    if max_score > 0:
+                        normalized_value = max(0.0, min(1.0, float(discrete_score) / max_score))
+                        normalized_pairs.append((question_weight, normalized_value))
+                        criterion_question_counts[criterion_key] = (
+                            criterion_question_counts.get(criterion_key, 0) + 1
+                        )
                 for chunk in question.chunk_results:
                     metadata = chunk.metadata
                     assert metadata["prompt_was_valid"] is True
@@ -927,6 +987,18 @@ def test_pipeline_integration_e2e(
             assert dimension.score == pytest.approx(expected_dimension_score)
             dimension_weight = dimension_definition.get("weight", 1.0)
             dimension_pairs.append((dimension_weight, expected_dimension_score))
+            normalized_dimension_score = _weighted_average(normalized_pairs)
+            if criterion_key and normalized_dimension_score is not None:
+                section_weight = float(section_definition.get("weight", 1.0))
+                combined_weight = float(dimension_weight) * section_weight
+                if combined_weight > 0:
+                    criterion_weighted_sums[criterion_key] = (
+                        criterion_weighted_sums.get(criterion_key, 0.0)
+                        + float(normalized_dimension_score) * combined_weight
+                    )
+                    criterion_weight_totals[criterion_key] = (
+                        criterion_weight_totals.get(criterion_key, 0.0) + combined_weight
+                    )
         expected_section_score = _weighted_average(dimension_pairs)
         expected_section_scores[section_id] = expected_section_score
         assert section.score == pytest.approx(expected_section_score)
@@ -937,18 +1009,49 @@ def test_pipeline_integration_e2e(
     expected_global_score = _weighted_average(section_pairs)
     assert evaluation_one.score == pytest.approx(expected_global_score)
 
+    institutional_weights = {
+        "estructura": 0.05,
+        "claridad y coherencia": 0.35,
+        "pertinencia": 0.60,
+    }
+    expected_criterion_scores: Dict[str, float] = {}
+    for key, total_weight in criterion_weight_totals.items():
+        if total_weight <= 0:
+            continue
+        expected_criterion_scores[key] = (
+            criterion_weighted_sums[key] / total_weight
+        )
+
+    expected_global_indicator = sum(
+        expected_criterion_scores.get(key, 0.0) * weight
+        for key, weight in institutional_weights.items()
+    )
+
+    assert metrics_one["global"]["raw_score"] == pytest.approx(expected_global_indicator)
+    assert metrics_one["global"]["normalized_min"] == pytest.approx(0.0)
+    assert metrics_one["global"]["normalized_max"] == pytest.approx(100.0)
+    assert metrics_one["global"]["normalized_score"] == pytest.approx(
+        expected_global_indicator * 100.0
+    )
+    assert metrics_one["global"]["scale_min"] == pytest.approx(0.0)
+    assert metrics_one["global"]["scale_max"] == pytest.approx(1.0)
+
+    criteria_metrics = {entry["key"]: entry for entry in metrics_one.get("criteria", [])}
+    for key, weight in institutional_weights.items():
+        if key not in expected_criterion_scores:
+            continue
+        assert key in criteria_metrics
+        entry = criteria_metrics[key]
+        assert entry["normalized_score"] == pytest.approx(expected_criterion_scores[key])
+        assert entry["weight"] == pytest.approx(weight)
+        assert entry["weighted_score"] == pytest.approx(
+            expected_criterion_scores[key] * weight
+        )
+        assert entry["questions_evaluated"] == criterion_question_counts.get(key)
+
     scale = criteria_payload.get("metrica_global", {}).get("escala_resultado", {})
     scale_min = float(scale.get("min", 0.0))
     scale_max = float(scale.get("max", 4.0))
-    expected_normalized = None
-    if expected_global_score is not None and scale_max > scale_min:
-        expected_normalized = (
-            (expected_global_score - scale_min) / (scale_max - scale_min)
-        ) * 100.0
-
-    assert metrics_one["global"]["raw_score"] == pytest.approx(expected_global_score)
-    if expected_normalized is not None:
-        assert metrics_one["global"]["normalized_score"] == pytest.approx(expected_normalized)
 
     metrics_section_order = [entry["section_id"] for entry in metrics_one["sections"]]
     assert metrics_section_order == criteria_section_order
@@ -1094,8 +1197,8 @@ def test_pipeline_integration_e2e(
     assert aggregated_token_counts[0] >= token_counts[0]
 
     assert evaluation_one.score == pytest.approx(evaluation_two.score)
-    assert metrics_one["global"]["raw_score"] == pytest.approx(evaluation_one.score)
-    assert metrics_two["global"]["raw_score"] == pytest.approx(evaluation_two.score)
+    assert metrics_one["global"]["raw_score"] == pytest.approx(expected_global_indicator)
+    assert metrics_two["global"]["raw_score"] == pytest.approx(expected_global_indicator)
 
     assert len(repository.exports) == len(export_formats)
     assert repository.exports[0]["output_path"] == output_paths["json"]
@@ -1188,11 +1291,18 @@ def test_pipeline_integration_e2e(
             question_pairs: List[tuple[float, float | None]] = []
             for question in dimension.questions:
                 expected_score = _aggregate_chunks(question)
-                assert question.score == pytest.approx(expected_score)
+                if expected_score is not None:
+                    discrete_score = _discretise_policy(expected_score)
+                else:
+                    discrete_score = None
+                if discrete_score is None:
+                    assert question.score is None
+                else:
+                    assert question.score == pytest.approx(discrete_score)
                 question_weight = dimension_definition["questions"].get(
                     question.question_id, 1.0
                 )
-                question_pairs.append((question_weight, expected_score))
+                question_pairs.append((question_weight, discrete_score))
                 if section_id == POLICY_MISSING_SECTION_ID:
                     assert question.justification
                     assert "sin evidencia" in question.justification.lower()
@@ -1383,7 +1493,7 @@ def test_pipeline_integration_e2e(
                     assert chunk.metadata.get("ai_latency_ms", 0) >= 0
 
     assert metrics_retry["global"]["raw_score"] == pytest.approx(
-        evaluation_retry.score
+        metrics_by_format["json"]["global"]["raw_score"]
     )
 
     exported_json = json.loads(output_paths["json"].read_text(encoding="utf-8"))
@@ -1518,8 +1628,11 @@ def test_pipeline_integration_e2e(
     rejected_score = evaluation_rejected.score
     if rejected_score is not None:
         assert rejected_score == pytest.approx(0.0)
+        assert metrics_rejected["global"]["raw_score"] == pytest.approx(
+            rejected_score
+        )
     else:
-        assert metrics_rejected["global"]["raw_score"] is None
+        assert metrics_rejected["global"]["raw_score"] == pytest.approx(0.0)
 
     exported_rejected = json.loads(rejected_output.read_text(encoding="utf-8"))
     assert exported_rejected["evaluation"]["metadata"]["prompt_validation"][

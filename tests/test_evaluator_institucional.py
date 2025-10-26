@@ -114,12 +114,12 @@ def test_evaluator_generates_weighted_scores() -> None:
     # Validar promedios ponderados.
     section1 = result.sections[0]
     section2 = result.sections[1]
-    assert _round(section1.dimensions[0].questions[0].score) == pytest.approx(1.5)
+    assert _round(section1.dimensions[0].questions[0].score) == pytest.approx(1.0)
     assert section1.dimensions[0].questions[0].justification == "J1-2"
-    assert section1.dimensions[0].score == pytest.approx(1.8)
-    assert section1.score == pytest.approx(1.86)
+    assert section1.dimensions[0].score == pytest.approx(1.6)
+    assert section1.score == pytest.approx(1.72)
     assert section2.score == pytest.approx(3.0)
-    assert result.score == pytest.approx(2.316)
+    assert result.score == pytest.approx(2.232)
 
     # Aseguramos que los metadatos básicos estén presentes.
     assert result.document_id == "doc-123"
@@ -218,7 +218,7 @@ def test_evaluator_uses_chunk_weights_when_available() -> None:
     result = evaluator.evaluate(document, criteria)
 
     question = result.sections[0].dimensions[0].questions[0]
-    assert question.score == pytest.approx(2.5)
+    assert question.score == pytest.approx(2.0)
     weights = [chunk.metadata.get("weight") for chunk in question.chunk_results]
     assert weights == [1.0, 3.0]
 

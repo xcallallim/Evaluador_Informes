@@ -568,6 +568,13 @@ class ValidatingEvaluator(Evaluator):
             _append_chunk_result(entry)
 
         score = self._aggregate_chunk_scores(chunk_results)
+        if score is not None:
+            score, _ = self._apply_score_constraints(
+                score,
+                criteria=criteria,
+                dimension=dimension_data,
+                question=question_data,
+            )
         justification, relevant_text = self._select_justification(chunk_results)
         question_result = QuestionResult(
             question_id=str(question_data.get("id") or question_data.get("texto", "")),
@@ -790,6 +797,13 @@ class ValidatingEvaluator(Evaluator):
             )
 
         score = self._aggregate_chunk_scores(chunk_results)
+        if score is not None:
+            score, _ = self._apply_score_constraints(
+                score,
+                criteria=criteria,
+                dimension=dimension_data,
+                question=question_data,
+            )
         justification, relevant_text = self._select_justification(chunk_results)
         question_result = QuestionResult(
             question_id=str(question_data.get("id") or question_data.get("texto", "")),

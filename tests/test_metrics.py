@@ -3,7 +3,14 @@
 import math
 import time
 
-from data.models.evaluation import EvaluationResult, SectionResult
+import pytest
+
+from data.models.evaluation import (
+    DimensionResult,
+    EvaluationResult,
+    QuestionResult,
+    SectionResult,
+)
 from metrics import (
     calculate_institutional_metrics,
     calculate_metrics,
@@ -24,7 +31,61 @@ def build_evaluation(score, section_scores, *, tipo_informe="institucional"):
 
 
 def test_institutional_metrics_supports_custom_normalization_and_weights():
-    evaluation = build_evaluation(3.0, [3.5, None])
+    evaluation = EvaluationResult(
+        score=3.0,
+        document_type="institucional",
+        metadata={"tipo_informe": "institucional"},
+        sections=[
+            SectionResult(
+                title="Section 1",
+                section_id="s1",
+                score=3.5,
+                weight=1.0,
+                dimensions=[
+                    DimensionResult(
+                        name="Estructura",
+                        weight=1.0,
+                        score=1.0,
+                        questions=[
+                            QuestionResult(
+                                question_id="q1",
+                                text="Estructura",
+                                weight=1.0,
+                                score=1.0,
+                            )
+                        ],
+                    ),
+                    DimensionResult(
+                        name="Claridad y coherencia",
+                        weight=1.0,
+                        score=2.0,
+                        questions=[
+                            QuestionResult(
+                                question_id="q2",
+                                text="Claridad",
+                                weight=1.0,
+                                score=2.0,
+                            )
+                        ],
+                    ),
+                    DimensionResult(
+                        name="Pertinencia",
+                        weight=1.0,
+                        score=3.0,
+                        questions=[
+                            QuestionResult(
+                                question_id="q3",
+                                text="Pertinencia",
+                                weight=1.0,
+                                score=3.0,
+                            )
+                        ],
+                    ),
+                ],
+            ),
+            SectionResult(title="Section 2", section_id="s2", score=None),
+        ],
+    )
     criteria = {
         "tipo_informe": "institucional",
         "metrica_global": {"escala_resultado": {"min": 1, "max": 4}},
@@ -41,7 +102,10 @@ def test_institutional_metrics_supports_custom_normalization_and_weights():
     assert "normalized_max" in summary["global"]
     assert summary["global"]["normalized_min"] == 0.0
     assert summary["global"]["normalized_max"] == 1.0
-    assert math.isclose(summary["global"]["normalized_score"], 2.0 / 3.0, rel_tol=1e-6)
+    # Estructura=1.0, Claridad=0.5, Pertinencia=0.75 -> weighted (0.05, 0.35, 0.60)
+    expected_weighted = 0.05 * 1.0 + 0.35 * 0.5 + 0.60 * 0.75
+    assert summary["global"]["raw_score"] == pytest.approx(expected_weighted)
+    assert summary["global"]["normalized_score"] == pytest.approx(expected_weighted)
     assert summary["totals"] == {
         "sections_total": 2,
         "sections_with_score": 1,
@@ -91,8 +155,8 @@ def test_metrics_handle_global_none_without_normalization():
 
     summary = calculate_institutional_metrics(evaluation, criteria).to_dict()
 
-    assert summary["global"]["raw_score"] is None
-    assert summary["global"]["normalized_score"] is None
+    assert summary["global"]["raw_score"] == pytest.approx(0.0)
+    assert summary["global"]["normalized_score"] == pytest.approx(0.0)
 
 
 def test_normalise_clamps_out_of_range_values():

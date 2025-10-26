@@ -443,7 +443,7 @@ class MockAIService(BaseAIService):
         if candidates:
             index = base % len(candidates)
             return float(candidates[index])
-        fallback = [1.0, 2.0, 3.0, 4.0]
+        fallback = [0.0, 1.0, 2.0, 3.0, 4.0]
         return float(fallback[base % len(fallback)])
 
 
@@ -456,7 +456,7 @@ class OpenAIService(BaseAIService):
         "(número) y 'justification' (texto). Puedes incluir 'relevant_text' si aplica."
     )
 
-    _INSTITUTIONAL_LEVELS: Sequence[float] = (1.0, 2.0, 3.0, 4.0)
+    _INSTITUTIONAL_LEVELS: Sequence[float] = (0.0, 1.0, 2.0, 3.0, 4.0)
     _PN_LEVELS: Sequence[float] = (0.0, 0.5, 1.0, 1.5, 2.0)
 
     def __init__(

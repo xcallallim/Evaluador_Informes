@@ -6,7 +6,7 @@ import logging
 import time
 import unicodedata
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Protocol, Tuple
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Protocol, Set, Tuple
 
 from data.models.document import Document
 from data.models.evaluation import (
@@ -151,6 +151,24 @@ class Evaluator:
             metadata={key: section_data[key] for key in ("id", "id_segmenter", "tipo") if key in section_data},
         )
 
+        section_status = self._section_status(document, section_data)
+        segmenter_metadata = section_result.metadata.setdefault("segmenter", {})
+        if isinstance(segmenter_metadata, dict):
+            segmenter_metadata.setdefault("status", section_status)
+            segmenter_metadata.setdefault("detected", section_status != "missing")
+            if section_status == "missing":
+                segmenter_metadata.setdefault("missing", True)
+                logger.warning(
+                    "⚠️ Sección '%s' no encontrada en el documento; se imputará puntaje 0.",
+                    section_result.title,
+                )
+            elif section_status == "empty":
+                segmenter_metadata.setdefault("empty", True)
+                logger.warning(
+                    "⚠️ Sección '%s' sin contenido para evaluar; se imputará puntaje 0.",
+                    section_result.title,
+                )
+
         for dimension_data in section_data.get("dimensiones", []):
             dimension_result = self._evaluate_dimension(
                 document,
@@ -277,6 +295,13 @@ class Evaluator:
             )
 
         score = self._aggregate_chunk_scores(chunk_results)
+        if score is not None:
+            score, _ = self._apply_score_constraints(
+                score,
+                criteria=criteria,
+                dimension=dimension_data,
+                question=question_data,
+            )
         justification, relevant_text = self._select_justification(chunk_results)
         question_result = QuestionResult(
             question_id=str(question_data.get("id") or question_data.get("texto", "")),
@@ -406,9 +431,9 @@ class Evaluator:
         adjusted = numeric
         if report_type == "institucional":
             if dimension_name == "estructura":
-                allowed = (1.0, 2.0)
+                allowed = (0.0, 1.0)
             else:
-                allowed = (1.0, 2.0, 3.0, 4.0)
+                allowed = tuple(float(level) for level in range(0, 5))
             adjusted = min(allowed, key=lambda candidate: (abs(candidate - numeric), candidate))
         elif report_type in {
             "pn",

@@ -5,12 +5,13 @@ import pytest
 
 from services.evaluation_service import EvaluationService
 
+
 @pytest.mark.integration
 def test_repository_generates_excel_and_csv(tmp_path):
     """Valida que la exportación institucional genere artefactos completos y consistentes."""
 
     #output_dir = tmp_path / "exports"
-    #output_dir.mkdir()
+    #output_dir.mkdir(parents=True, exist_ok=True)
     from pathlib import Path
     output_dir = Path("data/examples")
     output_dir.mkdir(exist_ok=True)
@@ -66,12 +67,19 @@ def test_repository_generates_excel_and_csv(tmp_path):
     assert not missing, f"Faltan columnas obligatorias: {missing}"
     assert len(questions_df) > 0, "El archivo Excel está vacío o sin resultados."
 
-    question_scores = questions_df["question_score"].dropna()
-    assert question_scores.between(0, 2).all(), "Puntajes de preguntas fuera de rango [0, 2]"
+    questions_df = questions_df.dropna(subset=["question_score"])
+    structure_mask = questions_df["dimension_name"].str.lower() == "estructura"
+    structure_scores = questions_df.loc[structure_mask, "question_score"]
+    if not structure_scores.empty:
+        assert structure_scores.isin({0, 1}).all(), "Estructura solo admite puntajes 0 o 1"
+    other_scores = questions_df.loc[~structure_mask, "question_score"]
+    if not other_scores.empty:
+        assert other_scores.isin({0, 1, 2, 3, 4}).all(), "Puntajes de criterios deben estar en [0, 4]"
 
     sections_df = excel.parse("resumen")
     if "normalized_score" in sections_df:
-        assert sections_df["normalized_score"].dropna().between(0, 20).all()
+        normalized_values = sections_df["normalized_score"].dropna()
+        assert normalized_values.between(0, 100).all()
 
     with csv_path.open("r", encoding="utf-8-sig") as handler:
         first_line = handler.readline()
@@ -79,7 +87,9 @@ def test_repository_generates_excel_and_csv(tmp_path):
 
     with json_path.open("r", encoding="utf-8") as handler:
         payload = json.load(handler)
-    assert payload["metrics"]["global"]["normalized_max"] == 20.0
-    assert payload["metrics"]["methodology"] == "politica_nacional"
+    assert payload["metrics"]["global"]["normalized_max"] == 100.0
+    assert payload["metrics"]["methodology"] == "institucional"
+    criteria_entries = payload["metrics"].get("criteria", [])
+    assert any(entry["key"] == "estructura" for entry in criteria_entries)
 
     # pytest tests/exporting/test_repository_export_institucional.py -v
