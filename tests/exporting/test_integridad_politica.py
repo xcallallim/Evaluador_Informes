@@ -146,29 +146,29 @@ def _assert_consistent_exports(
 
 @pytest.mark.integration
 def test_repository_generates_excel_and_csv(tmp_path):
-    """Valida que la exportación institucional genere artefactos completos y consistentes."""
+    """Valida que la exportación política genere artefactos completos y consistentes."""
 
     output_dir = tmp_path / "exports"
     output_dir.mkdir()
-    output_path = output_dir / "resultados_informe_institucional_demo_test.xlsx"
+    output_path = output_dir / "resultados_informe_politica_demo_test.xlsx"
 
     service = EvaluationService()
 
     evaluation, metrics = service.run(
-        input_path="data/examples/informe_institucional_demo.txt",
-        tipo_informe="institucional",
+        input_path="data/examples/informe_politica_demo.txt",
+        tipo_informe="politica_nacional",
         mode="global",
         output_format="xlsx",
         output_path=output_path,
-        criteria_path="data/criteria/metodología_institucional.json",
+        criteria_path="data/criteria/metodología_politica_nacional.json",
     )
 
-    assert evaluation.document_type == "institucional"
+    assert evaluation.document_type == "politica_nacional"
 
     metrics_dict = metrics
     global_summary = metrics_dict["global"]
 
-    assert metrics_dict["methodology"] == "institucional"
+    assert metrics_dict["methodology"] == "politica_nacional"
     assert global_summary["normalized_min"] == pytest.approx(0.0)
     assert global_summary["normalized_max"] > 0
     assert global_summary["normalized_max"] >= global_summary["normalized_score"]
@@ -202,11 +202,11 @@ def test_repository_generates_excel_and_csv(tmp_path):
     assert json_rows, "El archivo JSON no contiene registros"
     json_df = pd.DataFrame(json_rows)
 
-    _assert_consistent_exports(questions_df, csv_df, json_df, "institucional")
+    _assert_consistent_exports(questions_df, csv_df, json_df, "politica_nacional")
 
     assert payload["metrics"]["global"]["normalized_max"] == pytest.approx(
         global_summary["normalized_max"]
     )
-    assert payload["metrics"]["methodology"] == "institucional"
+    assert payload["metrics"]["methodology"] == "politica_nacional"
 
-# pytest tests/exporting/test_integridad_institucional.py -v
+# pytest tests/exporting/test_integridad_politica.py -v
