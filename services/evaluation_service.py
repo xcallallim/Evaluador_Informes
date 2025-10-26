@@ -1212,7 +1212,7 @@ class EvaluationService:
             effective_format = format_mapping.get(suffix, suffix or "json")
 
         export_metrics_summary = metrics_summary
-        export_metrics_summary = metrics_summary
+        export_evaluation = evaluation
         if not filters.is_empty():
             export_evaluation = self._subset_evaluation_for_export(
                 evaluation, filters
