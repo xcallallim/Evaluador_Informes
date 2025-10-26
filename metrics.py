@@ -373,6 +373,7 @@ def calculate_institutional_metrics(
         weighted_entries_present = any(
             entry.get("weight") not in (None, 0)
             and entry.get("questions_evaluated", 0)
+            for entry in criteria_breakdown
         )
         strict_mode = False
         metadata = getattr(evaluation, "metadata", {})

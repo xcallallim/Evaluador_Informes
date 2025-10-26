@@ -57,7 +57,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.001400010660290718,
+            "ai_latency_ms": 0.000500003807246685,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -157,7 +157,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.001999898813664913,
+            "ai_latency_ms": 0.00900006853044033,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -257,7 +257,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.000900006853044033,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -357,7 +357,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.000800006091594696,
+            "ai_latency_ms": 0.000200001522898674,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -421,7 +421,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
       "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]"
@@ -452,8 +452,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "77d5c20a-72e3-47a7-b9c8-9c86cce4b3a4",
-            "timestamp": "2025-10-26T10:34:40.738+00:00",
+            "request_id": "ab213f15-22aa-414f-8575-0673544a49aa",
+            "timestamp": "2025-10-26T11:24:53.272+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -498,7 +498,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 1.3136999914422631,
+            "ai_latency_ms": 1.108699943870306,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -561,8 +561,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "1da9a210-8616-430b-b119-edeb68de664b",
-            "timestamp": "2025-10-26T10:34:40.742+00:00",
+            "request_id": "4896b4cd-32c3-4e8e-b6a1-832f30fab632",
+            "timestamp": "2025-10-26T11:24:53.275+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -607,7 +607,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.9205000242218375,
+            "ai_latency_ms": 0.8163999300450087,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -670,8 +670,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "bd502822-ebe6-464c-b00c-0218e42d7c8c",
-            "timestamp": "2025-10-26T10:34:40.745+00:00",
+            "request_id": "e2228763-f167-4639-9359-2c031a83f8b9",
+            "timestamp": "2025-10-26T11:24:53.277+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -716,7 +716,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.6171000422909856,
+            "ai_latency_ms": 0.7538999198004603,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -779,8 +779,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "42a71fef-f06d-4976-9b5c-ed6cd462e584",
-            "timestamp": "2025-10-26T10:34:40.748+00:00",
+            "request_id": "e153ce95-d583-44cd-a7db-995dcb2d047f",
+            "timestamp": "2025-10-26T11:24:53.278+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -825,7 +825,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 1.1290000984445214,
+            "ai_latency_ms": 0.7195000071078539,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -883,7 +883,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
       "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
@@ -914,8 +914,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "c42be64f-ff95-4b2f-a63b-737bfcc29fe3",
-            "timestamp": "2025-10-26T10:34:40.752+00:00",
+            "request_id": "ea62467c-8fab-4fcf-98b0-723425e96a91",
+            "timestamp": "2025-10-26T11:24:53.281+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -960,7 +960,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 1.0955999605357647,
+            "ai_latency_ms": 0.7155999774113297,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1023,8 +1023,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "9e6536f5-1231-4b76-b0c9-51aeab51d89b",
-            "timestamp": "2025-10-26T10:34:40.755+00:00",
+            "request_id": "b3400647-afde-4201-a855-06ec15aa6f2b",
+            "timestamp": "2025-10-26T11:24:53.285+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -1069,7 +1069,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.7128000725060701,
+            "ai_latency_ms": 2.0201000152155757,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1132,8 +1132,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "f011b506-c037-4c57-9c3a-cf3488aea3c8",
-            "timestamp": "2025-10-26T10:34:40.759+00:00",
+            "request_id": "b3460078-e247-44e6-a294-6984bce4d0ea",
+            "timestamp": "2025-10-26T11:24:53.286+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -1178,7 +1178,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.7204000139608979,
+            "ai_latency_ms": 0.6910000229254365,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1241,8 +1241,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "14ec6431-7be6-4aa6-b36d-3eae94ed726c",
-            "timestamp": "2025-10-26T10:34:40.761+00:00",
+            "request_id": "cb53440e-d396-4905-9c61-23435fff7976",
+            "timestamp": "2025-10-26T11:24:53.289+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -1287,7 +1287,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.4651999333873391,
+            "ai_latency_ms": 0.4093999741598964,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -1345,7 +1345,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
       "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
@@ -1407,7 +1407,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.000500003807246685,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1507,7 +1507,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.000500003807246685,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1607,7 +1607,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.000400003045797348,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1707,7 +1707,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.000400003045797348,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -1771,7 +1771,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
       "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]"
@@ -1833,7 +1833,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.000600004568696022,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -2033,7 +2033,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.000400003045797348,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -2133,7 +2133,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.000400003045797348,
+            "ai_latency_ms": 0.000300002284348011,
             "prompt_quality_score": 0.65,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -2197,7 +2197,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
       "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.65, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\", \"La etiqueta de escala esperada no se encuentra en el prompt.\"], \"was_valid\": true}]"
@@ -2228,8 +2228,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "27f2154a-faf8-450d-993a-f27d076568bc",
-            "timestamp": "2025-10-26T10:34:40.776+00:00",
+            "request_id": "ab49801c-c5c3-4e51-a690-39ee476ff036",
+            "timestamp": "2025-10-26T11:24:53.301+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2274,7 +2274,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.709500047378242,
+            "ai_latency_ms": 1.0338000720366836,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2337,8 +2337,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "9da5abf7-020e-4429-a084-a9979de17f2b",
-            "timestamp": "2025-10-26T10:34:40.777+00:00",
+            "request_id": "7e36de0a-f57c-4bc9-9dfa-85efb0584d85",
+            "timestamp": "2025-10-26T11:24:53.303+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2383,7 +2383,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.5413000471889973,
+            "ai_latency_ms": 0.7374000269919634,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2446,8 +2446,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "b269c48b-70d5-413c-ba06-19c627c887e5",
-            "timestamp": "2025-10-26T10:34:40.779+00:00",
+            "request_id": "750f6f0c-8398-4c8e-863c-8b119ba036f4",
+            "timestamp": "2025-10-26T11:24:53.305+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2492,7 +2492,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.4859000910073519,
+            "ai_latency_ms": 0.6543999770656228,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2555,8 +2555,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "763c781f-1e43-44e9-82d4-ddf28a87fdce",
-            "timestamp": "2025-10-26T10:34:40.781+00:00",
+            "request_id": "7beb40ea-6ed3-46d5-80bc-6718c89c92ff",
+            "timestamp": "2025-10-26T11:24:53.307+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2601,7 +2601,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.47369999811053276,
+            "ai_latency_ms": 0.5929000908508897,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2659,7 +2659,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
       "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
@@ -2690,8 +2690,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "7266d6b1-1803-4ee8-b5a1-0c7ad7d529ec",
-            "timestamp": "2025-10-26T10:34:40.784+00:00",
+            "request_id": "1b446ac0-be56-46c7-83c3-55579ccee88f",
+            "timestamp": "2025-10-26T11:24:53.310+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2736,7 +2736,7 @@
               "chunks_in_source": 2,
               "length": 3979
             },
-            "ai_latency_ms": 0.4919999046251178,
+            "ai_latency_ms": 0.6536999717354774,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2799,8 +2799,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "8d97a9b8-edce-4e07-a83f-eae59deb8a63",
-            "timestamp": "2025-10-26T10:34:40.786+00:00",
+            "request_id": "f0ec5d53-5237-4505-96ba-81167447473b",
+            "timestamp": "2025-10-26T11:24:53.312+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2845,7 +2845,7 @@
               "chunks_in_source": 2,
               "length": 1453
             },
-            "ai_latency_ms": 0.5111000500619411,
+            "ai_latency_ms": 1.0040999623015523,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -2908,8 +2908,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "c81b4772-88b6-4f71-aac3-cd647867ea87",
-            "timestamp": "2025-10-26T10:34:40.787+00:00",
+            "request_id": "73284c23-88c3-4c22-a3be-397ab5d51cf8",
+            "timestamp": "2025-10-26T11:24:53.314+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -2954,7 +2954,7 @@
               "chunks_in_source": 2,
               "length": 298
             },
-            "ai_latency_ms": 0.4835000727325678,
+            "ai_latency_ms": 0.7124999538064003,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -3017,8 +3017,8 @@
             "provider": "mock",
             "duration_ms": 0.0,
             "client_mode": "mock",
-            "request_id": "09707618-26e2-4b87-8ab3-b4e8eee6fe57",
-            "timestamp": "2025-10-26T10:34:40.789+00:00",
+            "request_id": "8d69a44a-7af7-4153-a732-c910a9f9ee5d",
+            "timestamp": "2025-10-26T11:24:53.315+00:00",
             "report_type": "institucional",
             "allowed_levels": [
               1.0,
@@ -3063,7 +3063,7 @@
               "chunks_in_source": 2,
               "length": 1597
             },
-            "ai_latency_ms": 0.47109997831285,
+            "ai_latency_ms": 0.5454000784084201,
             "prompt_quality_score": 0.8,
             "prompt_validation_alerts": [
               "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -3121,7 +3121,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.prompt_quality_minimum": 0.7,
       "metadata.prompt_validation.threshold": 0.7,
       "metadata.prompt_validation.records": "[{\"chunk_index\": 0, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 1, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 2, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}, {\"chunk_index\": 3, \"quality_score\": 0.8, \"alerts\": [\"El bloque JSON de ejemplo no es válido tras normalizar los marcadores.\"], \"was_valid\": true}]"
@@ -3146,7 +3146,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3171,7 +3171,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3196,7 +3196,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3221,7 +3221,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3246,7 +3246,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3271,7 +3271,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3296,7 +3296,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3321,7 +3321,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3346,7 +3346,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3371,7 +3371,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3396,7 +3396,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3421,7 +3421,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3446,7 +3446,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3471,7 +3471,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3496,7 +3496,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3521,7 +3521,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3546,7 +3546,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3571,7 +3571,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3596,7 +3596,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3621,7 +3621,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3646,7 +3646,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3671,7 +3671,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3696,7 +3696,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3721,7 +3721,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3746,7 +3746,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3771,7 +3771,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3796,7 +3796,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3821,7 +3821,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3846,7 +3846,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3871,7 +3871,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3896,7 +3896,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3921,7 +3921,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3946,7 +3946,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3971,7 +3971,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -3996,7 +3996,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -4021,7 +4021,7 @@
       "tipo_informe": "institucional",
       "model_name": "gpt-4o-mini",
       "pipeline_version": "0.1.0",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "metadata.skipped": true,
       "metadata.skip_reason": "empty_section",
       "metadata.segmenter_status": "empty"
@@ -4046,7 +4046,7 @@
         ]
       }
     },
-    "generated_at": "2025-10-26T10:34:40.713519",
+    "generated_at": "2025-10-26T11:24:53.263958",
     "score": 0.385,
     "sections": [
       {
@@ -4110,7 +4110,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.001400010660290718,
+                      "ai_latency_ms": 0.000500003807246685,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4210,7 +4210,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.001999898813664913,
+                      "ai_latency_ms": 0.00900006853044033,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4310,7 +4310,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.000900006853044033,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4410,7 +4410,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.000800006091594696,
+                      "ai_latency_ms": 0.000200001522898674,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -4544,8 +4544,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "77d5c20a-72e3-47a7-b9c8-9c86cce4b3a4",
-                      "timestamp": "2025-10-26T10:34:40.738+00:00",
+                      "request_id": "ab213f15-22aa-414f-8575-0673544a49aa",
+                      "timestamp": "2025-10-26T11:24:53.272+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4590,7 +4590,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 1.3136999914422631,
+                      "ai_latency_ms": 1.108699943870306,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -4653,8 +4653,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "1da9a210-8616-430b-b119-edeb68de664b",
-                      "timestamp": "2025-10-26T10:34:40.742+00:00",
+                      "request_id": "4896b4cd-32c3-4e8e-b6a1-832f30fab632",
+                      "timestamp": "2025-10-26T11:24:53.275+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4699,7 +4699,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.9205000242218375,
+                      "ai_latency_ms": 0.8163999300450087,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -4762,8 +4762,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "bd502822-ebe6-464c-b00c-0218e42d7c8c",
-                      "timestamp": "2025-10-26T10:34:40.745+00:00",
+                      "request_id": "e2228763-f167-4639-9359-2c031a83f8b9",
+                      "timestamp": "2025-10-26T11:24:53.277+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4808,7 +4808,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.6171000422909856,
+                      "ai_latency_ms": 0.7538999198004603,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -4871,8 +4871,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "42a71fef-f06d-4976-9b5c-ed6cd462e584",
-                      "timestamp": "2025-10-26T10:34:40.748+00:00",
+                      "request_id": "e153ce95-d583-44cd-a7db-995dcb2d047f",
+                      "timestamp": "2025-10-26T11:24:53.278+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -4917,7 +4917,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 1.1290000984445214,
+                      "ai_latency_ms": 0.7195000071078539,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5030,8 +5030,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "c42be64f-ff95-4b2f-a63b-737bfcc29fe3",
-                      "timestamp": "2025-10-26T10:34:40.752+00:00",
+                      "request_id": "ea62467c-8fab-4fcf-98b0-723425e96a91",
+                      "timestamp": "2025-10-26T11:24:53.281+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5076,7 +5076,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 1.0955999605357647,
+                      "ai_latency_ms": 0.7155999774113297,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5139,8 +5139,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "9e6536f5-1231-4b76-b0c9-51aeab51d89b",
-                      "timestamp": "2025-10-26T10:34:40.755+00:00",
+                      "request_id": "b3400647-afde-4201-a855-06ec15aa6f2b",
+                      "timestamp": "2025-10-26T11:24:53.285+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5185,7 +5185,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.7128000725060701,
+                      "ai_latency_ms": 2.0201000152155757,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5248,8 +5248,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "f011b506-c037-4c57-9c3a-cf3488aea3c8",
-                      "timestamp": "2025-10-26T10:34:40.759+00:00",
+                      "request_id": "b3460078-e247-44e6-a294-6984bce4d0ea",
+                      "timestamp": "2025-10-26T11:24:53.286+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5294,7 +5294,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.7204000139608979,
+                      "ai_latency_ms": 0.6910000229254365,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5357,8 +5357,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "14ec6431-7be6-4aa6-b36d-3eae94ed726c",
-                      "timestamp": "2025-10-26T10:34:40.761+00:00",
+                      "request_id": "cb53440e-d396-4905-9c61-23435fff7976",
+                      "timestamp": "2025-10-26T11:24:53.289+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -5403,7 +5403,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.4651999333873391,
+                      "ai_latency_ms": 0.4093999741598964,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -5574,7 +5574,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.000500003807246685,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -5674,7 +5674,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.000500003807246685,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -5774,7 +5774,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.000400003045797348,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -5874,7 +5874,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.000400003045797348,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6028,7 +6028,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.000600004568696022,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6228,7 +6228,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.000400003045797348,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6328,7 +6328,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.000400003045797348,
+                      "ai_latency_ms": 0.000300002284348011,
                       "prompt_quality_score": 0.65,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores.",
@@ -6462,8 +6462,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "27f2154a-faf8-450d-993a-f27d076568bc",
-                      "timestamp": "2025-10-26T10:34:40.776+00:00",
+                      "request_id": "ab49801c-c5c3-4e51-a690-39ee476ff036",
+                      "timestamp": "2025-10-26T11:24:53.301+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6508,7 +6508,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.709500047378242,
+                      "ai_latency_ms": 1.0338000720366836,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6571,8 +6571,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "9da5abf7-020e-4429-a084-a9979de17f2b",
-                      "timestamp": "2025-10-26T10:34:40.777+00:00",
+                      "request_id": "7e36de0a-f57c-4bc9-9dfa-85efb0584d85",
+                      "timestamp": "2025-10-26T11:24:53.303+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6617,7 +6617,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.5413000471889973,
+                      "ai_latency_ms": 0.7374000269919634,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6680,8 +6680,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "b269c48b-70d5-413c-ba06-19c627c887e5",
-                      "timestamp": "2025-10-26T10:34:40.779+00:00",
+                      "request_id": "750f6f0c-8398-4c8e-863c-8b119ba036f4",
+                      "timestamp": "2025-10-26T11:24:53.305+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6726,7 +6726,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.4859000910073519,
+                      "ai_latency_ms": 0.6543999770656228,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6789,8 +6789,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "763c781f-1e43-44e9-82d4-ddf28a87fdce",
-                      "timestamp": "2025-10-26T10:34:40.781+00:00",
+                      "request_id": "7beb40ea-6ed3-46d5-80bc-6718c89c92ff",
+                      "timestamp": "2025-10-26T11:24:53.307+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6835,7 +6835,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.47369999811053276,
+                      "ai_latency_ms": 0.5929000908508897,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -6948,8 +6948,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "7266d6b1-1803-4ee8-b5a1-0c7ad7d529ec",
-                      "timestamp": "2025-10-26T10:34:40.784+00:00",
+                      "request_id": "1b446ac0-be56-46c7-83c3-55579ccee88f",
+                      "timestamp": "2025-10-26T11:24:53.310+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -6994,7 +6994,7 @@
                         "chunks_in_source": 2,
                         "length": 3979
                       },
-                      "ai_latency_ms": 0.4919999046251178,
+                      "ai_latency_ms": 0.6536999717354774,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -7057,8 +7057,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "8d97a9b8-edce-4e07-a83f-eae59deb8a63",
-                      "timestamp": "2025-10-26T10:34:40.786+00:00",
+                      "request_id": "f0ec5d53-5237-4505-96ba-81167447473b",
+                      "timestamp": "2025-10-26T11:24:53.312+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -7103,7 +7103,7 @@
                         "chunks_in_source": 2,
                         "length": 1453
                       },
-                      "ai_latency_ms": 0.5111000500619411,
+                      "ai_latency_ms": 1.0040999623015523,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -7166,8 +7166,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "c81b4772-88b6-4f71-aac3-cd647867ea87",
-                      "timestamp": "2025-10-26T10:34:40.787+00:00",
+                      "request_id": "73284c23-88c3-4c22-a3be-397ab5d51cf8",
+                      "timestamp": "2025-10-26T11:24:53.314+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -7212,7 +7212,7 @@
                         "chunks_in_source": 2,
                         "length": 298
                       },
-                      "ai_latency_ms": 0.4835000727325678,
+                      "ai_latency_ms": 0.7124999538064003,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -7275,8 +7275,8 @@
                       "provider": "mock",
                       "duration_ms": 0.0,
                       "client_mode": "mock",
-                      "request_id": "09707618-26e2-4b87-8ab3-b4e8eee6fe57",
-                      "timestamp": "2025-10-26T10:34:40.789+00:00",
+                      "request_id": "8d69a44a-7af7-4153-a732-c910a9f9ee5d",
+                      "timestamp": "2025-10-26T11:24:53.315+00:00",
                       "report_type": "institucional",
                       "allowed_levels": [
                         1.0,
@@ -7321,7 +7321,7 @@
                         "chunks_in_source": 2,
                         "length": 1597
                       },
-                      "ai_latency_ms": 0.47109997831285,
+                      "ai_latency_ms": 0.5454000784084201,
                       "prompt_quality_score": 0.8,
                       "prompt_validation_alerts": [
                         "El bloque JSON de ejemplo no es válido tras normalizar los marcadores."
@@ -8589,8 +8589,8 @@
         "total_prompts": 28,
         "rejected_prompts": 12,
         "average_quality": 0.735714285714286,
-        "average_latency_ms": 0.3982535812870732,
-        "latency_std_ms": 0.3985382574062651,
+        "average_latency_ms": 0.47076071496121585,
+        "latency_std_ms": 0.4872488193207994,
         "issues": [
           {
             "question_id": "RESUMEN_EJECUTIVO_ESTRUCTURA_1",
@@ -8808,8 +8808,8 @@
             "total_prompts": 12,
             "rejected_prompts": 4,
             "average_quality": 0.75,
-            "average_latency_ms": 0.5816166716006895,
-            "latency_std_ms": 0.46664261834414744
+            "average_latency_ms": 0.6037166555567334,
+            "latency_std_ms": 0.5661376679725707
           },
           {
             "section_key": "prioridades_politica_institucional",
@@ -8817,8 +8817,8 @@
             "total_prompts": 16,
             "rejected_prompts": 8,
             "average_quality": 0.7250000000000002,
-            "average_latency_ms": 0.26073126355186105,
-            "latency_std_ms": 0.26554075882083283
+            "average_latency_ms": 0.3710437595145777,
+            "latency_std_ms": 0.38972380443758664
           },
           {
             "section_key": "analisis_oei",
@@ -8915,7 +8915,7 @@
       "validator_version": "1.0.0",
       "builder_version": "InstitutionalPromptBuilder",
       "model_name": "gpt-4o-mini",
-      "run_id": "433cd917fd17423f85c701a25b5c17a4",
+      "run_id": "ca446c7bac28448ea5636e4c86961c21",
       "prompt_batch_size": 1,
       "pipeline_version": "0.1.0",
       "retries": 2,
@@ -8923,14 +8923,14 @@
       "mode": "global",
       "metrics_strict_normalization": false,
       "missing_section_message_style": "default",
-      "timestamp": "2025-10-26T10:34:40.792806",
+      "timestamp": "2025-10-26T11:24:53.317565",
       "source_path": "data\\examples\\informe_institucional_demo.txt",
       "runs": [
         {
-          "run_id": "433cd917fd17423f85c701a25b5c17a4",
+          "run_id": "ca446c7bac28448ea5636e4c86961c21",
           "mode": "global",
           "model": "gpt-4o-mini",
-          "executed_at": "2025-10-26T10:34:40.792806"
+          "executed_at": "2025-10-26T11:24:53.317565"
         }
       ]
     }
@@ -9108,7 +9108,7 @@
       "log_level": "INFO",
       "log_file": null,
       "ai_provider": "mock",
-      "run_id": "433cd917fd17423f85c701a25b5c17a4",
+      "run_id": "ca446c7bac28448ea5636e4c86961c21",
       "document_id": null,
       "extra_instructions": null,
       "splitter_log_level": "info",
