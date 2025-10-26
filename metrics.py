@@ -119,17 +119,45 @@ def _target_range_from_criteria(
 ) -> Tuple[float, float]:
     """Devuelve el rango de normalización de salida deseado."""
 
-    if not isinstance(criteria, Mapping):
-        return (default_min, default_max)
-    scale = criteria.get("escala_normalizada")
-    if isinstance(scale, Mapping):
+    def _coerce_from_mapping(mapping: Mapping[str, Any]) -> Optional[Tuple[float, float]]:
         try:
-            target_min = float(scale.get("min"))
-            target_max = float(scale.get("max"))
+            target_min = float(mapping.get("min"))
+            target_max = float(mapping.get("max"))
         except (TypeError, ValueError):
-            return (default_min, default_max)
+            return None
         if target_max > target_min:
             return (target_min, target_max)
+        return None
+
+    if not isinstance(criteria, Mapping):
+        return (default_min, default_max)
+
+    scale = criteria.get("escala_normalizada")
+    if isinstance(scale, Mapping):
+        coerced = _coerce_from_mapping(scale)
+        if coerced:
+            return coerced
+
+    global_settings = criteria.get("metrica_global")
+    if isinstance(global_settings, Mapping):
+        normalised_scale = global_settings.get("escala_normalizada")
+        if isinstance(normalised_scale, Mapping):
+            coerced = _coerce_from_mapping(normalised_scale)
+            if coerced:
+                return coerced
+
+    metodologia = criteria.get("metodologia")
+    if isinstance(metodologia, Mapping):
+        resultado = metodologia.get("resultado")
+        if isinstance(resultado, Mapping):
+            rango = resultado.get("rango")
+            if isinstance(rango, (list, tuple)) and len(rango) == 2:
+                try:
+                    values = (float(rango[0]), float(rango[1]))
+                except (TypeError, ValueError):
+                    values = None
+                if values and values[1] > values[0]:
+                    return values
     return (default_min, default_max)
 
 
@@ -190,6 +218,7 @@ def calculate_institutional_metrics(
     return MetricsSummary(data)
 
 
+
 def calculate_policy_metrics(
     evaluation: EvaluationResult,
     criteria: Mapping[str, Any],
@@ -210,7 +239,7 @@ def calculate_policy_metrics(
     target_min, target_max = (
         normalized_range
         if normalized_range is not None
-        else _target_range_from_criteria(criteria, default_min=0.0, default_max=100.0)
+        else _target_range_from_criteria(criteria, default_min=0.0, default_max=20.0)
     )
     global_normalized = _normalise(
         evaluation.score,

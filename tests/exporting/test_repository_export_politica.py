@@ -16,7 +16,7 @@ def test_repository_generates_excel_and_csv(tmp_path):
     service = EvaluationService()
 
     evaluation, metrics = service.run(
-        input_path="data/examples/informe_institucional_demo.txt",
+        input_path="data/examples/informe_politica_demo.txt",
         tipo_informe="institucional",
         mode="global",
         output_format="xlsx",
@@ -78,3 +78,5 @@ def test_repository_generates_excel_and_csv(tmp_path):
         payload = json.load(handler)
     assert payload["metrics"]["global"]["normalized_max"] == 20.0
     assert payload["metrics"]["methodology"] == "politica_nacional"
+
+# pytest tests/exporting/test_repository_export_politica.py -v

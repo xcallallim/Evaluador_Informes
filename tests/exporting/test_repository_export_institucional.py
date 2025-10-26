@@ -7,11 +7,11 @@ from services.evaluation_service import EvaluationService
 
 @pytest.mark.integration
 def test_repository_generates_excel_and_csv(tmp_path):
-    """Valida que la exportación política genere artefactos completos y consistentes."""
+    """Valida que la exportación institucional genere artefactos completos y consistentes."""
 
     output_dir = tmp_path / "exports"
     output_dir.mkdir()
-    output_path = output_dir / "resultados_informe_politica_demo_test.xlsx"
+    output_path = output_dir / "resultados_informe_institucional_demo_test.xlsx"
 
     service = EvaluationService()
 
@@ -21,18 +21,18 @@ def test_repository_generates_excel_and_csv(tmp_path):
         mode="global",
         output_format="xlsx",
         output_path=output_path,
-        criteria_path="data/criteria/metodología_politica_nacional.json",
+        criteria_path="data/criteria/metodología_institucional.json",
     )
 
-    assert evaluation.document_type == "politica_nacional"
+    assert evaluation.document_type == "institucional"
 
     metrics_dict = metrics
     global_summary = metrics_dict["global"]
 
-    assert metrics_dict["methodology"] == "politica_nacional"
+    assert metrics_dict["methodology"] == "institucional"
     assert global_summary["normalized_min"] == pytest.approx(0.0)
-    assert global_summary["normalized_max"] == pytest.approx(20.0)
-    assert 0.0 <= global_summary["normalized_score"] <= 20.0
+    assert global_summary["normalized_max"] == pytest.approx(100.0)
+    assert 0.0 <= global_summary["normalized_score"] <= 100.0
 
     excel_path = output_path
     csv_path = output_path.with_suffix(".csv")

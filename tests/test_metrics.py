@@ -52,7 +52,7 @@ def test_institutional_metrics_supports_custom_normalization_and_weights():
     assert summary["sections"][0]["weight"] == 2.5
 
 
-def test_policy_metrics_defaults_to_percentage_range():
+def test_policy_metrics_defaults_to_twenty_point_range():
     evaluation = build_evaluation(1.2, [1.0, 1.4], tipo_informe="politica")
     criteria = {
         "tipo_informe": "politica",
@@ -62,8 +62,8 @@ def test_policy_metrics_defaults_to_percentage_range():
     summary = calculate_policy_metrics(evaluation, criteria).to_dict()
 
     assert summary["global"]["normalized_min"] == 0.0
-    assert summary["global"]["normalized_max"] == 100.0
-    assert math.isclose(summary["global"]["normalized_score"], 60.0, rel_tol=1e-6)
+    assert summary["global"]["normalized_max"] == 20.0
+    assert math.isclose(summary["global"]["normalized_score"], 12.0, rel_tol=1e-6)
     assert summary["totals"]["sections_with_score"] == 2
 
 

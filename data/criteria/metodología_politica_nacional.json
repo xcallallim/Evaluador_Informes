@@ -14,14 +14,14 @@
             "Calcular el puntaje de cada bloque como la suma ponderada de las respuestas a sus preguntas.",
             "Multiplicar el puntaje de cada bloque por su ponderación.",
             "Sumar los puntajes ponderados y normalizar dividiendo entre el puntaje máximo posible (ponderaciones * escala.max).",
-            "Multiplicar el resultado por 100 para obtener un índice porcentual."
+            "Multiplicar el resultado por 20 para obtener un índice normalizado sobre veinte puntos."
         ],
-        "formula_normalizacion": "PF = (Σ_b (Σ_p respuesta_p * ponderacion_p) * ponderacion_b) / 2 * 100",
+        "formula_normalizacion": "PF = (Σ_b (Σ_p respuesta_p * ponderacion_p) * ponderacion_b) / 2 * 20",
         "resultado": {
-            "unidad": "porcentaje",
+            "unidad": "puntos",
             "rango": [
                 0,
-                100
+                20
             ]
         }
     },
