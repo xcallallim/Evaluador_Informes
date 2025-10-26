@@ -207,10 +207,17 @@ def test_pipeline_modes_consistency(monkeypatch: pytest.MonkeyPatch, tmp_path: P
             output_format: str,
             extra_metadata: Mapping[str, Any] | None = None,
         ) -> Path:  # pragma: no cover - exercised indirectly
+            if isinstance(metrics_summary, Mapping):
+                metrics_payload = copy.deepcopy(dict(metrics_summary))
+            elif hasattr(metrics_summary, "to_dict"):
+                metrics_payload = copy.deepcopy(dict(metrics_summary.to_dict()))
+            else:
+                metrics_payload = copy.deepcopy(metrics_summary)
+
             export_calls.append(
                 {
                     "evaluation": copy.deepcopy(evaluation),
-                    "metrics": copy.deepcopy(dict(metrics_summary)),
+                    "metrics": metrics_payload,
                     "output_path": output_path,
                     "output_format": output_format,
                     "extra_metadata": copy.deepcopy(dict(extra_metadata or {})),
