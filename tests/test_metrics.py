@@ -106,6 +106,17 @@ def test_institutional_metrics_supports_custom_normalization_and_weights():
     expected_weighted = 0.05 * 1.0 + 0.35 * 0.5 + 0.60 * 0.75
     assert summary["global"]["raw_score"] == pytest.approx(expected_weighted)
     assert summary["global"]["normalized_score"] == pytest.approx(expected_weighted)
+    criteria_breakdown = {entry["key"]: entry for entry in summary.get("criteria", [])}
+    assert criteria_breakdown["estructura"]["total_score"] == pytest.approx(1.0)
+    assert criteria_breakdown["estructura"]["max_score"] == pytest.approx(1.0)
+    assert criteria_breakdown["estructura"]["questions_total"] == 1
+    assert criteria_breakdown["estructura"]["questions_evaluated"] == 1
+    assert criteria_breakdown["claridad y coherencia"]["total_score"] == pytest.approx(2.0)
+    assert criteria_breakdown["claridad y coherencia"]["max_score"] == pytest.approx(4.0)
+    assert criteria_breakdown["claridad y coherencia"]["questions_evaluated"] == 1
+    assert criteria_breakdown["pertinencia"]["total_score"] == pytest.approx(3.0)
+    assert criteria_breakdown["pertinencia"]["max_score"] == pytest.approx(4.0)
+    assert criteria_breakdown["pertinencia"]["questions_evaluated"] == 1
     assert summary["totals"] == {
         "sections_total": 2,
         "sections_with_score": 1,

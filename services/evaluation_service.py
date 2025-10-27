@@ -434,6 +434,123 @@ class ValidatingEvaluator(Evaluator):
                 alerts=[f"Error durante la validación del prompt: {exc}"],
                 metadata={"error": True, "exception_type": type(exc).__name__},
             )
+        
+    def _should_auto_score_structure(
+        self,
+        *,
+        criteria: Mapping[str, Any],
+        section: Mapping[str, Any],
+        dimension: Mapping[str, Any],
+    ) -> bool:
+        report_type = self._normalise_label(criteria.get("tipo_informe"))
+        dimension_name = self._normalise_label(dimension.get("nombre"))
+        if not (report_type == "institucional" and dimension_name == "estructura"):
+            return False
+
+        section_labels = {
+            self._normalise_label(section.get("id")),
+            self._normalise_label(section.get("id_segmenter")),
+            self._normalise_label(section.get("titulo")),
+            self._normalise_label(section.get("nombre")),
+        }
+        aliases = section.get("aliases")
+        if isinstance(aliases, Sequence):
+            section_labels.update(self._normalise_label(alias) for alias in aliases)
+        section_labels.discard("")
+
+        excluded_labels = {
+            "prioridades de la politica institucional",
+            "prioridades_politica_institucional",
+        }
+        return not (section_labels & excluded_labels)
+
+    def _resolve_section_text(
+        self,
+        document: Document,
+        section_data: Mapping[str, Any],
+    ) -> tuple[Optional[str], Optional[str]]:
+        sections = getattr(document, "sections", {})
+        if not isinstance(sections, Mapping):
+            return None, None
+
+        normalised_sections: Dict[str, str] = {}
+        for key, value in sections.items():
+            normalised_key = self._normalise_label(key)
+            if not normalised_key:
+                continue
+            text = value if isinstance(value, str) else str(value or "")
+            normalised_sections[normalised_key] = text
+
+        candidates = (
+            section_data.get("id"),
+            section_data.get("id_segmenter"),
+            section_data.get("titulo"),
+            section_data.get("nombre"),
+        )
+        for candidate in candidates:
+            normalised_candidate = self._normalise_label(candidate)
+            if normalised_candidate and normalised_candidate in normalised_sections:
+                return normalised_candidate, normalised_sections[normalised_candidate]
+        return None, None
+
+    def _auto_score_structure_question(
+        self,
+        *,
+        document: Document,
+        criteria: Mapping[str, Any],
+        section: Mapping[str, Any],
+        dimension: Mapping[str, Any],
+        question: Mapping[str, Any],
+    ) -> tuple[float, str, Optional[str], Dict[str, Any]]:
+        section_status = self._section_status(document, section)
+        section_key, section_text = self._resolve_section_text(document, section)
+
+        score = 1.0 if section_status == "found" else 0.0
+        score, _ = self._apply_score_constraints(
+            score,
+            criteria=criteria,
+            dimension=dimension,
+            question=question,
+        )
+
+        section_label = (
+            section.get("titulo")
+            or section.get("nombre")
+            or section.get("id_segmenter")
+            or section.get("id")
+            or "sección"
+        )
+        if score >= 1.0:
+            justification = f"Sección detectada (\"{section_label}\")."
+        else:
+            if section_status == "empty":
+                justification = (
+                    f"Sección detectada sin contenido (\"{section_label}\")."
+                )
+            else:
+                justification = f"Sección no detectada (\"{section_label}\")."
+
+        relevant_text: Optional[str] = None
+        if section_text and score >= 1.0:
+            trimmed = section_text.strip()
+            if trimmed:
+                max_length = 1200
+                if len(trimmed) > max_length:
+                    relevant_text = trimmed[:max_length].rstrip() + "…"
+                else:
+                    relevant_text = trimmed
+
+        metadata = {
+            "auto_evaluation": True,
+            "auto_evaluation_method": "section_presence",
+            "segmenter_status": section_status,
+        }
+        if section_key:
+            metadata["section_key"] = section_key
+        if section_text is not None:
+            metadata["section_text_length"] = len(section_text)
+
+        return float(score), justification, relevant_text, metadata
 
     def _evaluate_question(
         self,
@@ -445,21 +562,83 @@ class ValidatingEvaluator(Evaluator):
     ) -> QuestionResult:
         chunk_results: List[ChunkResult] = []
         validation_records: List[Dict[str, Any]] = []
+        if self._should_auto_score_structure(
+            criteria=criteria, section=section_data, dimension=dimension_data
+        ):
+            score, justification, relevant_text, auto_metadata = (
+                self._auto_score_structure_question(
+                    document=document,
+                    criteria=criteria,
+                    section=section_data,
+                    dimension=dimension_data,
+                    question=question_data,
+                )
+            )
+            question_metadata = {
+                key: question_data[key]
+                for key in ("tipo", "descripcion")
+                if key in question_data
+            }
+            question_metadata.update(auto_metadata)
+            question_result = QuestionResult(
+                question_id=str(
+                    question_data.get("id") or question_data.get("texto", "")
+                ),
+                text=question_data.get("texto", ""),
+                weight=question_data.get("ponderacion"),
+                score=score,
+                justification=justification,
+                relevant_text=relevant_text,
+                chunk_results=chunk_results,
+                metadata=question_metadata,
+            )
+            question_result.metadata.setdefault(
+                "prompt_quality_minimum", self.prompt_quality_threshold
+            )
+            question_result.metadata.setdefault(
+                "prompt_validation",
+                {
+                    "threshold": self.prompt_quality_threshold,
+                    "records": validation_records,
+                    "skipped": True,
+                    "reason": "structure_section_presence",
+                },
+            )
+            return question_result
         prepared_chunks: List[Dict[str, Any]] = []
         for index, chunk in self._iter_chunks(document):
             chunk_text = getattr(chunk, "page_content", None)
             if chunk_text is None:
                 chunk_text = str(chunk)
-            chunk_metadata = getattr(chunk, "metadata", {}) or {}
-            chunk_metadata_dict = dict(chunk_metadata)
+            chunk_metadata_raw = getattr(chunk, "metadata", {}) or {}
+            chunk_metadata_dict = dict(chunk_metadata_raw)
             section_key = self._normalise_label(
                 section_data.get("id") or section_data.get("id_segmenter")
             )
             chunk_section_key = self._normalise_label(
                 chunk_metadata_dict.get("section_id")
             )
-            if section_key and chunk_section_key and section_key != chunk_section_key:
-                continue
+            section_matches = (
+                not section_key
+                or not chunk_section_key
+                or section_key == chunk_section_key
+            )
+            if not section_matches:
+                chunk_metadata_dict.setdefault("global_context", True)
+                expected_section_id = (
+                    section_data.get("id") or section_data.get("id_segmenter")
+                )
+                if expected_section_id is not None:
+                    chunk_metadata_dict.setdefault(
+                        "expected_section_id", expected_section_id
+                    )
+                source_section_id = chunk_metadata_dict.get("section_id")
+                if source_section_id is not None:
+                    chunk_metadata_dict.setdefault(
+                        "source_section_id", source_section_id
+                    )
+                chunk_metadata_dict.setdefault("section_mismatch", True)
+            chunk_metadata = chunk_metadata_dict
             prompt = self.prompt_builder(
                 document=document,
                 criteria=criteria,

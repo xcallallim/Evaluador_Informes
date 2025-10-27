@@ -944,9 +944,10 @@ def test_pipeline_integration_e2e(
     expected_dimension_scores: Dict[tuple[str, str], float | None] = {}
     expected_section_scores: Dict[str, float | None] = {}
     section_pairs: List[tuple[float, float | None]] = []
-    criterion_weighted_sums: Dict[str, float] = {}
-    criterion_weight_totals: Dict[str, float] = {}
+    criterion_score_totals: Dict[str, float] = {}
+    criterion_max_totals: Dict[str, float] = {}
     criterion_question_counts: Dict[str, int] = {}
+    criterion_question_totals: Dict[str, int] = {}
 
     for section in evaluation_one.sections:
         section_id = section.section_id or ""
@@ -961,7 +962,6 @@ def test_pipeline_integration_e2e(
                 continue
             criterion_key = _canonical_criterion(dimension.name)
             question_pairs: List[tuple[float, float | None]] = []
-            normalized_pairs: List[tuple[float, float | None]] = []
             for question in dimension.questions:
                 expected_score = _aggregate_chunks(question)
                 if expected_score is not None:
@@ -976,14 +976,27 @@ def test_pipeline_integration_e2e(
                 per_section_chunk_counts.append(len(question.chunk_results))
                 question_weight = dimension_definition["questions"].get(question.question_id, 1.0)
                 question_pairs.append((question_weight, discrete_score))
-                if criterion_key and discrete_score is not None:
+                if criterion_key:
                     max_score = _question_max_score(section_id, question.question_id, criterion_key)
                     if max_score > 0:
-                        normalized_value = max(0.0, min(1.0, float(discrete_score) / max_score))
-                        normalized_pairs.append((question_weight, normalized_value))
-                        criterion_question_counts[criterion_key] = (
-                            criterion_question_counts.get(criterion_key, 0) + 1
+                        criterion_max_totals[criterion_key] = (
+                            criterion_max_totals.get(criterion_key, 0.0) + float(max_score)
                         )
+                        criterion_question_totals[criterion_key] = (
+                            criterion_question_totals.get(criterion_key, 0) + 1
+                        )
+                        if discrete_score is not None:
+                            clamped_score = max(
+                                0.0,
+                                min(float(max_score), float(discrete_score)),
+                            )
+                            criterion_score_totals[criterion_key] = (
+                                criterion_score_totals.get(criterion_key, 0.0)
+                                + clamped_score
+                            )
+                            criterion_question_counts[criterion_key] = (
+                                criterion_question_counts.get(criterion_key, 0) + 1
+                            )
                 for chunk in question.chunk_results:
                     metadata = chunk.metadata
                     assert metadata["prompt_was_valid"] is True
@@ -998,18 +1011,6 @@ def test_pipeline_integration_e2e(
             assert dimension.score == pytest.approx(expected_dimension_score)
             dimension_weight = dimension_definition.get("weight", 1.0)
             dimension_pairs.append((dimension_weight, expected_dimension_score))
-            normalized_dimension_score = _weighted_average(normalized_pairs)
-            if criterion_key and normalized_dimension_score is not None:
-                section_weight = float(section_definition.get("weight", 1.0))
-                combined_weight = float(dimension_weight) * section_weight
-                if combined_weight > 0:
-                    criterion_weighted_sums[criterion_key] = (
-                        criterion_weighted_sums.get(criterion_key, 0.0)
-                        + float(normalized_dimension_score) * combined_weight
-                    )
-                    criterion_weight_totals[criterion_key] = (
-                        criterion_weight_totals.get(criterion_key, 0.0) + combined_weight
-                    )
         expected_section_score = _weighted_average(dimension_pairs)
         expected_section_scores[section_id] = expected_section_score
         assert section.score == pytest.approx(expected_section_score)
@@ -1026,11 +1027,11 @@ def test_pipeline_integration_e2e(
         "pertinencia": 0.60,
     }
     expected_criterion_scores: Dict[str, float] = {}
-    for key, total_weight in criterion_weight_totals.items():
-        if total_weight <= 0:
+    for key, max_total in criterion_max_totals.items():
+        if max_total <= 0:
             continue
         expected_criterion_scores[key] = (
-            criterion_weighted_sums[key] / total_weight
+            criterion_score_totals.get(key, 0.0) / max_total
         )
 
     expected_global_indicator = sum(
@@ -1059,6 +1060,9 @@ def test_pipeline_integration_e2e(
             expected_criterion_scores[key] * weight
         )
         assert entry["questions_evaluated"] == criterion_question_counts.get(key)
+        assert entry["questions_total"] == criterion_question_totals.get(key)
+        assert entry["total_score"] == pytest.approx(criterion_score_totals.get(key, 0.0))
+        assert entry["max_score"] == pytest.approx(criterion_max_totals.get(key, 0.0))  
 
     scale = criteria_payload.get("metrica_global", {}).get("escala_resultado", {})
     scale_min = float(scale.get("min", 0.0))
@@ -1730,6 +1734,7 @@ def test_pipeline_traceability_audit_trail(
 
     section_ids: List[str] = []
     question_ids: List[str] = []
+    question_sections: Dict[str, str] = {}
     chunk_source_ids: List[str] = []
     for section in evaluation.sections:
         assert section.section_id
@@ -1738,6 +1743,7 @@ def test_pipeline_traceability_audit_trail(
             for question in dimension.questions:
                 assert question.question_id
                 question_ids.append(question.question_id)
+                question_sections[question.question_id] = section.section_id
                 for chunk in question.chunk_results:
                     chunk_metadata = dict(chunk.metadata)
                     nested_metadata = {}
@@ -1746,11 +1752,34 @@ def test_pipeline_traceability_audit_trail(
                     source_id = chunk_metadata.get("source_id") or nested_metadata.get(
                         "source_id"
                     )
-                    if source_id:
-                        chunk_source_ids.append(str(source_id))
                     chunk_section = chunk_metadata.get("section_id") or nested_metadata.get(
                         "section_id"
                     )
+                    is_global_context = chunk_metadata.get("global_context") or nested_metadata.get(
+                        "global_context"
+                    )
+                    if source_id and not (
+                        chunk_section
+                        and chunk_section != section.section_id
+                        and is_global_context
+                    ):
+                        chunk_source_ids.append(str(source_id))
+                    if chunk_section and chunk_section != section.section_id:
+                        # Cuando el chunk proviene de otra sección debe identificarse como contexto global.
+                        section_mismatch = chunk_metadata.get("section_mismatch") or nested_metadata.get(
+                            "section_mismatch"
+                        )
+                        expected_section = chunk_metadata.get("expected_section_id") or nested_metadata.get(
+                            "expected_section_id"
+                        )
+                        source_section = chunk_metadata.get("source_section_id") or nested_metadata.get(
+                            "source_section_id"
+                        )
+                        assert is_global_context is True
+                        assert section_mismatch is True
+                        assert expected_section == section.section_id
+                        assert source_section == chunk_section
+                        continue
                     if chunk_section:
                         assert chunk_section == section.section_id
 
@@ -1815,7 +1844,16 @@ def test_pipeline_traceability_audit_trail(
     assert segment_call["tipo"] == "institucional"
 
     assert ai_service.calls
-    assert len(ai_service.calls) == len(question_ids)
+    assert len(ai_service.calls) >= len(question_ids)
+    calls_by_question: Dict[str, List[Dict[str, Any]]] = {}
+    for call in ai_service.calls:
+        calls_by_question.setdefault(call.get("question"), []).append(call)
+    for question_id in question_ids:
+        assert question_id in calls_by_question
+        assert any(
+            call.get("section") == question_sections[question_id]
+            for call in calls_by_question[question_id]
+        )
 
 
 @pytest.mark.slow

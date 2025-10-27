@@ -5,12 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any, Dict, Iterable, List
+from types import SimpleNamespace
 
 import pytest
 
 from data.models.document import Document
 from data.models.evaluation import EvaluationResult
 from data.models.evaluator import Evaluator, ModelResponse
+from services.evaluation_service import ValidatingEvaluator
 
 
 @dataclass
@@ -31,6 +33,26 @@ class FakeAIService:
         self.prompts.append(prompt)
         self.arguments.append(kwargs)
         return self._responses.pop(0)
+    
+
+class _FailingValidator:
+    def validate(self, prompt: str, context: Dict[str, Any] | None = None) -> Any:
+        raise AssertionError("El validador no debería invocarse en la evaluación de Estructura")
+
+
+class _PassingValidator:
+    def __init__(self, quality_score: float = 0.9) -> None:
+        self.quality_score = quality_score
+        self.calls: List[Dict[str, Any] | None] = []
+
+    def validate(self, prompt: str, context: Dict[str, Any] | None = None) -> Any:
+        self.calls.append(context)
+        return SimpleNamespace(
+            is_valid=True,
+            quality_score=self.quality_score,
+            alerts=[],
+            metadata={},
+        )
 
 
 def _round(value: float) -> float:
@@ -417,6 +439,270 @@ def test_evaluation_result_generated_at_traces_timestamp() -> None:
     reconstructed = EvaluationResult.from_dict(payload)
     assert isinstance(reconstructed.generated_at, datetime)
     assert abs((reconstructed.generated_at - result.generated_at).total_seconds()) < 1
+
+
+@pytest.mark.parametrize(
+    "sections, expected_score, expected_phrase, detected",
+    [
+        (
+            {"resumen_ejecutivo": "Contenido resumido con hallazgos clave."},
+            1.0,
+            "Sección detectada",
+            True,
+        ),
+        (
+            {},
+            0.0,
+            "Sección no detectada",
+            False,
+        ),
+    ],
+)
+def test_validating_evaluator_auto_scores_structure(
+    sections: Dict[str, str], expected_score: float, expected_phrase: str, detected: bool
+) -> None:
+    document = Document(
+        content="\n".join(text for text in sections.values() if text),
+        metadata={"id": "doc-auto"},
+        sections=dict(sections),
+        chunks=[],
+    )
+
+    criteria = {
+        "tipo_informe": "institucional",
+        "secciones": [
+            {
+                "id": "resumen_ejecutivo",
+                "titulo": "Resumen Ejecutivo",
+                "ponderacion": 1.0,
+                "dimensiones": [
+                    {
+                        "nombre": "Estructura",
+                        "tipo_escala": "binario",
+                        "ponderacion": 1.0,
+                        "preguntas": [
+                            {
+                                "id": "E-1",
+                                "texto": "¿Existe la sección de resumen ejecutivo?",
+                                "ponderacion": 1.0,
+                                "niveles": [
+                                    {"valor": 0},
+                                    {"valor": 1},
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            }
+        ],
+    }
+
+    ai_service = FakeAIService([])
+    validator = _FailingValidator()
+    evaluator = ValidatingEvaluator(
+        ai_service,
+        prompt_validator=validator,
+        prompt_quality_threshold=0.8,
+    )
+
+    result = evaluator.evaluate(document, criteria)
+    section = result.sections[0]
+    dimension = section.dimensions[0]
+    question = dimension.questions[0]
+
+    assert ai_service.prompts == []
+    assert ai_service.arguments == []
+    assert question.score == pytest.approx(expected_score)
+    assert expected_phrase in (question.justification or "")
+    assert question.metadata["auto_evaluation"] is True
+    assert question.metadata["auto_evaluation_method"] == "section_presence"
+    assert question.metadata["prompt_validation"]["skipped"] is True
+    assert question.metadata["prompt_validation"]["records"] == []
+    if not detected:
+        assert question.metadata.get("skipped") is True
+
+
+def test_prioridades_structure_questions_use_ai() -> None:
+    document = Document(
+        content="\n".join(
+            [
+                "Prioridades de la política institucional",
+                "Contenido de prioridades detallado.",
+            ]
+        ),
+        metadata={"id": "doc-prioridades"},
+        sections={
+            "prioridades_politica_institucional": "Contenido de prioridades detallado.",
+        },
+        chunks=[
+            _FakeChunk(
+                "Contenido de prioridades detallado.",
+                {"section_id": "prioridades_politica_institucional"},
+            )
+        ],
+    )
+
+    criteria = {
+        "tipo_informe": "institucional",
+        "secciones": [
+            {
+                "id": "prioridades_politica_institucional",
+                "titulo": "Prioridades de la política institucional",
+                "dimensiones": [
+                    {
+                        "nombre": "Estructura",
+                        "tipo_escala": "binario",
+                        "preguntas": [
+                            {
+                                "id": "E-PRIORI-1",
+                                "texto": "¿La sección detalla las prioridades institucionales?",
+                                "ponderacion": 1.0,
+                                "niveles": [
+                                    {"valor": 0},
+                                    {"valor": 1},
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            }
+        ],
+    }
+
+    ai_service = FakeAIService(
+        [ModelResponse(score=0.75, justification="Evaluación de prioridades.")]
+    )
+    validator = _PassingValidator(quality_score=0.95)
+    evaluator = ValidatingEvaluator(
+        ai_service,
+        prompt_validator=validator,
+        prompt_quality_threshold=0.8,
+    )
+
+    result = evaluator.evaluate(document, criteria)
+    section = result.sections[0]
+    dimension = section.dimensions[0]
+    question = dimension.questions[0]
+
+    assert len(ai_service.prompts) == 1
+    assert len(ai_service.arguments) == 1
+    assert len(question.chunk_results) == 1
+    assert question.score == pytest.approx(1.0)
+    assert question.metadata.get("auto_evaluation") is not True
+    assert validator.calls and validator.calls[0] is not None
+    chunk = question.chunk_results[0]
+    assert chunk.metadata.get("score_adjusted") is True
+    assert chunk.metadata.get("score_adjusted_from") == pytest.approx(0.75)
+    assert chunk.metadata.get("score_adjusted_to") == pytest.approx(1.0)
+
+
+def test_evaluator_preserves_section_question_alignment() -> None:
+    """Las preguntas conservan su sección, aunque aprovechen contexto global."""
+
+    document = Document(
+        content="\n".join(
+            [
+                "Resumen Ejecutivo",
+                "Contenido del resumen ejecutivo.",
+                "Prioridades de la política institucional",
+                "Contenido de prioridades.",
+            ]
+        ),
+        metadata={"segmenter_missing_sections": True},
+        sections={
+            "resumen_ejecutivo": "Contenido del resumen ejecutivo.",
+            "prioridades_politica_institucional": "Contenido de prioridades.",
+        },
+        chunks=[
+            _FakeChunk(
+                "Contenido del resumen ejecutivo.",
+                {"section_id": "resumen_ejecutivo"},
+            ),
+            _FakeChunk(
+                "Contenido de prioridades.",
+                {"section_id": "prioridades_politica_institucional"},
+            ),
+        ],
+    )
+
+    criteria = {
+        "tipo_informe": "institucional",
+        "secciones": [
+            {
+                "id": "resumen_ejecutivo",
+                "titulo": "Resumen Ejecutivo",
+                "dimensiones": [
+                    {
+                        "nombre": "Claridad y coherencia",
+                        "preguntas": [
+                            {
+                                "id": "RESUMEN_EJECUTIVO_CLARIDAD_1",
+                                "texto": "¿La sección es clara?",
+                            }
+                        ],
+                    }
+                ],
+            },
+            {
+                "id": "prioridades_politica_institucional",
+                "titulo": "Prioridades de la política institucional",
+                "dimensiones": [
+                    {
+                        "nombre": "Claridad y coherencia",
+                        "preguntas": [
+                            {
+                                "id": "PRIORIDADES_CLARIDAD_1",
+                                "texto": "¿La sección de prioridades es clara?",
+                            }
+                        ],
+                    }
+                ],
+            },
+        ],
+    }
+
+    ai_service = FakeAIService(
+        [
+            ModelResponse(score=1.0, justification="Resumen evaluado (chunk 1)"),
+            ModelResponse(score=1.0, justification="Resumen evaluado (chunk 2)"),
+            ModelResponse(score=2.0, justification="Prioridades evaluadas (chunk 1)"),
+            ModelResponse(score=2.0, justification="Prioridades evaluadas (chunk 2)"),
+        ]
+    )
+
+    evaluator = Evaluator(ai_service)
+    result = evaluator.evaluate(document, criteria)
+
+    assert len(result.sections) == 2
+    assert len(ai_service.prompts) == 4
+    assert [args["chunk_index"] for args in ai_service.arguments] == [0, 1, 0, 1]
+
+    expected_pairs = {
+        ("resumen_ejecutivo", "RESUMEN_EJECUTIVO_CLARIDAD_1"),
+        ("prioridades_politica_institucional", "PRIORIDADES_CLARIDAD_1"),
+    }
+    assert {
+        (args["section"]["id"], args["question"]["id"])
+        for args in ai_service.arguments
+    } == expected_pairs
+
+    resumen_calls = [
+        args for args in ai_service.arguments if args["section"]["id"] == "resumen_ejecutivo"
+    ]
+    assert len(resumen_calls) == 2
+    in_section_call = next(arg for arg in resumen_calls if arg["chunk_index"] == 0)
+    global_context_call = next(arg for arg in resumen_calls if arg["chunk_index"] == 1)
+    assert "section_mismatch" not in in_section_call["chunk_metadata"]
+    assert global_context_call["chunk_metadata"]["section_mismatch"] is True
+    assert global_context_call["chunk_metadata"]["global_context"] is True
+    assert (
+        global_context_call["chunk_metadata"]["expected_section_id"]
+        == "resumen_ejecutivo"
+    )
+    assert (
+        global_context_call["chunk_metadata"]["source_section_id"]
+        == "prioridades_politica_institucional"
+    )
 
 # pytest tests/test_evaluator_institucional.py -v
 # python utils/criteria_validator.py data/criteria/metodologia_institucional.json

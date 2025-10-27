@@ -207,7 +207,7 @@ def _aggregate_institutional_criteria(
     *,
     section_weight_overrides: Optional[Mapping[str, float]] = None,
 ) -> List[Dict[str, Any]]:
-    """Calcula los puntajes normalizados por criterio a partir de las preguntas."""
+    """Calcula la suma de puntajes y valores normalizados por criterio."""
 
     criteria_accumulators: Dict[str, Dict[str, Any]] = {}
 
@@ -215,7 +215,9 @@ def _aggregate_institutional_criteria(
         override_weight = None
         if section_weight_overrides and section.section_id in section_weight_overrides:
             override_weight = section_weight_overrides[section.section_id]
-        section_weight = _coerce_weight(override_weight if override_weight is not None else section.weight)
+        section_weight = _coerce_weight(
+            override_weight if override_weight is not None else section.weight
+        )
         if section_weight <= 0:
             continue
 
@@ -228,67 +230,62 @@ def _aggregate_institutional_criteria(
             if dimension_weight <= 0:
                 continue
 
-            question_pairs: List[tuple[float, float]] = []
-            question_count = 0
-
-            for question in dimension.questions:
-                score = question.score
-                if score is None:
-                    continue
-                try:
-                    numeric_score = float(score)
-                except (TypeError, ValueError):
-                    continue
-                max_score = _institutional_question_max(criterion_key)
-                if max_score <= 0:
-                    continue
-                normalised_score = max(0.0, min(1.0, numeric_score / max_score))
-                question_weight = _coerce_weight(question.weight)
-                if question_weight <= 0:
-                    continue
-                question_pairs.append((question_weight, normalised_score))
-                question_count += 1
-
-            if not question_pairs:
-                continue
-
-            total_question_weight = sum(weight for weight, _ in question_pairs)
-            if total_question_weight <= 0:
-                continue
-
-            dimension_score = sum(weight * value for weight, value in question_pairs) / total_question_weight
-
             accumulator = criteria_accumulators.setdefault(
                 criterion_key,
                 {
                     "label": dimension.name or criterion_key.title(),
-                    "weighted_sum": 0.0,
-                    "weight_total": 0.0,
-                    "questions": 0,
+                    "score_sum": 0.0,
+                    "max_sum": 0.0,
+                    "questions_evaluated": 0,
+                    "questions_total": 0,
                 },
             )
 
-            combined_weight = section_weight * dimension_weight
-            if combined_weight <= 0:
-                continue
+            for question in dimension.questions:    
+                max_score = _institutional_question_max(criterion_key)
+                if max_score <= 0:
+                    continue
 
-            accumulator["weighted_sum"] += dimension_score * combined_weight
-            accumulator["weight_total"] += combined_weight
-            accumulator["questions"] += question_count
+                accumulator["max_sum"] += float(max_score)
+                accumulator["questions_total"] += 1
+
+                score = question.score
+                numeric_score: Optional[float]
+                if score is None:
+                    numeric_score = None
+                else:
+                    try:
+                        numeric_score = float(score)
+                    except (TypeError, ValueError):
+                        numeric_score = None
+
+                if numeric_score is None:
+                    continue
+
+                clamped_score = max(0.0, min(float(max_score), numeric_score))
+                accumulator["score_sum"] += clamped_score
+                accumulator["questions_evaluated"] += 1
 
     computed_entries: Dict[str, Dict[str, Any]] = {}
     for key, payload in criteria_accumulators.items():
-        weight_total = payload["weight_total"]
-        if weight_total <= 0:
-            continue
-        score = payload["weighted_sum"] / weight_total
-        score = max(0.0, min(1.0, score))
+        max_sum = payload["max_sum"]
+        score_sum = payload["score_sum"]
+        questions_evaluated = payload["questions_evaluated"]
+        questions_total = payload["questions_total"]
+
+        normalized_score = 0.0
+        if max_sum > 0:
+            normalized_score = max(0.0, min(1.0, score_sum / max_sum))
+
         computed_entries[key] = {
             "key": key,
             "label": payload["label"],
-            "normalized_score": score,
-            "raw_score": score,
-            "questions_evaluated": payload["questions"],
+            "normalized_score": normalized_score,
+            "raw_score": normalized_score,
+            "total_score": score_sum,
+            "max_score": max_sum,
+            "questions_evaluated": questions_evaluated,
+            "questions_total": questions_total,
         }
 
     ordered_entries: List[Dict[str, Any]] = []
@@ -301,7 +298,10 @@ def _aggregate_institutional_criteria(
                 "label": label,
                 "normalized_score": 0.0,
                 "raw_score": 0.0,
+                "total_score": 0.0,
+                "max_score": 0.0,
                 "questions_evaluated": 0,
+                "questions_total": 0,
             }
         ordered_entries.append(entry)
 
