@@ -207,6 +207,14 @@ def _canonical_payload_hash(payload: Mapping[str, Any]) -> str:
     evaluation = normalised.get("evaluation")
     if isinstance(evaluation, Mapping):
         evaluation["generated_at"] = "1970-01-01T00:00:00"
+        metadata = evaluation.get("metadata")
+        if isinstance(metadata, Mapping):
+            metadata["timestamp"] = "1970-01-01T00:00:00"
+            performance = metadata.get("performance")
+            if isinstance(performance, Mapping):
+                for key in ("memory_current_mib", "memory_peak_mib", "memory_delta_mib"):
+                    if key in performance:
+                        performance[key] = 0.0
     return hashlib.sha256(
         json.dumps(
             normalised,
@@ -324,9 +332,14 @@ def test_global_consistency_validation(
     monkeypatch.setattr("data.models.evaluation.datetime", _FrozenDateTime)
 
     perf_counter_holder = [itertools.count(start=0.0, step=0.05)]
+    tick = lambda: next(perf_counter_holder[0])
     monkeypatch.setattr(
         "data.models.evaluator.time.perf_counter",
-        lambda: next(perf_counter_holder[0]),
+        tick,
+    )
+    monkeypatch.setattr(
+        "services.evaluation_service.time.perf_counter",
+        tick,
     )
 
     def tolerant_load(

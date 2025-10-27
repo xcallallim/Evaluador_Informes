@@ -112,6 +112,68 @@ python -m utils.criteria_validator data/criteria/*.json
 El comando informa problemas de esquema y retorna un código de salida distinto
 de cero si detecta errores.
 
+## Manual programático del EvaluationService
+
+Los siguientes ejemplos muestran cómo orquestar la evaluación desde código
+utilizando `EvaluationService` y `ServiceConfig` para garantizar ejecuciones
+repetibles y trazables.
+
+### Ejecución global reproducible
+
+```python
+from pathlib import Path
+
+from services.evaluation_service import EvaluationService, ServiceConfig
+
+config = ServiceConfig(
+    ai_provider="mock",
+    run_id="auditoria-demo",
+    model_name="mock-seeded",
+    prompt_batch_size=1,
+)
+service = EvaluationService(config=config)
+
+evaluation, metrics = service.run(
+    input_path=Path("data/inputs/informe.txt"),
+    criteria_path=Path("data/criteria/metodologia_institucional.json"),
+    mode="global",
+    output_path=Path("data/outputs/resultado_auditoria.json"),
+    output_format="json",
+)
+
+print(evaluation.metadata["run_id"], metrics["global"]["normalized_score"])
+```
+
+`ServiceConfig` fija los parámetros críticos (modelo, `run_id`, reintentos,
+proveedor) y `run` devuelve tanto el `EvaluationResult` como el resumen de
+métricas exportado en disco.【F:services/evaluation_service.py†L193-L227】【F:services/evaluation_service.py†L972-L1179】
+
+### Ejecución parcial o incremental
+
+```python
+from services.evaluation_service import EvaluationFilters
+
+filters = EvaluationFilters(
+    section_ids=["resumen_ejecutivo"],
+    question_ids=["CEPLAN_Q1"],
+    only_missing=False,
+)
+
+evaluation, metrics = service.run(
+    input_path=Path("data/inputs/informe.txt"),
+    criteria_path=Path("data/criteria/metodologia_institucional.json"),
+    mode="parcial",
+    filters=filters,
+    previous_result=evaluation,
+    output_path=Path("data/outputs/resultado_parcial.json"),
+    output_format="json",
+)
+```
+
+`EvaluationFilters` permite restringir secciones, bloques o preguntas mientras
+`run` valida que los objetivos filtrados existan en el resultado final, lo que
+facilita reevaluaciones auditables sin recalcular todo el documento.【F:services/evaluation_service.py†L232-L259】【F:services/evaluation_service.py†L1106-L1128】
+
 ## Reportes y exportación
 
 - `metrics.py` contiene funciones reutilizables para calcular promedios
