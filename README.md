@@ -45,15 +45,15 @@ Evaluador_Informes/
 ## Requisitos previos
 
 - Python 3.10 o superior.
-- Dependencias listadas en `requirements.txt`, agrupadas por categoría:
-  - **OCR y preprocesamiento**: `pdfplumber`, `PyMuPDF`, `pytesseract`,
+- Dependencias listadas en `requirements.txt`. Las familias principales son:
+  - **Ingesta y OCR**: `pdfplumber`, `PyMuPDF`, `pytesseract`,
     `opencv-python-headless`, `Pillow`, `python-docx`, `camelot-py`.
-  - **IA y orquestación**: `langchain`, `langchain-core`, `langchain-community`,
+  - **Evaluación asistida**: `langchain`, `langchain-core`, `langchain-community`,
     `langchain-text-splitters`, `openai`, `tenacity`.
-  - **Utilidades y análisis**: `pandas`, `numpy`, `rapidfuzz`, `scikit-learn`,
-    `tabulate`, `tqdm`.
+  - **Análisis y utilidades**: `pandas`, `numpy`, `rapidfuzz`, `scikit-learn`,
+    `tabulate`, `tqdm`, `joblib` (persistencia de modelos entrenados)
   - **Seguridad y exportación**: `cryptography` para el sellado de claves,
-    `openpyxl` y `pyarrow` para los reportes tabulares.
+    `openpyxl` y `pyarrow` para reportes tabulares.
 - Acceso a una clave de OpenAI cuando se utilice el servicio real (`--real-ai`).
 
 ## Instalación
@@ -67,6 +67,18 @@ pip install -r requirements.txt
 
 Si no puedes instalar binarios del sistema, consulta `docs/dependencies.md` para
 obtener alternativas portátiles de Ghostscript y Tesseract.
+
+### Variables de entorno esenciales
+
+| Variable | Descripción |
+| --- | --- |
+| `OPENAI_API_KEY` | Clave directa para el proveedor real. Puedes sellarla con `utils.seal_key` si trabajas en entornos compartidos. |
+| `OPENAI_KEY_PASSPHRASE` | Frase de paso para descifrar `secrets/openai_api_key.enc` al ejecutar el servicio en producción. |
+| `GHOSTSCRIPT_PATH` | Ruta al binario portátil de Ghostscript cuando `camelot-py` debe ejecutar el modo `lattice`. |
+| `TESSERACT_PATH` | Ruta al ejecutable de Tesseract si el OCR se habilita en entornos sin instalación global. |
+
+Las variables pueden declararse en un archivo `.env` si tu orquestador las carga
+automáticamente, o exportarse manualmente antes de lanzar el pipeline.
 
 ## Configuración de seguridad
 
@@ -274,6 +286,24 @@ El objeto de respuesta expone el puntaje consolidado (`summary.score`), las
 métricas por criterio (`criteria`) y el detalle por fragmento (`chunks`). Puedes
 serializarlo mediante `resultado.to_dict()` para integrarlo con otros sistemas.
 
+## Entrenamiento del modelo institucional
+
+El módulo `training/institutional_trainer.py` permite reproducir el pipeline de
+*machine learning* clásico utilizado como referencia cuando el modelo de IA no
+está disponible. El script localiza el dataset más reciente, entrena un modelo
+`Ridge` y serializa tanto el artefacto como sus métricas en `models/`.
+
+```bash
+python -m training.institutional_trainer \
+  --directory data/examples \
+  --pattern "dataset_entrenamiento_ml*.xlsx" \
+  --output-dir models
+```
+
+El resumen impreso al finalizar incluye métricas globales (MAE, RMSE, R²), los
+mejores hiperparámetros encontrados y las rutas exactas de los artefactos
+generados.【F:training/institutional_trainer.py†L1-L214】【F:training/institutional_trainer.py†L215-L352】
+
 ## Ejecución de pruebas
 
 ```bash
@@ -291,6 +321,8 @@ IA.
 - `docs/validation.md`: detalles del sistema de validación y pruebas.
 - `docs/dependencies.md`: guías para dependencias con restricciones de
   instalación.
+- `docs/validation_audit.md`: lista de verificaciones auditables y recomendaciones
+para QA manual y automatizado.
 - `docs/security_config.md`: instrucciones completas de seguridad y cifrado.
 
 ## Buenas prácticas operativas

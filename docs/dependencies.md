@@ -2,7 +2,17 @@
 
 Algunos componentes del pipeline aprovechan binarios del sistema que no se distribuyen
 con `pip`. Si trabajas en un entorno donde `sudo` está deshabilitado, puedes usar las
-siguientes alternativas para mantener el flujo operativo.
+siguientes alternativas para mantener el flujo operativo y complementar con los
+paquetes de Python declarados en `requirements.txt`.
+
+## Paquetes de Python
+
+- Ejecuta `pip install -r requirements.txt` dentro de un entorno virtual para
+  obtener las dependencias base.
+- Si solo necesitas las utilidades de entrenamiento clásico, asegúrate de que
+  `joblib` esté disponible; se añadió al archivo de requisitos para persistir los
+  artefactos generados por `training/institutional_trainer.py`.
+- Valida la instalación con `python -m pip check` y `pytest` para detectar
 
 ## Ghostscript (tablas PDF con Camelot)
 
@@ -56,6 +66,7 @@ bibliotecas gráficas adicionales. Si aún así encuentras un error mencionando
 
 Al centralizar las rutas en variables de entorno, puedes trabajar en entornos sin
 `sudo` manteniendo las funcionalidades principales del pipeline.
+
 ## Gestión de la clave de OpenAI
 
 El acceso a la clave de OpenAI está centralizado en `utils.secret_manager.get_openai_api_key()`,
