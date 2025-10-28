@@ -1,0 +1,128 @@
+{
+  "rows": [],
+  "evaluation": {
+    "document_id": "IEI 2023 - Gob. Regional de La Libertad",
+    "document_type": null,
+    "criteria_source": "2024.1",
+    "methodology": null,
+    "generated_at": "2025-10-28T17:59:10.453894",
+    "score": null,
+    "sections": [],
+    "metadata": {
+      "criteria_version": "2024.1",
+      "criteria_description": null,
+      "methodology": null,
+      "segmenter_summary": {
+        "status_counts": {
+          "found": 0,
+          "missing": 0,
+          "empty": 0
+        },
+        "missing_sections": [],
+        "empty_sections": [],
+        "total_sections": 0,
+        "issues_detected": false
+      },
+      "prompt_validation": {
+        "threshold": 0.7,
+        "total_prompts": 0,
+        "rejected_prompts": 0,
+        "average_quality": null,
+        "average_latency_ms": null,
+        "latency_std_ms": null,
+        "issues": [],
+        "sections": []
+      },
+      "validator_version": "1.0.0",
+      "builder_version": "InstitutionalPromptBuilder",
+      "model_name": "gpt-4o-mini",
+      "run_id": "69f588a72eac4cba9d84208490694425",
+      "prompt_batch_size": 1,
+      "pipeline_version": "0.1.0",
+      "criteria_hash": "82bb1c4ac96923d38500177a0dc004ec487cd8dcebe6a75eba8d2e630c284b67",
+      "retries": 2,
+      "timeout_seconds": 60.0,
+      "mode": "global",
+      "metrics_strict_normalization": false,
+      "missing_section_message_style": "default",
+      "timestamp": "2025-10-28T17:59:10.456028",
+      "source_path": "data\\inputs\\IEI 2023 - Gob. Regional de La Libertad.pdf",
+      "runs": [
+        {
+          "run_id": "69f588a72eac4cba9d84208490694425",
+          "mode": "global",
+          "model": "gpt-4o-mini",
+          "executed_at": "2025-10-28T17:59:10.456028",
+          "pipeline_version": "0.1.0",
+          "criteria_version": "2024.1",
+          "filters": null
+        }
+      ],
+      "run_id_history": [
+        "69f588a72eac4cba9d84208490694425"
+      ],
+      "pipeline_version_history": [
+        "0.1.0"
+      ],
+      "criteria_version_history": [
+        "2024.1"
+      ],
+      "performance": {
+        "execution_time_seconds": 116.265749,
+        "questions_evaluated": 0,
+        "questions_total": 0,
+        "memory_current_mib": 31.715018,
+        "memory_peak_mib": 723.62638,
+        "memory_delta_mib": 723.62638
+      }
+    }
+  },
+  "metrics": {
+    "methodology": "desconocida",
+    "global": {
+      "raw_score": null,
+      "normalized_score": null,
+      "scale_min": 0.0,
+      "scale_max": 20.0,
+      "normalized_min": 0.0,
+      "normalized_max": 100.0,
+      "criteria_version": "2024.1",
+      "segmenter_flagged_breakdown": {
+        "missing": 0,
+        "empty": 0,
+        "found": 0
+      },
+      "segmenter_flagged_sections": 0,
+      "missing_sections": [],
+      "empty_sections": []
+    },
+    "sections": [],
+    "totals": {
+      "sections_total": 0,
+      "sections_with_score": 0,
+      "sections_without_score": 0
+    },
+    "criteria_hash": "82bb1c4ac96923d38500177a0dc004ec487cd8dcebe6a75eba8d2e630c284b67"
+  },
+  "extra": {
+    "config": {
+      "model_name": "gpt-4o-mini",
+      "retries": 2,
+      "backoff_factor": 2.0,
+      "timeout_seconds": 60.0,
+      "prompt_batch_size": 1,
+      "log_level": "INFO",
+      "log_file": "data\\logs\\ceplan_cli.log",
+      "ai_provider": "mock",
+      "run_id": "69f588a72eac4cba9d84208490694425",
+      "document_id": null,
+      "extra_instructions": null,
+      "splitter_log_level": "info",
+      "splitter_normalize_newlines": true
+    },
+    "tipo_informe": "institucional",
+    "criteria_version": "2024.1",
+    "pipeline_version": "0.1.0",
+    "criteria_hash": "82bb1c4ac96923d38500177a0dc004ec487cd8dcebe6a75eba8d2e630c284b67"
+  }
+}

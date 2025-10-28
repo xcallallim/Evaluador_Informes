@@ -1,0 +1,4 @@
+2025-10-28 12:36:04,772	INFO	run {"input": "data\\inputs\\IEI 2023 - Gob. Regional de La Libertad.pdf", "criteria": "data\\criteria\\criterios_base.json", "tipo": "institucional", "mode": "global", "format": "excel", "provider": "mock", "guided": true, "output": "data\\outputs\\evaluacion_IEI 2023 - Gob. Regional de La Libertad_20251028_123604.xlsx"}
+2025-10-28 12:39:13,453 [INFO] Calidad global de prompts: promedio=N/D, rechazados=0/0 (0.0%), latencia promedio=N/D, desviación=N/D
+2025-10-28 12:57:14,181	INFO	run {"input": "data\\inputs\\IEI 2023 - Gob. Regional de La Libertad.pdf", "criteria": "data\\criteria\\criterios_base.json", "tipo": "institucional", "mode": "global", "format": "excel", "provider": "mock", "guided": true, "output": "data\\outputs\\evaluacion_IEI 2023 - Gob. Regional de La Libertad_20251028_125714.xlsx"}
+2025-10-28 12:59:10,453 [INFO] Calidad global de prompts: promedio=N/D, rechazados=0/0 (0.0%), latencia promedio=N/D, desviación=N/D
