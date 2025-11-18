@@ -10,3 +10,16 @@ __pycache__/
 
 # Artefactos generados por scripts auxiliares
 artifacts/
+
+# Logs
+data/logs/
+*.log
+
+# Outputs de evaluaciones
+data/outputs/
+*.csv
+*.json
+*.xlsx
+
+# PDFs pesados
+*.pdf
